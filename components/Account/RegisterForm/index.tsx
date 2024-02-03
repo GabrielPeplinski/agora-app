@@ -52,8 +52,8 @@ const RegisterForm = () => {
               {errors.password && <Text>{errors.password}</Text>}
 
               <TextInput
-                label="Senha"
-                placeholder="Digite sua senha"
+                label="Confirmação de Senha"
+                placeholder="Digite a confirmação da senha"
                 value={values.confirmPassword}
                 secureTextEntry={true}
                 onChangeText={handleChange('confirmPassword')}
