@@ -6,16 +6,12 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { Button, TextInput, Text } from 'react-native-paper';
-import AuthService from '@/services/api/AuthService';
 import { Alert } from 'react-native';
 
 const RegisterForm = () => {
-  const authService = new AuthService();
-
 	const handleRegister = async (values: UserPropsInterface) => {
     try {
       console.log(values);
-      await authService.register(values);
 
     } catch (error: any) {
       Alert.alert('Ocorreu um erro ao realizar seu cadastro!');
@@ -23,20 +19,23 @@ const RegisterForm = () => {
 	};
 
   return (
-    <View>
+    <View style={styles.container}>
       <>
         <Formik
           initialValues={{
             name: '',
             email: '',
             password: '',
-            confirmPassword: '',
+            password_confirmation: '',
           }}
           validationSchema={RegisterValidation}
           onSubmit={(values) => handleRegister(values)}
         >
           {({ handleChange, handleSubmit, values, errors }) => (
-            <View>
+            <View style={styles.form}>
+              <Text variant={'titleMedium'}>
+                Cadastro de Usuário
+              </Text>
               <TextInput
                 style={styles.space}
                 label="Nome"
@@ -69,14 +68,14 @@ const RegisterForm = () => {
                 style={styles.space}
                 label="Confirmação de Senha"
                 placeholder="Digite a confirmação da senha"
-                value={values.confirmPassword}
+                value={values.password_confirmation}
                 secureTextEntry={true}
-                onChangeText={handleChange('confirmPassword')}
+                onChangeText={handleChange('password_confirmation')}
               />
-              {errors.confirmPassword && <Text>{errors.confirmPassword}</Text>}
+              {errors.password_confirmation && <Text>{errors.password_confirmation}</Text>}
 
               <Button  style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'}>
-								Criar 
+								Criar
 							</Button>
             </View>
           )}
@@ -89,7 +88,26 @@ const RegisterForm = () => {
 const styles = StyleSheet.create({
   space: {
     marginTop: 10
-  }
+  },
+  container: {
+    flexDirection: 'column',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%'
+  },
+  form: {
+    width: '80%',
+  },
+  logoImage: {
+    width: 350,
+    height: 200,
+  },
+  text: {
+    textAlign: 'center',
+    color: 'white',
+  },
 });
 
 export default RegisterForm;

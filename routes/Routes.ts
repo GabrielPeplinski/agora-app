@@ -1,9 +1,9 @@
 const apiRoutes = {
   auth: {
-    register: 'api/register',
-    login: 'api/login',
-    logout: 'api/logout',
-    me: 'api/me'
+    register: 'register',
+    login: 'login',
+    logout: 'logout',
+    me: 'me'
   },
 }
 
