@@ -12,17 +12,17 @@ interface CepPromiseInterface {
 class CepService {
   static async searchCep(zipCode: string): Promise<CepPromiseInterface> {
     try {
-      let data = await cep(zipCode, {
+      const response = await cep(zipCode, {
         timeout: 500,
       });
 
       return {
-        cep: data.cep,
-        city: data.city,
-        neighborhood: data.neighborhood,
-        service: data.service,
-        state: data.state,
-        street: data.street,
+        cep: response.cep,
+        city: response.city,
+        neighborhood: response.neighborhood,
+        service: response.service,
+        state: response.state,
+        street: response.street,
       };
 
     } catch (error) {

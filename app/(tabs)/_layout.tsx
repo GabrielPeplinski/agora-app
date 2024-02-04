@@ -1,6 +1,5 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { PaperProvider } from 'react-native-paper';
 import { Link, Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
 
@@ -20,7 +19,6 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <PaperProvider>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
@@ -58,6 +56,5 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
-    </PaperProvider>
   );
 }
