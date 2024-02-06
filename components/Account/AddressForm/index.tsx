@@ -1,37 +1,41 @@
-import React from 'react';
 import { View } from '@/components/Themed';
+import UserPropsInterface from '@/interfaces/UserPropsInterface';
+import RegisterValidation from '@/validations/RegisterValidation';
 import { Formik } from 'formik';
-import { Button, Text, TextInput } from 'react-native-paper';
+import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
+
+import { Button, TextInput, Text } from 'react-native-paper';
 import { Alert } from 'react-native';
-import CepService from '@/services/CepPromiseService';
 
-interface AddressZipCodeInterface {
-  zipCode: string
-}
-
-const AddressForm = () => {
-  const handleCreateAddress = async (values: AddressZipCodeInterface) => {
+const AddressForm = (props: AddressInterface) => {
+  const [ isDisabled, setIdDisabled] = useState(true)
+  const handleRegister = async (values: any) => {
     try {
-      let data = await CepService.searchCep(values.zipCode);
+      console.log(values);
 
-      console.log(data)
     } catch (error: any) {
-      Alert.alert('Ocorreu um erro ao cadastrar seu endereço!');
+      Alert.alert('Ocorreu um erro ao realizar seu cadastro!');
     }
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <>
         <Formik
           initialValues={{
-            zipCode: '',
+            zipCode: props.zipCode,
+            cityName: props.cityName,
+            neighborhood: props.neighborhood,
+            stateAbbreviation: props.stateAbbreviation,
           }}
-          onSubmit={(values) => handleCreateAddress(values)}
+          // validationSchema={RegisterValidation}
+          onSubmit={(values) => handleRegister(values)}
         >
           {({ handleChange, handleSubmit, values, errors }) => (
-            <View>
+            <View style={styles.form}>
               <TextInput
+                style={styles.space}
                 label="CEP"
                 placeholder="Seu cep"
                 value={values.zipCode}
@@ -39,7 +43,38 @@ const AddressForm = () => {
               />
               {errors.zipCode && <Text>{errors.zipCode}</Text>}
 
-              <Button onPress={(e: any) => handleSubmit(e)}>
+              <TextInput
+                style={styles.space}
+                label="Cidade"
+                placeholder="Cidade onde mora"
+                value={values.cityName}
+                secureTextEntry={true}
+                onChangeText={handleChange('cityName')}
+                disabled={isDisabled}
+              />
+              {errors.cityName && <Text>{errors.cityName}</Text>}
+
+              <TextInput
+                style={styles.space}
+                label="Bairro"
+                placeholder="Bairro onde mora"
+                value={values.neighborhood}
+                onChangeText={handleChange('neighborhood')}
+                disabled={isDisabled}
+              />
+              {errors.cityName && <Text>{errors.cityName}</Text>}
+
+              <TextInput
+                style={styles.space}
+                label="Estado"
+                placeholder="Estado onde mora"
+                value={values.stateAbbreviation}
+                secureTextEntry={true}
+                onChangeText={handleChange('stateAbbreviation')}
+              />
+              {errors.stateAbbreviation && <Text>{errors.stateAbbreviation}</Text>}
+
+              <Button  style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'}>
                 Criar
               </Button>
             </View>
@@ -49,5 +84,22 @@ const AddressForm = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  space: {
+    marginTop: 10
+  },
+  container: {
+    flexDirection: 'column',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%'
+  },
+  form: {
+    width: '80%',
+  },
+});
 
 export default AddressForm;

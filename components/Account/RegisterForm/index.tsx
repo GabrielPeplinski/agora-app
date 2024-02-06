@@ -33,9 +33,6 @@ const RegisterForm = () => {
         >
           {({ handleChange, handleSubmit, values, errors }) => (
             <View style={styles.form}>
-              <Text variant={'titleMedium'}>
-                Cadastro de Usuário
-              </Text>
               <TextInput
                 style={styles.space}
                 label="Nome"

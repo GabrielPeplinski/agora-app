@@ -1,27 +1,17 @@
 import cep from 'cep-promise';
 
-interface CepPromiseInterface {
-  cep: string,
-  city: string,
-  neighborhood: string,
-  service: string,
-  state: string,
-  street: string
-}
-
 class CepService {
-  static async searchCep(zipCode: string): Promise<CepPromiseInterface> {
+  static async searchCep(zipCode: string): Promise<AddressInterface> {
     try {
       const response = await cep(zipCode, {
         timeout: 500,
       });
 
       return {
-        cep: response.cep,
-        city: response.city,
+        zipCode: response.cep,
+        cityName: response.city,
         neighborhood: response.neighborhood,
-        service: response.service,
-        state: response.state,
+        stateAbbreviation: response.state,
         street: response.street,
       };
 

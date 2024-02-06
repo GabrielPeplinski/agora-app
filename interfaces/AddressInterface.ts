@@ -1,8 +1,7 @@
 interface AddressInterface {
-  cep: string,
-  city: string,
+  zipCode: string,
+  cityName: string,
   neighborhood: string,
-  service: string,
-  state: string,
+  stateAbbreviation?: string,
   street: string
 }
