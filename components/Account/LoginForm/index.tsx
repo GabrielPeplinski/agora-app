@@ -4,8 +4,7 @@ import { Formik } from 'formik';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import LoginValidation from '@/validations/LoginValidation';
-import FacebookButton from '@/components/Account/Buttons/FacebookButton';
-import GoogleButton from '@/components/Account/Buttons/GoogleButton';
+import SocialMediaOptionsBox from '@/components/Account/SocialMediaOptionsBox';
 
 const LoginForm = () => {
   return (
@@ -51,15 +50,11 @@ const LoginForm = () => {
           )}
         </Formik>
       </>
-      <View style={styles.optionsView}>
-        <Text variant={'titleMedium'}>
-          Ou faça login utilizando suas redes sociais:
-        </Text>
-        <View style={styles.buttonsView}>
-          <FacebookButton onClick={() => console.log('Facebook')} />
-          <GoogleButton onClick={() => console.log('Google')} />
-        </View>
-      </View>
+      <SocialMediaOptionsBox
+        facebookFunction={() => console.log("Função do Facebook clicada")}
+        googleFunction={() => console.log("Função do Google clicada")}
+        textContent="Ou faça login utilizando suas contas"
+      />
     </View>
   );
 };
@@ -86,15 +81,6 @@ const styles = StyleSheet.create({
   text: {
     textAlign: 'center',
     color: 'white',
-  },
-  optionsView: {
-    marginTop: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonsView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   }
 });
 
