@@ -31,7 +31,7 @@ export default function TabLayout() {
           name="auth"
           options={{
             title: 'Usuário',
-            tabBarIcon: ({ color }) => <FontAwesome name="user-circle-o" size={24} color="black" />,
+            tabBarIcon: ({ color }) => <FontAwesome name="user-circle-o" size={28} color="black" />,
           }}
         />
         <Tabs.Screen

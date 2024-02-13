@@ -7,6 +7,7 @@ import { StyleSheet } from 'react-native';
 
 import { Button, TextInput, Text } from 'react-native-paper';
 import { Alert } from 'react-native';
+import SocialMediaOptionsBox from '@/components/Account/SocialMediaOptionsBox';
 
 const RegisterForm = () => {
 	const handleRegister = async (values: UserPropsInterface) => {
@@ -77,6 +78,11 @@ const RegisterForm = () => {
             </View>
           )}
         </Formik>
+        <SocialMediaOptionsBox
+          facebookFunction={() => console.log("Função do Facebook clicada")}
+          googleFunction={() => console.log("Função do Google clicada")}
+          textContent="Ou utilize suas contas"
+        />
       </>
     </View>
   );
