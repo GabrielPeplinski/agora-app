@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { PaperProvider } from 'react-native-paper';
+import { LocationCoordinatesContextProvider } from '@/context/LocationCoordenatesContextProvider';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,6 +50,7 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
+    <LocationCoordinatesContextProvider>
     <PaperProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
@@ -57,5 +59,6 @@ function RootLayoutNav() {
         </Stack>
       </ThemeProvider>
     </PaperProvider>
+    </LocationCoordinatesContextProvider>
   );
 }
