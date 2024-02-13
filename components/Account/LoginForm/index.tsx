@@ -4,7 +4,8 @@ import { Formik } from 'formik';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import LoginValidation from '@/validations/LoginValidation';
-import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
+import FacebookButton from '@/components/Account/Buttons/FacebookButton';
+import GoogleButton from '@/components/Account/Buttons/GoogleButton';
 
 const LoginForm = () => {
   return (
@@ -55,12 +56,8 @@ const LoginForm = () => {
           Ou faça login utilizando suas redes sociais:
         </Text>
         <View style={styles.buttonsView}>
-          <Button style={[styles.space, styles.buttonFacebook, styles.circularButton]} onPress={(e: any) => console.log(e)} mode={'contained'}>
-            <FontAwesome5 name="facebook" size={20} color="black" />
-          </Button>
-          <Button style={[styles.space, styles.buttonGoogle, styles.circularButton]} onPress={(e: any) => console.log(e)} mode={'contained'}>
-            <FontAwesome name="google" size={20} color="black" />
-          </Button>
+          <FacebookButton onClick={() => console.log('Facebook')} />
+          <GoogleButton onClick={() => console.log('Google')} />
         </View>
       </View>
     </View>
@@ -94,18 +91,6 @@ const styles = StyleSheet.create({
     marginTop: 40,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  buttonFacebook: {
-    backgroundColor: '#3b5998',
-  },
-  buttonGoogle: {
-    marginLeft: 10,
-    backgroundColor: '#db4a39',
-  },
-  circularButton: {
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   buttonsView: {
     flexDirection: 'row',
