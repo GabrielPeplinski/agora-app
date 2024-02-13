@@ -28,6 +28,13 @@ export default function TabLayout() {
         }}
       >
         <Tabs.Screen
+          name="auth"
+          options={{
+            title: 'Usuário',
+            tabBarIcon: ({ color }) => <FontAwesome name="user-circle-o" size={24} color="black" />,
+          }}
+        />
+        <Tabs.Screen
           name="index"
           options={{
             title: 'Tab One',
