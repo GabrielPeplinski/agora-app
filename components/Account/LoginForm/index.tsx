@@ -5,16 +5,11 @@ import { Button, Text, TextInput } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import LoginValidation from '@/validations/LoginValidation';
 import SocialMediaOptionsBox from '@/components/Account/SocialMediaOptionsBox';
-import AuthService from '@/services/api/AuthService';
 
 const LoginForm = () => {
-  const authService = new AuthService();
-
   const handleLogin = async (values: any) => {
     try {
-      const response = await authService.login(values);
-      console.log(response);
-      await authService.login(values);
+
     }catch (error: any) {
       console.log(error.stack);
     }

@@ -8,11 +8,14 @@ import { StyleSheet } from 'react-native';
 import { Button, TextInput, Text } from 'react-native-paper';
 import { Alert } from 'react-native';
 import SocialMediaOptionsBox from '@/components/Account/SocialMediaOptionsBox';
+import { register } from '@/services/api/AuthService';
 
 const RegisterForm = () => {
 	const handleRegister = async (values: UserPropsInterface) => {
     try {
       console.log(values);
+      const response = await register(values);
+      console.log(response);
 
     } catch (error: any) {
       Alert.alert('Ocorreu um erro ao realizar seu cadastro!');
