@@ -5,9 +5,9 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
-import { useColorScheme } from '@/components/useColorScheme';
+import { useColorScheme } from '@/src/components/useColorScheme';
 import { PaperProvider } from 'react-native-paper';
-import { LocationCoordinatesContextProvider } from '@/context/LocationCoordenatesContextProvider';
+import { LocationCoordinatesContextProvider } from '@/src/context/LocationCoordenatesContextProvider';
 
 export {
   // Catch any errors thrown by the Layout component.

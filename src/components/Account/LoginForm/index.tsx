@@ -1,10 +1,10 @@
 import React from 'react';
-import { View } from '@/components/Themed';
 import { Formik } from 'formik';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
-import LoginValidation from '@/validations/LoginValidation';
-import SocialMediaOptionsBox from '@/components/Account/SocialMediaOptionsBox';
+import LoginValidation from '@/src/validations/LoginValidation';
+import SocialMediaOptionsBox from '@/src/components/Account/SocialMediaOptionsBox';
+import { View } from '@/src/components/Themed';
 
 const LoginForm = () => {
   const handleLogin = async (values: any) => {

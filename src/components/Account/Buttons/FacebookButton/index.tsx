@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
-import ButtonStyle from '@/components/Account/Buttons/style';
 import { FontAwesome5 } from '@expo/vector-icons';
+import ButtonStyle from '@/src/components/Account/Buttons/style';
 
 interface FacebookButtonProps {
   onClick: () => any;
