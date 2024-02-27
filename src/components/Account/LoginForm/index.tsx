@@ -10,10 +10,10 @@ const LoginForm = () => {
   const handleLogin = async (values: any) => {
     try {
 
-    }catch (error: any) {
+    } catch (error: any) {
       console.log(error.stack);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -59,8 +59,8 @@ const LoginForm = () => {
         </Formik>
       </>
       <SocialMediaOptionsBox
-        facebookFunction={() => console.log("Função do Facebook clicada")}
-        googleFunction={() => console.log("Função do Google clicada")}
+        facebookFunction={() => console.log('Função do Facebook clicada')}
+        googleFunction={() => console.log('Função do Google clicada')}
         textContent="Ou faça login utilizando suas contas"
       />
     </View>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   form: {
     width: '80%',
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   text: {
     textAlign: 'center',
     color: 'white',
-  }
+  },
 });
 
 export default LoginForm;
