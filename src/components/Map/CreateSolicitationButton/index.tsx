@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import { FAB } from 'react-native-paper';
-import { View } from '@/components/Themed';
+import { View } from '@/src/components/Themed';
 
 interface CreateSolicitationButtonProps {
   onClick: () => any

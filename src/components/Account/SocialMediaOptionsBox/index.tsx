@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text } from 'react-native-paper';
-import { View } from '@/components/Themed';
-import FacebookButton from '@/components/Account/Buttons/FacebookButton';
-import GoogleButton from '@/components/Account/Buttons/GoogleButton';
+import { View } from '@/src/components/Themed';
+import FacebookButton from '@/src/components/Account/Buttons/FacebookButton';
+import GoogleButton from '@/src/components/Account/Buttons/GoogleButton';
 import { StyleSheet } from 'react-native';
 
 interface SocialMediaOptionsBoxProps {

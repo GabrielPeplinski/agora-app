@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from '@/components/Themed';
+import { View } from '@/src/components/Themed';
 import { Text } from 'react-native-paper';
 
 export default function OptionsScreen() {

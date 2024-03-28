@@ -1,9 +1,7 @@
-import { View } from '@/components/Themed';
-import UserPropsInterface from '@/interfaces/UserPropsInterface';
-import RegisterValidation from '@/validations/RegisterValidation';
 import { Formik } from 'formik';
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { View } from '@/src/components/Themed';
 
 import { Button, TextInput, Text } from 'react-native-paper';
 import { Alert } from 'react-native';

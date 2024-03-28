@@ -1,10 +1,10 @@
 import React from 'react';
-import { View } from '@/components/Themed';
 import { Formik } from 'formik';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { Alert, StyleSheet } from 'react-native';
-import zipCodeValidation from '@/validations/ZipCodeValidation';
-import CepPromiseService from '@/services/CepPromiseService';
+import zipCodeValidation from '@/src/validations/ZipCodeValidation';
+import CepPromiseService from '@/src/services/CepPromiseService';
+import { View } from '@/src/components/Themed';
 
 const ZipCodeForm = () => {
   async function handleZipCodeSearch(zipCode: string) {

@@ -1,12 +1,12 @@
-import React from 'react';
+import * as React from 'react';
 import { View } from '@/src/components/Themed';
 import { Text } from 'react-native-paper';
 
-export default function DashboardScreen() {
+export default function RegisterScreen() {
   return (
     <View>
       <Text>
-        Dashboard
+        Register
       </Text>
     </View>
   )

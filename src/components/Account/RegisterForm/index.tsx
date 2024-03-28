@@ -1,21 +1,24 @@
-import { View } from '@/components/Themed';
-import UserPropsInterface from '@/interfaces/UserPropsInterface';
-import RegisterValidation from '@/validations/RegisterValidation';
+import UserPropsInterface from '@/src/interfaces/UserPropsInterface';
+import RegisterValidation from '@/src/validations/RegisterValidation';
 import { Formik } from 'formik';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { Button, TextInput, Text } from 'react-native-paper';
 import { Alert } from 'react-native';
-import SocialMediaOptionsBox from '@/components/Account/SocialMediaOptionsBox';
-import { register } from '@/services/api/AuthService';
+import { register } from '@/src/services/api/AuthService';
+import SocialMediaOptionsBox from '@/src/components/Account/SocialMediaOptionsBox';
+import { View } from '@/src/components/Themed';
+import HttpStatusEnum from '@/src/enums/HttpStatusEnum';
 
 const RegisterForm = () => {
 	const handleRegister = async (values: UserPropsInterface) => {
     try {
-      console.log(values);
       const response = await register(values);
-      console.log(response);
+
+      // @ts-ignore
+      if (response.status === HttpStatusEnum.CREATED) {
+      }
 
     } catch (error: any) {
       Alert.alert('Ocorreu um erro ao realizar seu cadastro!');

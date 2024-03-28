@@ -1,19 +1,23 @@
 import React from 'react';
-import { View } from '@/components/Themed';
 import { Formik } from 'formik';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
-import LoginValidation from '@/validations/LoginValidation';
-import SocialMediaOptionsBox from '@/components/Account/SocialMediaOptionsBox';
+import LoginValidation from '@/src/validations/LoginValidation';
+import SocialMediaOptionsBox from '@/src/components/Account/SocialMediaOptionsBox';
+import { View } from '@/src/components/Themed';
+import { login } from '@/src/services/api/AuthService';
 
 const LoginForm = () => {
   const handleLogin = async (values: any) => {
     try {
+      const response = await login(values);
 
-    }catch (error: any) {
+      // @ts-ignore
+      console.log(response.data)
+    } catch (error: any) {
       console.log(error.stack);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -59,8 +63,8 @@ const LoginForm = () => {
         </Formik>
       </>
       <SocialMediaOptionsBox
-        facebookFunction={() => console.log("Função do Facebook clicada")}
-        googleFunction={() => console.log("Função do Google clicada")}
+        facebookFunction={() => console.log('Função do Facebook clicada')}
+        googleFunction={() => console.log('Função do Google clicada')}
         textContent="Ou faça login utilizando suas contas"
       />
     </View>
@@ -77,7 +81,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   form: {
     width: '80%',
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
   text: {
     textAlign: 'center',
     color: 'white',
-  }
+  },
 });
 
 export default LoginForm;
