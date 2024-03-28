@@ -7,11 +7,11 @@ import { router } from 'expo-router';
 
 export default function AuthScreen() {
   const goToLoginScreen = () => {
-    // router.replace('./auth-options');
+    router.replace('/auth/login');
   }
 
   const goToRegisterScreen = () => {
-    // router.replace('./auth-options/register');
+    router.replace('/auth/register');
   }
 
   return (

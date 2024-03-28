@@ -5,11 +5,15 @@ import { StyleSheet } from 'react-native';
 import LoginValidation from '@/src/validations/LoginValidation';
 import SocialMediaOptionsBox from '@/src/components/Account/SocialMediaOptionsBox';
 import { View } from '@/src/components/Themed';
+import { login } from '@/src/services/api/AuthService';
 
 const LoginForm = () => {
   const handleLogin = async (values: any) => {
     try {
+      const response = await login(values);
 
+      // @ts-ignore
+      console.log(response.data)
     } catch (error: any) {
       console.log(error.stack);
     }

@@ -9,13 +9,16 @@ import { Alert } from 'react-native';
 import { register } from '@/src/services/api/AuthService';
 import SocialMediaOptionsBox from '@/src/components/Account/SocialMediaOptionsBox';
 import { View } from '@/src/components/Themed';
+import HttpStatusEnum from '@/src/enums/HttpStatusEnum';
 
 const RegisterForm = () => {
 	const handleRegister = async (values: UserPropsInterface) => {
     try {
-      console.log(values);
       const response = await register(values);
-      console.log(response);
+
+      // @ts-ignore
+      if (response.status === HttpStatusEnum.CREATED) {
+      }
 
     } catch (error: any) {
       Alert.alert('Ocorreu um erro ao realizar seu cadastro!');
