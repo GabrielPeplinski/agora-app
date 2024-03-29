@@ -36,3 +36,11 @@ export const logout = async () => {
     console.log(error);
   }
 };
+
+export const me = async () => {
+  try {
+    return await axiosInstance().get(apiRoutes.auth.me);
+  } catch (error: any) {
+    console.log(error);
+  }
+};
