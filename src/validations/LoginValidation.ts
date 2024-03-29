@@ -8,6 +8,8 @@ const LoginValidation = Yup.object().shape({
 
   password: Yup.string()
     .required('Campo senha é obrigatório')
+    .min(6, 'A senha deve ter pelo menos 6 caracteres')
+    .max(20, 'A senha deve ter no máximo 20 caracteres')
     .trim(),
 });
 
