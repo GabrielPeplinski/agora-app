@@ -6,6 +6,7 @@ import LoginValidation from '@/src/validations/LoginValidation';
 import SocialMediaOptionsBox from '@/src/components/Account/SocialMediaOptionsBox';
 import { View } from '@/src/components/Themed';
 import { login } from '@/src/services/api/AuthService';
+import PasswordInput from '@/src/components/Account/PasswordInput';
 
 const LoginForm = () => {
   const handleLogin = async (values: any) => {
@@ -41,12 +42,9 @@ const LoginForm = () => {
               />
               {errors.email && <Text>{errors.email}</Text>}
 
-              <TextInput
-                style={styles.space}
-                label="Senha"
-                placeholder="Digite sua senha"
+              <PasswordInput
+                label={"Senha"}
                 value={values.password}
-                secureTextEntry={true}
                 onChangeText={handleChange('password')}
               />
               {errors.password && <Text>{errors.password}</Text>}
