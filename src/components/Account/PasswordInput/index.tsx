@@ -5,6 +5,7 @@ import { StyleSheet } from 'react-native';
 interface PasswordInputProps {
   label: string;
   value: string;
+  placeholder: string;
   onChangeText: (text: string) => void;
 }
 

@@ -3,7 +3,6 @@ import { Formik } from 'formik';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import LoginValidation from '@/src/validations/LoginValidation';
-import SocialMediaOptionsBox from '@/src/components/Account/SocialMediaOptionsBox';
 import { View } from '@/src/components/Themed';
 import { login } from '@/src/services/api/AuthService';
 import PasswordInput from '@/src/components/Account/PasswordInput';
@@ -45,6 +44,7 @@ const LoginForm = () => {
               <PasswordInput
                 label={"Senha"}
                 value={values.password}
+                placeholder={"Sua senha"}
                 onChangeText={handleChange('password')}
               />
               {errors.password && <Text>{errors.password}</Text>}
@@ -60,11 +60,6 @@ const LoginForm = () => {
           )}
         </Formik>
       </>
-      <SocialMediaOptionsBox
-        facebookFunction={() => console.log('Função do Facebook clicada')}
-        googleFunction={() => console.log('Função do Google clicada')}
-        textContent="Ou faça login utilizando suas contas"
-      />
     </View>
   );
 };

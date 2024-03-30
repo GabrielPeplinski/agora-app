@@ -7,9 +7,9 @@ import { StyleSheet } from 'react-native';
 import { Button, TextInput, Text } from 'react-native-paper';
 import { Alert } from 'react-native';
 import { register } from '@/src/services/api/AuthService';
-import SocialMediaOptionsBox from '@/src/components/Account/SocialMediaOptionsBox';
 import { View } from '@/src/components/Themed';
 import HttpStatusEnum from '@/src/enums/HttpStatusEnum';
+import PasswordInput from '@/src/components/Account/PasswordInput';
 
 const RegisterForm = () => {
 	const handleRegister = async (values: UserPropsInterface) => {
@@ -58,22 +58,19 @@ const RegisterForm = () => {
               />
               {errors.email && <Text>{errors.email}</Text>}
 
-              <TextInput
-                style={styles.space}
-                label="Senha"
-                placeholder="Digite sua senha"
+              <PasswordInput
+                label={"Senha"}
                 value={values.password}
-                secureTextEntry={true}
+                placeholder={"Sua senha"}
                 onChangeText={handleChange('password')}
               />
               {errors.password && <Text>{errors.password}</Text>}
 
-              <TextInput
-                style={styles.space}
+
+              <PasswordInput
                 label="Confirmação de Senha"
-                placeholder="Digite a confirmação da senha"
                 value={values.password_confirmation}
-                secureTextEntry={true}
+                placeholder="Digite a confirmação da senha"
                 onChangeText={handleChange('password_confirmation')}
               />
               {errors.password_confirmation && <Text>{errors.password_confirmation}</Text>}
@@ -84,11 +81,6 @@ const RegisterForm = () => {
             </View>
           )}
         </Formik>
-        <SocialMediaOptionsBox
-          facebookFunction={() => console.log("Função do Facebook clicada")}
-          googleFunction={() => console.log("Função do Google clicada")}
-          textContent="Ou utilize suas contas"
-        />
       </>
     </View>
   );
