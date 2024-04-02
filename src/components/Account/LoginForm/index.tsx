@@ -6,11 +6,21 @@ import LoginValidation from '@/src/validations/LoginValidation';
 import { View } from '@/src/components/Themed';
 import { login } from '@/src/services/api/AuthService';
 import PasswordInput from '@/src/components/Account/PasswordInput';
+import * as Burnt from 'burnt';
 
 const LoginForm = () => {
   const handleLogin = async (values: any) => {
     try {
       const response = await login(values);
+
+      // @ts-ignore
+      if (response.status === 201) {
+        Burnt.toast({
+          title: 'Usuário logado!',
+          preset: 'done',
+          duration: 2,
+        });
+      }
 
       // @ts-ignore
       console.log(response.data)

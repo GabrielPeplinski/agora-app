@@ -15,7 +15,7 @@ export default function AuthScreen() {
     await logout();
 
     Burnt.toast({
-      title: "Usuário deslogado!.",
+      title: "Usuário deslogado!",
       preset: "done",
       duration: 2
     });
