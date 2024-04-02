@@ -15,10 +15,27 @@ export default function AuthScreen() {
     await logout();
 
     Burnt.toast({
-      title: "Burnt installed.",
-      preset: "done",
-      message: "See your downloads.",
-      duration: 2
+      title: "Congrats!", // required
+
+      preset: "done", // or "error", "none", "custom"
+
+      message: "", // optional
+
+      haptic: "none", // or "success", "warning", "error"
+
+      duration: 2, // duration in seconds
+
+      shouldDismissByDrag: true,
+
+      from: "top", // "top" or "bottom"
+
+      // optionally customize layout
+      layout: {
+        iconSize: {
+          height: 24,
+          width: 24,
+        },
+      },
     });
   };
 
