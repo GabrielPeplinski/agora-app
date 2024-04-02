@@ -7,11 +7,19 @@ import { useAuthStore } from '@/src/stores/authStore';
 import LoginForm from '@/src/components/Account/LoginForm';
 import CurrentUserData from '@/src/components/Account/CurrentUserData';
 import { logout } from '@/src/services/api/AuthService';
+import * as Burnt from "burnt";
 
 export default function AuthScreen() {
   const router = useRouter();
   const handleLogout = async () => {
     await logout();
+
+    Burnt.toast({
+      title: "Burnt installed.",
+      preset: "done",
+      message: "See your downloads.",
+      duration: 2
+    });
   };
 
   const token = useAuthStore(state => state.token);
