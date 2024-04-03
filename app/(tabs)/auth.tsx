@@ -1,49 +1,56 @@
 import React from 'react';
-import { View } from '@/src/components/Themed';
-import { StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import ContainerBaseStyle from '@/app/style';
-import { Button, Text } from 'react-native-paper';
-import { router } from 'expo-router';
+import { Appbar, Text } from 'react-native-paper';
+import { useAuthStore } from '@/src/stores/authStore';
+import LoginForm from '@/src/components/Account/LoginForm';
+import CurrentUserData from '@/src/components/Account/CurrentUserData';
+import { logout } from '@/src/services/api/AuthService';
+import { successToast } from '@/utils/use-toast';
 
 export default function AuthScreen() {
-  const goToLoginScreen = () => {
-    router.replace('/auth/login');
-  }
+  const router = useRouter();
+  const handleLogout = async () => {
+    await logout();
+    successToast({ title: 'Sessão encerrada!' })
+  };
 
-  const goToRegisterScreen = () => {
-    router.replace('/auth/register');
-  }
+  const token = useAuthStore(state => state.token);
 
   return (
-    <View style={[ContainerBaseStyle.container, styles.container]}>
-      <View>
-        <Text variant={'titleLarge'}>
-          Àgora
-        </Text>
-      </View>
-      <View style={styles.width}>
-        <Button style={styles.buttons} onPress={(e: any) => goToLoginScreen()} mode={'contained'}>
-          Login
-        </Button>
-        <Button style={styles.buttons} onPress={(e: any) => goToRegisterScreen()} mode={'contained'}>
-          Registrar
-        </Button>
-      </View>
-    </View>
+    <>
+      {token ? (
+        <>
+          <Appbar.Header style={{ justifyContent: 'flex-end' }}>
+            <Appbar.Content title="Ola Usuario" />
+            <Appbar.Action icon="logout" onPress={handleLogout} />
+          </Appbar.Header>
+          <View style={ContainerBaseStyle.container}>
+            <CurrentUserData />
+          </View>
+        </>
+      ) : (
+        <View style={ContainerBaseStyle.container}>
+          <LoginForm />
+          <View style={styles.registerContainer}>
+            <TouchableOpacity activeOpacity={1} onPress={() => router.push('/auth/register')} style={{backgroundColor: 'transparent'}}>
+              <Text variant={'titleSmall'} style={styles.link}>
+                Ainda não tem uma conta? Crie a sua aqui!
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  registerContainer: {
+    marginBottom: 10,
   },
-  buttons: {
-    marginTop: 10,
-    padding: 10
+  link: {
+    fontWeight: 'bold',
   },
-  width: {
-    width: '80%'
-  }
-})
+});

@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { useColorScheme } from '@/src/components/useColorScheme';
 import { PaperProvider } from 'react-native-paper';
 import { LocationCoordinatesContextProvider } from '@/src/context/LocationCoordenatesContextProvider';
+import { Toaster } from 'burnt/web';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -59,6 +60,7 @@ function RootLayoutNav() {
           </Stack>
         </ThemeProvider>
       </PaperProvider>
+      <Toaster/>
     </LocationCoordinatesContextProvider>
   );
 }

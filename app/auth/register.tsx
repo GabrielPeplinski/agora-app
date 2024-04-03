@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { View } from '@/src/components/Themed';
-import { Text } from 'react-native-paper';
+import ContainerBaseStyle from '@/app/style';
+import RegisterForm from '@/src/components/Account/RegisterForm';
 
 export default function RegisterScreen() {
   return (
-    <View>
-      <Text>
-        Register
-      </Text>
+    <View style={ContainerBaseStyle.container}>
+      <RegisterForm />
     </View>
   )
 }
