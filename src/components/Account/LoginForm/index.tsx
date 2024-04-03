@@ -36,7 +36,7 @@ const LoginForm = () => {
           validationSchema={LoginValidation}
           onSubmit={(values) => handleLogin(values)}
         >
-          {({ handleChange, handleSubmit, values, errors }) => (
+          {({ handleChange, handleSubmit, values, errors, isValid }) => (
             <View style={styles.form}>
               <TextInput
                 style={styles.space}
@@ -55,7 +55,7 @@ const LoginForm = () => {
               />
               {errors.password && <Text>{errors.password}</Text>}
 
-              <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'}>
+              <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'} disabled={!isValid}>
                 Login
               </Button>
 

@@ -10,14 +10,20 @@ import { register } from '@/src/services/api/AuthService';
 import { View } from '@/src/components/Themed';
 import HttpStatusEnum from '@/src/enums/HttpStatusEnum';
 import PasswordInput from '@/src/components/Account/PasswordInput';
+import { useRouter } from 'expo-router';
+import { successToast } from '@/utils/use-toast';
 
 const RegisterForm = () => {
+  const router = useRouter();
+
 	const handleRegister = async (values: UserPropsInterface) => {
     try {
       const response = await register(values);
 
       // @ts-ignore
       if (response.status === HttpStatusEnum.CREATED) {
+        router.push('/auth');
+        successToast({ title: 'Registrado com sucesso!' })
       }
 
     } catch (error: any) {
@@ -38,7 +44,7 @@ const RegisterForm = () => {
           validationSchema={RegisterValidation}
           onSubmit={(values) => handleRegister(values)}
         >
-          {({ handleChange, handleSubmit, values, errors }) => (
+          {({ handleChange, handleSubmit, values, errors}) => (
             <View style={styles.form}>
               <TextInput
                 style={styles.space}
