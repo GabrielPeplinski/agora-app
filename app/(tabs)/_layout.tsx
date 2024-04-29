@@ -1,7 +1,6 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
-import { FontAwesome5 } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
 
 import Colors from '@/constants/Colors';
@@ -46,13 +45,6 @@ export default function TabLayout() {
           options={{
             title: 'Gráficos',
             tabBarIcon: ({ color }) => <Foundation name="graph-pie" size={28} color="black" />,
-          }}
-        />
-        <Tabs.Screen
-          name="options"
-          options={{
-            title: 'Opções',
-            tabBarIcon: ({ color }) => <FontAwesome5 name="bars" size={28} color="black" />,
           }}
         />
       </Tabs>
