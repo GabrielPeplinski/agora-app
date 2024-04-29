@@ -31,10 +31,6 @@ const MySolicitationsTable = () => {
 
         <ScrollView>
           <SolicitationCard />
-          <SolicitationCard />
-          <SolicitationCard />
-          <SolicitationCard />
-          <SolicitationCard />
         </ScrollView>
       </SafeAreaView>
 
