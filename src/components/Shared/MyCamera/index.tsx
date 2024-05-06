@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Camera } from 'expo-camera';
+import { Camera, CameraType } from 'expo-camera';
 import { router } from 'expo-router';
 import { errorToast } from '@/utils/use-toast';
-import { View, Image, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Image, StyleSheet, View } from 'react-native';
+import { FAB } from 'react-native-paper';
 
 const MyCamera = () => {
   const cameraRef = useRef<Camera>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<null | boolean>(null);
   const [photoUri, setPhotoUri] = useState<string>();
+  const [cameraType, setCameraType] = useState(CameraType.back);
 
   useEffect(() => {
     (async () => {
@@ -44,6 +45,14 @@ const MyCamera = () => {
     setPhotoUri(undefined);
   }
 
+  const toggleCamera = () => {
+    setCameraType(
+      cameraType === CameraType.back
+        ? CameraType.front
+        : CameraType.back
+    );
+  }
+
   return (
     <View style={styles.cameraContainer}>
       {photoUri ? (
@@ -52,15 +61,29 @@ const MyCamera = () => {
         <Camera
           ref={cameraRef}
           style={{flex:1}}
+          type={cameraType}
         />
       )}
+      <View style={styles.fabContainer}>
+        <FAB style={styles.fab} icon="camera" onPress={takePicture} />
+        <FAB style={styles.fab} icon="delete" onPress={clearPicture} />
+        <FAB style={styles.fab} icon="camera-switch" onPress={toggleCamera} />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   cameraContainer: {
-   flex: 1,
+    flex: 1,
+  },
+  fabContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  fab: {
+    margin: 10,
   },
 });
 
