@@ -3,7 +3,6 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Appbar, Menu, Text } from 'react-native-paper';
 import { useAuthStore } from '@/src/stores/authStore';
 import LoginForm from '@/src/components/Account/LoginForm';
-import { logout } from '@/src/services/api/AuthService';
 import { successToast } from '@/utils/use-toast';
 import MySolicitationsTable from '@/src/components/Account/MySolicitationsTable';
 import ContainerBaseStyle from '@/app/style';
@@ -12,9 +11,10 @@ import { router } from 'expo-router';
 export default function AuthScreen() {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const token = useAuthStore(state => state.token);
+  const logout = useAuthStore(state => state.logout);
 
   const handleLogout = async () => {
-    await logout();
+    logout();
     successToast({ title: 'Sessão encerrada!' });
   };
 

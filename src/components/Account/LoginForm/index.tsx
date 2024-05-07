@@ -4,22 +4,14 @@ import { Button, Text, TextInput } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import LoginValidation from '@/src/validations/LoginValidation';
 import { View } from '@/src/components/Themed';
-import { login } from '@/src/services/api/AuthService';
 import PasswordInput from '@/src/components/Account/PasswordInput';
-import { successToast } from '@/utils/use-toast';
+import { useAuthStore } from '@/src/stores/authStore';
 
 const LoginForm = () => {
+  const login = useAuthStore(state => state.login);
   const handleLogin = async (values: any) => {
     try {
-      const response = await login(values);
-
-      // @ts-ignore
-      if (response.status === 201) {
-        successToast({ title: 'Sessão iniciada!Bem-vindo!' })
-      }
-
-      // @ts-ignore
-      console.log(response.data)
+      login(values);
     } catch (error: any) {
       console.log(error.stack);
     }

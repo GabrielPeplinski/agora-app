@@ -9,6 +9,7 @@ import { useColorScheme } from '@/src/components/useColorScheme';
 import { PaperProvider } from 'react-native-paper';
 import { LocationCoordinatesContextProvider } from '@/src/context/LocationCoordenatesContextProvider';
 import { Toaster } from 'burnt/web';
+import { useAuthStore } from '@/src/stores/authStore';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,6 +50,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  useAuthStore.getState().init();
 
   return (
     <LocationCoordinatesContextProvider>
