@@ -4,27 +4,36 @@ import { FAB } from 'react-native-paper';
 import { View } from '@/src/components/Themed';
 
 interface CreateSolicitationButtonProps {
-  onClick: () => any
+  onClick: () => void
 }
 
-const CreateSolicitationButton = (props: CreateSolicitationButtonProps) => (
-  <View>
-    <FAB
-      icon={'plus'}
-      style={styles.fab}
-      label="Nova Solicitação"
-      onPress={props.onClick()}
-    />
-  </View>
-);
+const CreateSolicitationButton = (props: CreateSolicitationButtonProps) => {
+  return (
+    <View style={styles.container}>
+      <FAB
+        icon={'plus'}
+        style={styles.button}
+        label="Nova Solicitação"
+        onPress={props.onClick}
+      />
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-  fab: {
-    width: '40%',
+  container: {
+    position: 'absolute',
+    alignItems: 'center',
+    bottom: 20,
+    width: '100%', // ocupar toda a largura do contêiner pai
+  },
+  button: {
+    width: '60%', // 60% da largura do contêiner pai
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
   },
 });
+
 
 export default CreateSolicitationButton;

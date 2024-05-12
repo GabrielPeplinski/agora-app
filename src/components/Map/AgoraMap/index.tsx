@@ -1,4 +1,4 @@
-import { View, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import React from 'react';
 import { ExpoLeaflet, MapLayer, MapMarker } from 'expo-leaflet';
 import { useLocationCoordinates } from '@/src/context/LocationCoordenatesContextProvider';
@@ -20,10 +20,6 @@ const AgoraMap = () => {
 
   // const { data, refreshData } = useCollection<Troubles>('troubles');
   //
-  // useEffect(() => {
-  //   refreshData();
-  // }, [modal.modalVisible]);
-  //
   // const troublesList = data.map((item): MapMarker => {
   //   const icon = item.is_solved ? TroubleIconEnum.SOLVED : TroubleIconEnum.NOT_SOLVED;
   //
@@ -41,19 +37,22 @@ const AgoraMap = () => {
       id: '1',
       title: 'Você está aqui!',
       position: { lat: latitude, lng: longitude },
-      icon: "<div>👤</div>",
+      icon: '<div>👤</div>',
       size: [24, 24],
     },
   ];
 
-  // const markers = userLocation.concat(troublesList);
+  // const markers = array.concat(userLocation);
 
   return (
-    <View style={{ flex: 1, width: '100%' }}>
+    <View style={styles.container}>
       <ExpoLeaflet
         mapLayers={[mapLayer]}
-        // mapMarkers={markers}
-        mapCenterPosition={{ lat: latitude, lng: longitude }}
+        mapMarkers={userLocation}
+        mapCenterPosition={{
+          lat: latitude,
+          lng: longitude,
+        }}
         maxZoom={20}
         zoom={15}
         loadingIndicator={() => <ActivityIndicator />}
@@ -67,5 +66,13 @@ const AgoraMap = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+});
 
 export default AgoraMap;

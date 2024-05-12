@@ -1,18 +1,21 @@
 import * as React from 'react';
 import { View } from '@/src/components/Themed';
 import ContainerBaseStyle from '@/app/style';
-import Navbar from '@/src/components/Shared/Navbar';
 import AgoraMap from '@/src/components/Map/AgoraMap';
+import CreateSolicitationButton from '@/src/components/Map/CreateSolicitationButton';
+import SolicitationCard from '@/src/components/Solicitation/SolicitationCard';
 
 export default function TabOneScreen() {
-
   return (
     <>
       {/*<Navbar />*/}
-      <AgoraMap/>
-      {/*<View style={ContainerBaseStyle.container}>*/}
-
-      {/*</View>*/}
+      <View style={ContainerBaseStyle.container}>
+        <SolicitationCard />
+        <AgoraMap />
+        <CreateSolicitationButton
+          onClick={() => console.log('opaa')}
+        />
+      </View>
     </>
   );
 }
