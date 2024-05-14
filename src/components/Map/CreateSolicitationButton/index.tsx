@@ -1,39 +1,43 @@
-import * as React from 'react';
-import { StyleSheet } from 'react-native';
-import { FAB } from 'react-native-paper';
-import { View } from '@/src/components/Themed';
+import React from 'react';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
-interface CreateSolicitationButtonProps {
-  onClick: () => void
-}
+const CreateSolicitationButton = () => {
+  const handleRedirect = () => {
+    router.push('/solicitations/create');
+  };
 
-const CreateSolicitationButton = (props: CreateSolicitationButtonProps) => {
   return (
-    <View style={styles.container}>
-      <FAB
-        icon={'plus'}
-        style={styles.button}
-        label="Nova Solicitação"
-        onPress={props.onClick}
-      />
+    <View style={styles.floatContainer}>
+      <>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleRedirect}
+        >
+          <FontAwesome name="plus" size={40} color="black" />
+        </TouchableOpacity>
+      </>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
+  floatContainer: {
     position: 'absolute',
+    bottom: 40,
+    right: 8,
     alignItems: 'center',
-    bottom: 20,
-    width: '100%', // ocupar toda a largura do contêiner pai
   },
   button: {
-    width: '60%', // 60% da largura do contêiner pai
-    height: 60,
-    justifyContent: 'center',
+    backgroundColor: 'gray',
+    borderRadius: 24,
+    width: 55,
+    height: 55,
     alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
   },
 });
-
 
 export default CreateSolicitationButton;
