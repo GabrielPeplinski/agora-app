@@ -1,11 +1,10 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
-import { useColorScheme } from '@/src/components/useColorScheme';
 import { PaperProvider } from 'react-native-paper';
 import { LocationCoordinatesContextProvider } from '@/src/context/LocationCoordenatesContextProvider';
 import { Toaster } from 'burnt/web';
@@ -49,19 +48,19 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
   useAuthStore.getState().init();
 
   return (
     <LocationCoordinatesContextProvider>
       <PaperProvider>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(tabs)"
+              options={{ headerShown: false }}
+            />
           </Stack>
-        </ThemeProvider>
       </PaperProvider>
-      <Toaster/>
+      <Toaster />
     </LocationCoordinatesContextProvider>
   );
 }

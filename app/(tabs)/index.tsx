@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { View } from '@/src/components/Themed';
 import ContainerBaseStyle from '@/app/style';
-import Navbar from '@/src/components/Shared/Navbar';
+import AgoraMap from '@/src/components/Map/AgoraMap';
+import CreateSolicitationButton from '@/src/components/Map/CreateSolicitationButton';
 
 export default function TabOneScreen() {
-
   return (
     <>
-      <Navbar />
       <View style={ContainerBaseStyle.container}>
-
+        <AgoraMap />
+        <CreateSolicitationButton />
       </View>
     </>
   );
