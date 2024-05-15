@@ -1,13 +1,14 @@
 import React from 'react';
 import { View } from '@/src/components/Themed';
-import { Text } from 'react-native-paper';
+import MyCamera from '@/src/components/Shared/MyCamera';
+import ContainerBaseStyle from '@/app/style';
 
 export default function DashboardScreen() {
   return (
-    <View>
-      <Text>
-        Dashboard
-      </Text>
-    </View>
-  )
+    <>
+      <View style={ContainerBaseStyle.container}>
+        <MyCamera />
+      </View>
+    </>
+  );
 }

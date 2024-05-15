@@ -15,7 +15,7 @@ const CreateSolicitationButton = () => {
           style={styles.button}
           onPress={handleRedirect}
         >
-          <FontAwesome name="plus" size={40} color="black" />
+          <FontAwesome name="plus" size={40} color="white" />
         </TouchableOpacity>
       </>
     </View>
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: 'gray',
+    backgroundColor: '#004aad',
     borderRadius: 24,
     width: 55,
     height: 55,
