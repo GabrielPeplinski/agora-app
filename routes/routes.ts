@@ -5,6 +5,9 @@ const apiRoutes = {
     logout: 'auth/logout',
     me: 'auth/me'
   },
+  address: {
+    get: 'client/address',
+  }
 }
 
 export default apiRoutes;
