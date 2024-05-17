@@ -1,9 +1,11 @@
-import { Formik, FormikValues } from 'formik';
+import { Formik } from 'formik';
 import React from 'react';
-import { StyleSheet, Alert, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button, TextInput, Text } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import AddressValidation from '@/src/validations/AddressValidation';
+import { createOrUpdateAddress } from '@/src/services/api/AddressService';
+import { errorToast, successToast } from '@/utils/use-toast';
 
 const states = [
   { label: 'Acre', value: 'AC' },
@@ -32,20 +34,21 @@ const states = [
   { label: 'Santa Catarina', value: 'SC' },
   { label: 'São Paulo', value: 'SP' },
   { label: 'Sergipe', value: 'SE' },
-  { label: 'Tocantins', value: 'TO' }
+  { label: 'Tocantins', value: 'TO' },
 ];
 
 const AddressForm = () => {
-  const handleRegister = async (values: FormikValues) => {
+  const handleRegister = async (values: AddressInterface) => {
     try {
-      console.log(values);
+      await createOrUpdateAddress(values);
+      successToast({ title: 'Endereço atualizado com sucesso!' });
     } catch (error) {
-      Alert.alert('Ocorreu um erro ao realizar seu cadastro!');
+      errorToast({title: 'Ocorreu um erro ao atualizar o endereço!'})
     }
   };
 
   const filteredStates = states.filter(state =>
-    state.label.toLowerCase()
+    state.label.toLowerCase(),
   );
 
   return (
