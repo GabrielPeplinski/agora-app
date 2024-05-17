@@ -1,91 +1,119 @@
-import { Formik } from 'formik';
-import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { View } from '@/src/components/Themed';
-
+import { Formik, FormikValues } from 'formik';
+import React from 'react';
+import { StyleSheet, Alert, View } from 'react-native';
 import { Button, TextInput, Text } from 'react-native-paper';
-import { Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
-const AddressForm = (props: AddressInterface) => {
-  const [ isDisabled, setIdDisabled] = useState(true)
-  const handleRegister = async (values: any) => {
+const states = [
+  { label: 'Acre', value: 'AC' },
+  { label: 'Alagoas', value: 'AL' },
+  { label: 'Amapá', value: 'AP' },
+  { label: 'Amazonas', value: 'AM' },
+  { label: 'Bahia', value: 'BA' },
+  { label: 'Ceará', value: 'CE' },
+  { label: 'Distrito Federal', value: 'DF' },
+  { label: 'Espírito Santo', value: 'ES' },
+  { label: 'Goiás', value: 'GO' },
+  { label: 'Maranhão', value: 'MA' },
+  { label: 'Mato Grosso', value: 'MT' },
+  { label: 'Mato Grosso do Sul', value: 'MS' },
+  { label: 'Minas Gerais', value: 'MG' },
+  { label: 'Pará', value: 'PA' },
+  { label: 'Paraíba', value: 'PB' },
+  { label: 'Paraná', value: 'PR' },
+  { label: 'Pernambuco', value: 'PE' },
+  { label: 'Piauí', value: 'PI' },
+  { label: 'Rio de Janeiro', value: 'RJ' },
+  { label: 'Rio Grande do Norte', value: 'RN' },
+  { label: 'Rio Grande do Sul', value: 'RS' },
+  { label: 'Rondônia', value: 'RO' },
+  { label: 'Roraima', value: 'RR' },
+  { label: 'Santa Catarina', value: 'SC' },
+  { label: 'São Paulo', value: 'SP' },
+  { label: 'Sergipe', value: 'SE' },
+  { label: 'Tocantins', value: 'TO' }
+];
+
+const AddressForm = () => {
+  const handleRegister = async (values: FormikValues) => {
     try {
       console.log(values);
-
-    } catch (error: any) {
+    } catch (error) {
       Alert.alert('Ocorreu um erro ao realizar seu cadastro!');
     }
   };
 
+  const filteredStates = states.filter(state =>
+    state.label.toLowerCase()
+  );
+
   return (
     <View style={styles.container}>
-      <>
-        <Formik
-          initialValues={{
-            zipCode: props.zipCode,
-            cityName: props.cityName,
-            neighborhood: props.neighborhood,
-            stateAbbreviation: props.stateAbbreviation,
-          }}
-          // validationSchema={RegisterValidation}
-          onSubmit={(values) => handleRegister(values)}
-        >
-          {({ handleChange, handleSubmit, values, errors }) => (
-            <View style={styles.form}>
-              <TextInput
-                style={styles.space}
-                label="CEP"
-                placeholder="Seu cep"
-                value={values.zipCode}
-                onChangeText={handleChange('zipCode')}
-              />
-              {errors.zipCode && <Text>{errors.zipCode}</Text>}
+      <Formik
+        initialValues={{
+          zipCode: '',
+          cityName: '',
+          neighborhood: '',
+          stateAbbreviation: '',
+        }}
+        onSubmit={(values) => handleRegister(values)}
+      >
+        {({ handleChange, handleSubmit, setFieldValue, values, errors }) => (
+          <View style={styles.form}>
+            <TextInput
+              style={styles.space}
+              label="CEP"
+              placeholder="Seu cep"
+              value={values.zipCode}
+              onChangeText={handleChange('zipCode')}
+            />
+            {errors.zipCode && <Text>{errors.zipCode}</Text>}
 
-              <TextInput
-                style={styles.space}
-                label="Cidade"
-                placeholder="Cidade onde mora"
-                value={values.cityName}
-                secureTextEntry={true}
-                onChangeText={handleChange('cityName')}
-                disabled={isDisabled}
-              />
-              {errors.cityName && <Text>{errors.cityName}</Text>}
+            <TextInput
+              style={styles.space}
+              label="Cidade"
+              placeholder="Cidade onde mora"
+              value={values.cityName}
+              onChangeText={handleChange('cityName')}
+            />
+            {errors.cityName && <Text>{errors.cityName}</Text>}
 
-              <TextInput
-                style={styles.space}
-                label="Bairro"
-                placeholder="Bairro onde mora"
-                value={values.neighborhood}
-                onChangeText={handleChange('neighborhood')}
-                disabled={isDisabled}
-              />
-              {errors.cityName && <Text>{errors.cityName}</Text>}
+            <TextInput
+              style={styles.space}
+              label="Bairro"
+              placeholder="Bairro onde mora"
+              value={values.neighborhood}
+              onChangeText={handleChange('neighborhood')}
+            />
+            {errors.neighborhood && <Text>{errors.neighborhood}</Text>}
 
-              <TextInput
-                style={styles.space}
-                label="Estado"
-                placeholder="Estado onde mora"
-                value={values.stateAbbreviation}
-                secureTextEntry={true}
-                onChangeText={handleChange('stateAbbreviation')}
-              />
-              {errors.stateAbbreviation && <Text>{errors.stateAbbreviation}</Text>}
+            <Picker
+              selectedValue={values.stateAbbreviation}
+              style={styles.picker}
+              onValueChange={(itemValue) =>
+                setFieldValue('stateAbbreviation', itemValue)
+              }
+            >
+              <Picker.Item label="Selecione o estado" value="" />
+              {filteredStates.map((state) => (
+                <Picker.Item key={state.value} label={state.label} value={state.value} />
+              ))}
+            </Picker>
+            {errors.stateAbbreviation && <Text>{errors.stateAbbreviation}</Text>}
 
-              <Button  style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'}>
-                Criar
-              </Button>
-            </View>
-          )}
-        </Formik>
-      </>
+            <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'}>
+              Atualizar Endereço
+            </Button>
+          </View>
+        )}
+      </Formik>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   space: {
-    marginTop: 10
+    marginTop: 10,
   },
   container: {
     flexDirection: 'column',
@@ -93,10 +121,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   form: {
     width: '80%',
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    marginTop: 10,
   },
 });
 

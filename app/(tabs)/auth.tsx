@@ -18,6 +18,11 @@ export default function AuthScreen() {
     successToast({ title: 'Sessão encerrada!' });
   };
 
+  const goToAddressPage = () => {
+    setIsMenuVisible(false)
+    router.push('/address/')
+  }
+
   const openMenu = () => setIsMenuVisible(true);
   const closeMenu = () => setIsMenuVisible(false);
 
@@ -37,7 +42,7 @@ export default function AuthScreen() {
             >
               <Menu.Item
                 leadingIcon="home"
-                onPress={() => {}}
+                onPress={goToAddressPage}
                 title="Seu endereço"
               />
               <Menu.Item
