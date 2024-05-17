@@ -7,7 +7,12 @@ import AddressValidation from '@/src/validations/AddressValidation';
 import { createOrUpdateAddress, getAddress } from '@/src/services/api/AddressService';
 import { errorToast, successToast } from '@/utils/use-toast';
 
-const states = [
+interface StatesData {
+  label: string;
+  value: string;
+}
+
+const states: StatesData[] = [
   { label: 'Acre', value: 'AC' },
   { label: 'Alagoas', value: 'AL' },
   { label: 'Amapá', value: 'AP' },
@@ -76,7 +81,7 @@ const AddressForm = () => {
         enableReinitialize
         initialValues={initialValues}
         validationSchema={AddressValidation}
-        onSubmit={(values) => handleRegister(values)}
+        onSubmit={(values: AddressInterface) => handleRegister(values)}
       >
         {({ handleChange, handleSubmit, setFieldValue, values, errors }) => (
           <View style={styles.form}>
