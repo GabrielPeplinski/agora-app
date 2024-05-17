@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, Alert, View } from 'react-native';
 import { Button, TextInput, Text } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
+import AddressValidation from '@/src/validations/AddressValidation';
 
 const states = [
   { label: 'Acre', value: 'AC' },
@@ -56,6 +57,7 @@ const AddressForm = () => {
           neighborhood: '',
           stateAbbreviation: '',
         }}
+        validationSchema={AddressValidation}
         onSubmit={(values) => handleRegister(values)}
       >
         {({ handleChange, handleSubmit, setFieldValue, values, errors }) => (
