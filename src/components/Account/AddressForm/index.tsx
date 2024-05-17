@@ -1,10 +1,10 @@
 import { Formik } from 'formik';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, TextInput, Text } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import AddressValidation from '@/src/validations/AddressValidation';
-import { createOrUpdateAddress } from '@/src/services/api/AddressService';
+import { createOrUpdateAddress, getAddress } from '@/src/services/api/AddressService';
 import { errorToast, successToast } from '@/utils/use-toast';
 
 const states = [
@@ -38,28 +38,43 @@ const states = [
 ];
 
 const AddressForm = () => {
+  const [initialValues, setInitialValues] = useState({
+    zipCode: '',
+    cityName: '',
+    neighborhood: '',
+    stateAbbreviation: '',
+  });
+
+  useEffect(() => {
+    const fetchAddress = async () => {
+      const addressData = await getAddress();
+
+      if (addressData) {
+        setInitialValues({
+          zipCode: addressData.zipCode || '',
+          cityName: addressData.cityName || '',
+          neighborhood: addressData.neighborhood || '',
+          stateAbbreviation: addressData.stateAbbreviation || '',
+        });
+      }
+    };
+    fetchAddress();
+  }, []);
+
   const handleRegister = async (values: AddressInterface) => {
     try {
       await createOrUpdateAddress(values);
       successToast({ title: 'Endereço atualizado com sucesso!' });
     } catch (error) {
-      errorToast({title: 'Ocorreu um erro ao atualizar o endereço!'})
+      errorToast({ title: 'Ocorreu um erro ao atualizar o endereço!' });
     }
   };
-
-  const filteredStates = states.filter(state =>
-    state.label.toLowerCase(),
-  );
 
   return (
     <View style={styles.container}>
       <Formik
-        initialValues={{
-          zipCode: '',
-          cityName: '',
-          neighborhood: '',
-          stateAbbreviation: '',
-        }}
+        enableReinitialize
+        initialValues={initialValues}
         validationSchema={AddressValidation}
         onSubmit={(values) => handleRegister(values)}
       >
@@ -100,13 +115,13 @@ const AddressForm = () => {
               }
             >
               <Picker.Item label="Selecione o estado" value="" />
-              {filteredStates.map((state) => (
+              {states.map((state) => (
                 <Picker.Item key={state.value} label={state.label} value={state.value} />
               ))}
             </Picker>
             {errors.stateAbbreviation && <Text>{errors.stateAbbreviation}</Text>}
 
-            <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'}>
+            <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode="contained">
               Atualizar Endereço
             </Button>
           </View>

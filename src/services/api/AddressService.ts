@@ -6,7 +6,7 @@ export const getAddress = async (): Promise<AddressInterface | null> => {
     const response = await axiosInstance()
       .get(apiRoutes.address.get);
 
-    return response.data as AddressInterface;
+    return response.data.data as AddressInterface;
   } catch (error: any) {
     console.log(error);
     return null;
