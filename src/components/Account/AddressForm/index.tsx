@@ -6,6 +6,7 @@ import { Picker } from '@react-native-picker/picker';
 import AddressValidation from '@/src/validations/AddressValidation';
 import { createOrUpdateAddress, getAddress } from '@/src/services/api/AddressService';
 import { errorToast, successToast } from '@/utils/use-toast';
+import { TextInputMask } from 'react-native-masked-text';
 
 interface StatesData {
   label: string;
@@ -68,7 +69,11 @@ const AddressForm = () => {
 
   const handleRegister = async (values: AddressInterface) => {
     try {
-      await createOrUpdateAddress(values);
+      const formattedValues = {
+        ...values,
+        zipCode: values.zipCode.replace('-', ''),
+      };
+      await createOrUpdateAddress(formattedValues);
       successToast({ title: 'Endereço atualizado com sucesso!' });
     } catch (error) {
       errorToast({ title: 'Ocorreu um erro ao atualizar o endereço!' });
@@ -85,12 +90,19 @@ const AddressForm = () => {
       >
         {({ handleChange, handleSubmit, setFieldValue, values, errors }) => (
           <View style={styles.form}>
-            <TextInput
-              style={styles.space}
-              label="CEP"
-              placeholder="Seu cep"
+            <TextInputMask
+              type={'custom'}
+              options={{
+                mask: '99999-999',
+              }}
+              customTextInput={TextInput}
+              customTextInputProps={{
+                style: styles.space,
+                label: 'CEP',
+                placeholder: 'Seu cep',
+              }}
               value={values.zipCode}
-              onChangeText={handleChange('zipCode')}
+              onChangeText={(text) => setFieldValue('zipCode', text)}
             />
             {errors.zipCode && <Text>{errors.zipCode}</Text>}
 
