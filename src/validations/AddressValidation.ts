@@ -33,8 +33,9 @@ const brazilianStates: string[] = [
 const LoginValidation = Yup.object().shape({
   zipCode: Yup.string()
     .required('Campo CEP é obrigatório')
-    .min(9, 'CEP inválido')
+    .min(8, 'CEP inválido')
     .max(9, 'CEP inválido')
+    .matches(/^[0-9]{5}-?[0-9]{3}$/, 'CEP inválido')
     .trim(),
 
   cityName: Yup.string()
