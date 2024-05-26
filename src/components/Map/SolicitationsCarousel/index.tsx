@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Dimensions, Text, View, StyleSheet, Image, TouchableOpacity, Linking, ScrollView } from 'react-native';
+import { IconButton } from 'react-native-paper';
 
 interface CarouselItem {
   title: string;
@@ -63,9 +64,17 @@ const SolicitationCarousel: React.FC = () => {
                 source={{ uri: item.image }}
                 resizeMode="cover"
               />
-              <Text style={styles.text}>
-                {item.title}
-              </Text>
+              <View style={styles.overlay}>
+                <Text style={styles.text}>
+                  {item.title}
+                </Text>
+                <IconButton
+                  icon="thumb-up-outline"
+                  size={24}
+                  style={styles.iconButton}
+                  onPress={() => console.log('Curtiu')}
+                />
+              </View>
             </TouchableOpacity>
           </View>
         ))}
@@ -78,17 +87,29 @@ const styles = StyleSheet.create({
   carouselItem: {
     flex: 1,
     borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   image: {
     width: '100%',
-    height: '80%',
+    height: '100%',
+  },
+  overlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   text: {
     textAlign: 'center',
     fontSize: 20,
-    marginTop: 10,
+    color: '#ffffff',
+  },
+  iconButton: {
+    marginBottom: 10,
   },
 });
 
