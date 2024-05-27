@@ -3,8 +3,6 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
 import { Foundation } from '@expo/vector-icons';
 
-import { useClientOnlyValue } from '@/src/components/useClientOnlyValue';
-
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
@@ -18,7 +16,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: '#004aad',
         tabBarInactiveTintColor: 'black',
-        headerShown: useClientOnlyValue(false, true),
+        headerShown: true
       }}
     >
       <Tabs.Screen
