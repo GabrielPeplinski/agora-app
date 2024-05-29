@@ -2,10 +2,18 @@ import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useAuthStore } from '@/src/stores/authStore';
+import { errorToast } from '@/utils/use-toast';
 
 const CreateSolicitationButton = () => {
+  const token = useAuthStore(state => state.token);
+
   const handleRedirect = () => {
-    router.push('/solicitations/create');
+    if (token) {
+      router.push('/solicitations/create');
+    } else {
+      errorToast({ title: 'Você precisa estar logado para criar uma solicitação!' });
+    }
   };
 
   return (

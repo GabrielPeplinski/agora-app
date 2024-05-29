@@ -6,26 +6,45 @@ import { Picker } from '@react-native-picker/picker';
 import SmallLoader from '@/src/components/Shared/SmallLoader';
 import { getSolicitationCategories } from '@/src/services/api/SolicitationCategoryService';
 import SolicitationCategoryInterface from '@/src/interfaces/SolicitationCategoryInterface';
+import { useLocationCoordinates } from '@/src/context/LocationCoordenatesContextProvider';
+import { router } from 'expo-router';
 
 interface FormFirstPageInterface {
   title: string;
   description: string;
   solicitationCategoryId: number;
+  latitudeCoordinates: string;
+  longitudeCoordinates: string;
 }
 
 const FirstPageCreateSolicitationForm = () => {
-  const [values, setValues] = useState<FormFirstPageInterface>({
-    title: '',
-    description: '',
-    solicitationCategoryId: 0,
-  });
-
   const [isLoadingCategories, setLoadingCategories] = React.useState(true);
   const [categories, setCategories] = useState<SolicitationCategoryInterface[]>([]);
+  const { latitude, longitude } = useLocationCoordinates();
 
   const handleChange = (field: keyof FormFirstPageInterface) => (text: string) => {
     setValues((prevValues) => ({ ...prevValues, [field]: text }));
   };
+
+  const [values, setValues] = useState<FormFirstPageInterface>({
+    title: '',
+    description: '',
+    solicitationCategoryId: 0,
+    latitudeCoordinates: '',
+    longitudeCoordinates: ''
+  });
+
+  useEffect(() => {
+    if (latitude == null || longitude == null) {
+      router.back();
+    } else {
+      setValues((prevValues) => ({
+        ...prevValues,
+        latitudeCoordinates: latitude.toString(),
+        longitudeCoordinates: longitude.toString(),
+      }));
+    }
+  }, [latitude, longitude]);
 
   useEffect(() => {
     getSolicitationCategories().then((response) => {
