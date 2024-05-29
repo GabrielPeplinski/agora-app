@@ -2,8 +2,9 @@ import React from 'react';
 import { View } from '@/src/components/Themed';
 import { Button } from 'react-native-paper';
 import ContainerBaseStyle from '@/app/style';
-import FirstPageCreateSolicitationForm from '@/src/components/Solicitation/FirstPageCreateSolicitationForm';
 import { StyleSheet } from 'react-native';
+import FirstPageCreateSolicitationForm from '@/src/components/Solicitation/FirstPageCreateSolicitationForm';
+import SecondPageCreateSolicitationForm from '@/src/components/Solicitation/SecondPageCreateSolicitationForm';
 
 export default function CreateSolicitationsScreen() {
   const [page, setPage] = React.useState(0);
@@ -21,7 +22,7 @@ export default function CreateSolicitationsScreen() {
       case 0:
         return <FirstPageCreateSolicitationForm />;
       case 1:
-        return <FirstPageCreateSolicitationForm />;
+        return <SecondPageCreateSolicitationForm />;
       case 2:
         return <FirstPageCreateSolicitationForm />;
       default:
