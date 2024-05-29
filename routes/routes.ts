@@ -9,7 +9,7 @@ const apiRoutes = {
     get: 'client/address',
   },
   solicitationCategory: {
-    get: 'select/solicitation-categories',
+    get: 'selects/solicitation-categories',
   }
 }
 

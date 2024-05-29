@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import ContainerBaseStyle from '@/app/style';
 import { Picker } from '@react-native-picker/picker';
 import SmallLoader from '@/src/components/Shared/SmallLoader';
 import { getSolicitationCategories } from '@/src/services/api/SolicitationCategoryService';
+import SolicitationCategoryInterface from '@/src/interfaces/SolicitationCategoryInterface';
 
 interface FormFirstPageInterface {
   title: string;
@@ -19,19 +20,19 @@ const FirstPageCreateSolicitationForm = () => {
     solicitationCategoryId: 0,
   });
 
-  const [isLoadingCategories, setLoadingCategories] = React.useState(false);
+  const [isLoadingCategories, setLoadingCategories] = React.useState(true);
+  const [categories, setCategories] = useState<SolicitationCategoryInterface[]>([]);
 
   const handleChange = (field: keyof FormFirstPageInterface) => (text: string) => {
     setValues((prevValues) => ({ ...prevValues, [field]: text }));
   };
 
-  const categories = [
-    {
-      id: 1,
-      title: 'exemplo',
-      description: 'uma descição mais complexa',
-    },
-  ];
+  useEffect(() => {
+    getSolicitationCategories().then((response) => {
+      setCategories(response ? response : []);
+      setLoadingCategories(false);
+    });
+  }, []);
 
   return (
     <View style={[ContainerBaseStyle.container, styles.container]}>
@@ -75,7 +76,7 @@ const FirstPageCreateSolicitationForm = () => {
               {categories.map((category) => (
                 <Picker.Item
                   key={category.id}
-                  label={category.title}
+                  label={category.name}
                   value={category.id}
                 />
               ))}

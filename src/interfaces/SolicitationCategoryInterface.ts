@@ -1,6 +1,6 @@
 interface SolicitationCategoryInterface {
   id: number;
-  title: string;
+  name: string;
   description: string;
 }
 
