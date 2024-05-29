@@ -7,7 +7,6 @@ export default function DashboardScreen() {
   return (
     <>
       <View style={ContainerBaseStyle.container}>
-        <MyCamera />
       </View>
     </>
   );

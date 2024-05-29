@@ -5,7 +5,11 @@ import { errorToast } from '@/utils/use-toast';
 import { Image, StyleSheet, View } from 'react-native';
 import { FAB } from 'react-native-paper';
 
-const MyCamera = () => {
+interface MyCameraProps {
+  onTakePicture: (uri: string) => void
+}
+
+const MyCamera = (props: MyCameraProps) => {
   const cameraRef = useRef<Camera>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<null | boolean>(null);
   const [photoUri, setPhotoUri] = useState<string>();
@@ -38,6 +42,7 @@ const MyCamera = () => {
 
       const newPicture = await cameraRef.current.takePictureAsync(options);
       setPhotoUri(newPicture.uri);
+      props.onTakePicture(newPicture.uri);
     }
   };
 

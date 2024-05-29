@@ -4,6 +4,7 @@ import ContainerBaseStyle from '@/app/style';
 import AgoraMap from '@/src/components/Map/AgoraMap';
 import CreateSolicitationButton from '@/src/components/Map/CreateSolicitationButton';
 import SolicitationsCarousel from '@/src/components/Map/SolicitationsCarousel';
+import MyCamera from '@/src/components/Shared/MyCamera';
 
 export default function TabOneScreen() {
   return (
