@@ -7,8 +7,6 @@ export const getSolicitationCategories = async (): Promise<SolicitationCategoryI
     const response = await axiosInstance()
       .get(apiRoutes.solicitationCategory.get);
 
-    console.log(response.data.data);
-
     return response.data.data as SolicitationCategoryInterface[];
   } catch (error: any) {
     console.log(error);
