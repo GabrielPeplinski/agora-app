@@ -50,10 +50,6 @@ const LoginForm = () => {
               <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'} disabled={!isValid}>
                 Login
               </Button>
-
-              <Text variant={'titleMedium'} style={{ textDecorationLine: 'line-through', textAlign: 'center' }}>
-                Esqueceu sua senha?
-              </Text>
             </View>
           )}
         </Formik>
