@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Camera, CameraType } from 'expo-camera';
 import { router } from 'expo-router';
 import { errorToast } from '@/utils/use-toast';
-import { Image, StyleSheet, View, Alert } from 'react-native';
+import { Image, StyleSheet, View, Alert, Dimensions } from 'react-native';
 import { FAB } from 'react-native-paper';
 
 interface MyCameraProps {
-  onTakePicture: (uri: string) => void
+  onTakePicture: (uri: string) => void;
 }
+
+const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
 const MyCamera = (props: MyCameraProps) => {
   const cameraRef = useRef<Camera>(null);
@@ -18,7 +20,7 @@ const MyCamera = (props: MyCameraProps) => {
   useEffect(() => {
     (async () => {
       const cameraPermission = await Camera.requestCameraPermissionsAsync();
-      setHasCameraPermission(cameraPermission.status === "granted");
+      setHasCameraPermission(cameraPermission.status === 'granted');
     })();
   }, []);
 
@@ -44,60 +46,60 @@ const MyCamera = (props: MyCameraProps) => {
       setPhotoUri(newPicture.uri);
 
       Alert.alert(
-        "Confirmação para Uso de Foto",
-        "Deseja utilizar esta foto?",
+        'Confirmação para Uso de Foto',
+        'Deseja utilizar esta foto?',
         [
           {
-            text: "Cancelar",
+            text: 'Cancelar',
             onPress: () => clearPicture(),
-            style: "cancel"
+            style: 'cancel',
           },
-          { text: "OK", onPress: () => props.onTakePicture(newPicture.uri) }
-        ]
+          { text: 'OK', onPress: () => props.onTakePicture(newPicture.uri) },
+        ],
       );
     }
   };
 
   const clearPicture = () => {
     setPhotoUri(undefined);
-  }
+  };
 
   const toggleCamera = () => {
     setCameraType(
       cameraType === CameraType.back
         ? CameraType.front
-        : CameraType.back
+        : CameraType.back,
     );
-  }
+  };
 
   return (
     <View style={styles.cameraContainer}>
       {photoUri ? (
-        <Image source={{ uri: photoUri }} style={{flex:1}} />
+        <Image source={{ uri: photoUri }} style={{ flex: 1 }} />
       ) : (
         <Camera
           ref={cameraRef}
-          style={{flex:1}}
+          style={{ flex: 1 }}
           type={cameraType}
         />
       )}
       <View style={styles.fabContainer}>
         <FAB style={styles.fab} icon="camera" onPress={takePicture} />
-        <FAB style={styles.fab} icon="delete" onPress={clearPicture} />
         <FAB style={styles.fab} icon="camera-switch" onPress={toggleCamera} />
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   cameraContainer: {
-    flex: 1,
+    height: screenHeight,
+    width: screenWidth,
   },
   fabContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   fab: {
     margin: 10,

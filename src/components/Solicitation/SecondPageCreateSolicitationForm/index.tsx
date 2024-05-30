@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
 import { Portal, Text } from 'react-native-paper';
-import { AntDesign, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import MyCamera from '@/src/components/Shared/MyCamera';
@@ -52,9 +52,9 @@ const SecondPageCreateSolicitationForm = () => {
         <View>
           <Portal>
             <Modal visible={isCameraModalVisible} onDismiss={hideModal}>
-              <View style={styles.modalContainerStyle}>
+              <View>
                 <TouchableOpacity style={styles.closeButton} onPress={hideModal}>
-                  <AntDesign name="close" size={24} color="black" />
+                  <MaterialCommunityIcons name="close-circle" size={24} color="black" />
                 </TouchableOpacity>
                 <MyCamera onTakePicture={handleTakePicture} />
               </View>
@@ -64,7 +64,7 @@ const SecondPageCreateSolicitationForm = () => {
         </View>
 
         <View style={ContainerBaseStyle.container}>
-          <View>
+          <View style={styles.centeredContent}>
             <Text variant={'titleLarge'}>
               Fotos Reais do Problema
             </Text>
@@ -121,17 +121,11 @@ const SecondPageCreateSolicitationForm = () => {
 };
 
 const styles = StyleSheet.create({
-  modalContainerStyle: {
-    backgroundColor: 'white',
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
-  },
   closeButton: {
     position: 'absolute',
     top: 10,
     right: 10,
+    zIndex: 1,
   },
   centeredText: {
     textAlign: 'center',
@@ -147,6 +141,9 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: 'relative',
+  },
+  centeredContent: {
+    alignItems: 'center',
   },
 });
 
