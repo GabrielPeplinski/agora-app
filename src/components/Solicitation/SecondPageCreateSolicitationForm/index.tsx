@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
 import { Portal, Text } from 'react-native-paper';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import MyCamera from '@/src/components/Shared/MyCamera';
@@ -35,7 +35,16 @@ const SecondPageCreateSolicitationForm = () => {
     hideModal();
   };
 
-  const screenHeight = Dimensions.get('window').height;
+  const handleDeleteImage = (uri: string) => {
+    if (uri === coverImage) {
+      setCoverImage(images[0] || null);
+      setImages(prevImages => prevImages.filter(image => image !== images[0]));
+    } else {
+      setImages(prevImages => prevImages.filter(image => image !== uri));
+    }
+  };
+
+  const screenWidth = Dimensions.get('window').width;
 
   return (
     <>
@@ -63,6 +72,7 @@ const SecondPageCreateSolicitationForm = () => {
             <Text style={styles.centeredText} variant={'titleMedium'}>
               Foto de Capa
             </Text>
+
             {!coverImage ? (
               <View style={styles.centeredIcon}>
                 <TouchableOpacity onPress={showModal}>
@@ -70,31 +80,39 @@ const SecondPageCreateSolicitationForm = () => {
                 </TouchableOpacity>
               </View>
             ) : (
+              <View style={styles.imageContainer}>
+                <Image
+                  source={{ uri: coverImage }}
+                  style={{ width: screenWidth, height: screenWidth }}
+                  resizeMode="contain"
+                />
+                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteImage(coverImage)}>
+                  <MaterialCommunityIcons name="image-remove" size={24} color="black" />
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {images.length > 0 && (
               <>
-                <View>
-                  <Image
-                    source={{ uri: coverImage }}
-                    style={{ width: screenHeight * 0.5, height: screenHeight * 0.5 }}
-                  />
-                </View>
+                <Text style={styles.centeredText} variant={'titleMedium'}>
+                  Imagens Adicionais
+                </Text>
 
-                {images.length > 0 && (
-                  <>
-                    <Text style={styles.centeredText} variant={'titleMedium'}>
-                      Imagens Adicionais
-                    </Text>
-
-                    {images.map((image, index) => (
-                      <Image
-                        key={index}
-                        source={{ uri: image }}
-                        style={{ width: screenHeight * 0.5, height: screenHeight * 0.5 }}
-                      />
-                    ))}
-                  </>
-                )}
+                {images.map((image, index) => (
+                  <View key={index} style={styles.imageContainer}>
+                    <Image
+                      source={{ uri: image }}
+                      style={{ width: screenWidth, height: screenWidth }}
+                      resizeMode="contain"
+                    />
+                    <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteImage(image)}>
+                      <MaterialCommunityIcons name="image-remove" size={24} color="black" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
               </>
             )}
+
           </View>
         </View>
       </ScrollView>
@@ -121,6 +139,14 @@ const styles = StyleSheet.create({
   centeredIcon: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  imageContainer: {
+    position: 'relative',
   },
 });
 
