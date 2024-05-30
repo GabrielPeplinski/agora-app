@@ -84,8 +84,18 @@ const MyCamera = (props: MyCameraProps) => {
         />
       )}
       <View style={styles.fabContainer}>
-        <FAB style={styles.fab} icon="camera" onPress={takePicture} />
-        <FAB style={styles.fab} icon="camera-switch" onPress={toggleCamera} />
+        <FAB
+          style={styles.fab}
+          icon="camera"
+          onPress={takePicture}
+          color={'white'}
+        />
+        <FAB
+          style={styles.fab}
+          icon="camera-switch"
+          onPress={toggleCamera}
+          color={'white'}
+        />
       </View>
     </View>
   );
@@ -103,6 +113,7 @@ const styles = StyleSheet.create({
   },
   fab: {
     margin: 10,
+    backgroundColor: 'rgb(33, 90, 189)',
   },
 });
 

@@ -74,7 +74,7 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
             <Modal visible={isCameraModalVisible} onDismiss={hideModal}>
               <View>
                 <TouchableOpacity style={styles.closeButton} onPress={hideModal}>
-                  <MaterialCommunityIcons name="close-circle" size={24} color="black" />
+                  <MaterialCommunityIcons name="close-circle" size={30} color="red" />
                 </TouchableOpacity>
                 <MyCamera onTakePicture={handleTakePicture} />
               </View>
