@@ -1,14 +1,10 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
 import { Portal, Text } from 'react-native-paper';
 import { AntDesign } from '@expo/vector-icons';
 import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import MyCamera from '@/src/components/Shared/MyCamera';
-
-interface CameraImageInterface {
-  base64: string;
-}
 
 const SecondPageCreateSolicitationForm = () => {
   const [isCameraModalVisible, setIsCameraModalVisible] = React.useState(false);
@@ -39,52 +35,56 @@ const SecondPageCreateSolicitationForm = () => {
     hideModal();
   };
 
+  const screenHeight = Dimensions.get('window').height;
+
   return (
     <>
-      <CameraButton onPress={showModal} />
-      <View>
-        <Portal>
-          <Modal visible={isCameraModalVisible} onDismiss={hideModal}>
-            <View style={styles.modalContainerStyle}>
-              <TouchableOpacity style={styles.closeButton} onPress={hideModal}>
-                <AntDesign name="close" size={24} color="black" />
-              </TouchableOpacity>
-              <MyCamera onTakePicture={handleTakePicture} />
-            </View>
-          </Modal>
-        </Portal>
-      </View>
-
-      <View style={ContainerBaseStyle.container}>
-        <Text variant={'titleLarge'}>
-          Fotos Reais do Problema
-        </Text>
+      <ScrollView>
         <View>
-          {coverImage && (
-            <View>
-              <Text style={styles.centeredText} variant={'titleMedium'}>
-                Foto Principal
-              </Text>
-              <Image
-                source={{ uri: coverImage }}
-                style={{ width: 100, height: 100 }}
-              />
-            </View>
-          )}
-          <Text style={styles.centeredText} variant={'titleMedium'}>
-            Imagens Adicionais
-          </Text>
-          <ScrollView>
+          <Portal>
+            <Modal visible={isCameraModalVisible} onDismiss={hideModal}>
+              <View style={styles.modalContainerStyle}>
+                <TouchableOpacity style={styles.closeButton} onPress={hideModal}>
+                  <AntDesign name="close" size={24} color="black" />
+                </TouchableOpacity>
+                <MyCamera onTakePicture={handleTakePicture} />
+              </View>
+            </Modal>
+            <CameraButton onPress={showModal} />
+          </Portal>
+        </View>
+
+        <View style={ContainerBaseStyle.container}>
+          <View>
+            <Text variant={'titleLarge'}>
+              Fotos Reais do Problema
+            </Text>
+            {coverImage && (
+              <View>
+                <Text style={styles.centeredText} variant={'titleMedium'}>
+                  Foto Principal
+                </Text>
+                <Image
+                  source={{ uri: coverImage }}
+                  style={{ width: screenHeight * 0.5, height: screenHeight * 0.5 }}
+                />
+              </View>
+            )}
+
+            <Text style={styles.centeredText} variant={'titleMedium'}>
+              Imagens Adicionais
+            </Text>
+
             {images.map((image, index) => (
               <Image
                 key={index}
                 source={{ uri: image }}
-                style={{ width: 100, height: 100 }}
+                style={{ width: screenHeight * 0.5, height: screenHeight * 0.5 }}
               />
             ))}
-          </ScrollView>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 };

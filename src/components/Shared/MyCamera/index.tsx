@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Camera, CameraType } from 'expo-camera';
 import { router } from 'expo-router';
 import { errorToast } from '@/utils/use-toast';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View, Alert } from 'react-native';
 import { FAB } from 'react-native-paper';
 
 interface MyCameraProps {
@@ -42,7 +42,19 @@ const MyCamera = (props: MyCameraProps) => {
 
       const newPicture = await cameraRef.current.takePictureAsync(options);
       setPhotoUri(newPicture.uri);
-      props.onTakePicture(newPicture.uri);
+
+      Alert.alert(
+        "Confirmação para Uso de Foto",
+        "Deseja utilizar esta foto?",
+        [
+          {
+            text: "Cancelar",
+            onPress: () => clearPicture(),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => props.onTakePicture(newPicture.uri) }
+        ]
+      );
     }
   };
 
@@ -80,7 +92,7 @@ const MyCamera = (props: MyCameraProps) => {
 
 const styles = StyleSheet.create({
   cameraContainer: {
-    flex: 1,
+    flex: 2,
   },
   fabContainer: {
     flexDirection: 'row',

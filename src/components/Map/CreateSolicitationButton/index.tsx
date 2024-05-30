@@ -9,11 +9,11 @@ const CreateSolicitationButton = () => {
   const token = useAuthStore(state => state.token);
 
   const handleRedirect = () => {
-    if (token) {
+    // if (token) {
       router.push('/solicitations/create');
-    } else {
-      errorToast({ title: 'Você precisa estar logado para criar uma solicitação!' });
-    }
+    // } else {
+    //   errorToast({ title: 'Você precisa estar logado para criar uma solicitação!' });
+    // }
   };
 
   return (
