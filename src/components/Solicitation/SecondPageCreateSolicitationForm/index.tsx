@@ -6,10 +6,25 @@ import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import MyCamera from '@/src/components/Shared/MyCamera';
 
-const SecondPageCreateSolicitationForm = () => {
+interface FormData {
+  title: string;
+  description: string;
+  solicitationCategoryId: number;
+  latitudeCoordinates: string;
+  longitudeCoordinates: string;
+  coverImage: string | null;
+  images: string[];
+}
+
+interface Props {
+  values: FormData;
+  setValues: React.Dispatch<React.SetStateAction<FormData>>;
+}
+
+const screenWidth = Dimensions.get('window').width;
+
+const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }) => {
   const [isCameraModalVisible, setIsCameraModalVisible] = React.useState(false);
-  const [coverImage, setCoverImage] = React.useState<string | null>(null);
-  const [images, setImages] = React.useState<string[]>([]);
 
   const hideModal = () => {
     setIsCameraModalVisible(false);
@@ -20,31 +35,36 @@ const SecondPageCreateSolicitationForm = () => {
   };
 
   useEffect(() => {
-    console.log('coverImage', coverImage);
-    console.log('images', images);
-  }, [coverImage, images]);
+    console.log('coverImage', values.coverImage);
+    console.log('images', values.images);
+  }, [values.coverImage, values.images]);
 
   const handleTakePicture = (uri: string) => {
-
-    if (!coverImage) {
-      setCoverImage(uri);
+    if (!values.coverImage) {
+      setValues((prevValues) => ({ ...prevValues, coverImage: uri }));
     } else {
-      setImages(prevImages => [...prevImages, uri]);
+      setValues((prevValues) => ({ ...prevValues, images: [...prevValues.images, uri] }));
     }
-
     hideModal();
   };
 
   const handleDeleteImage = (uri: string) => {
-    if (uri === coverImage) {
-      setCoverImage(images[0] || null);
-      setImages(prevImages => prevImages.filter(image => image !== images[0]));
+    if (uri === values.coverImage) {
+      const newCoverImage = values.images.length > 0 ? values.images[0] : null;
+      const newImages = newCoverImage ? values.images.slice(1) : values.images;
+
+      setValues((prevValues) => ({
+        ...prevValues,
+        coverImage: newCoverImage,
+        images: newImages,
+      }));
     } else {
-      setImages(prevImages => prevImages.filter(image => image !== uri));
+      setValues((prevValues) => ({
+        ...prevValues,
+        images: prevValues.images.filter((image) => image !== uri),
+      }));
     }
   };
-
-  const screenWidth = Dimensions.get('window').width;
 
   return (
     <>
@@ -65,15 +85,13 @@ const SecondPageCreateSolicitationForm = () => {
 
         <View style={ContainerBaseStyle.container}>
           <View style={styles.centeredContent}>
-            <Text variant={'titleLarge'}>
-              Fotos Reais do Problema
-            </Text>
+            <Text variant={'titleLarge'}>Fotos Reais do Problema</Text>
 
             <Text style={styles.centeredText} variant={'titleMedium'}>
               Foto de Capa
             </Text>
 
-            {!coverImage ? (
+            {!values.coverImage ? (
               <View style={styles.centeredIcon}>
                 <TouchableOpacity onPress={showModal}>
                   <MaterialIcons name="add-photo-alternate" size={160} color="black" />
@@ -82,23 +100,23 @@ const SecondPageCreateSolicitationForm = () => {
             ) : (
               <View style={styles.imageContainer}>
                 <Image
-                  source={{ uri: coverImage }}
+                  source={{ uri: values.coverImage }}
                   style={{ width: screenWidth, height: screenWidth }}
                   resizeMode="contain"
                 />
-                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteImage(coverImage)}>
-                  <MaterialCommunityIcons name="image-remove" size={24} color="black" />
+                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteImage(values.coverImage!)}>
+                  <MaterialCommunityIcons name="image-remove" size={24} color="red" />
                 </TouchableOpacity>
               </View>
             )}
 
-            {images.length > 0 && (
+            {values.images.length > 0 && (
               <>
                 <Text style={styles.centeredText} variant={'titleMedium'}>
                   Imagens Adicionais
                 </Text>
 
-                {images.map((image, index) => (
+                {values.images.map((image, index) => (
                   <View key={index} style={styles.imageContainer}>
                     <Image
                       source={{ uri: image }}
@@ -106,7 +124,7 @@ const SecondPageCreateSolicitationForm = () => {
                       resizeMode="contain"
                     />
                     <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteImage(image)}>
-                      <MaterialCommunityIcons name="image-remove" size={24} color="black" />
+                      <MaterialCommunityIcons name="image-remove" size={24} color="red" />
                     </TouchableOpacity>
                   </View>
                 ))}

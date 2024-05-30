@@ -6,13 +6,35 @@ import { StyleSheet } from 'react-native';
 import FirstPageCreateSolicitationForm from '@/src/components/Solicitation/FirstPageCreateSolicitationForm';
 import SecondPageCreateSolicitationForm from '@/src/components/Solicitation/SecondPageCreateSolicitationForm';
 
+interface FormData {
+  title: string;
+  description: string;
+  solicitationCategoryId: number;
+  latitudeCoordinates: string;
+  longitudeCoordinates: string;
+  coverImage: string | null;
+  images: string[];
+}
+
 export default function CreateSolicitationsScreen() {
   const [page, setPage] = React.useState(0);
-  const maxPageNumber: number = 2;
+  const maxPageNumber = 2;
+
+  const [formData, setFormData] = React.useState<FormData>({
+    title: '',
+    description: '',
+    solicitationCategoryId: 0,
+    latitudeCoordinates: '',
+    longitudeCoordinates: '',
+    coverImage: null,
+    images: []
+  });
 
   function handleSubmit() {
     if (page < maxPageNumber - 1) {
       setPage(page + 1);
+    } else {
+      console.log('Dados do formulário:', formData);
     }
   }
 
@@ -25,11 +47,26 @@ export default function CreateSolicitationsScreen() {
   const conditionalComponent = () => {
     switch (page) {
       case 0:
-        return <FirstPageCreateSolicitationForm />;
+        return (
+          <FirstPageCreateSolicitationForm
+            values={formData}
+            setValues={setFormData}
+          />
+        );
       case 1:
-        return <SecondPageCreateSolicitationForm />;
+        return (
+          <SecondPageCreateSolicitationForm
+            values={formData}
+            setValues={setFormData}
+          />
+        );
       default:
-        return <FirstPageCreateSolicitationForm />;
+        return (
+          <FirstPageCreateSolicitationForm
+            values={formData}
+            setValues={setFormData}
+          />
+        );
     }
   };
 
@@ -39,19 +76,18 @@ export default function CreateSolicitationsScreen() {
       {conditionalComponent()}
 
       <View style={styles.buttonContainer}>
-        {
-          page > 0 &&
+        {page > 0 && (
           <Button
             mode={'contained'}
-            onPress={(e) => handleBack()}
+            onPress={handleBack}
             style={styles.buttonBack}
           >
             Voltar
           </Button>
-        }
+        )}
         <Button
           mode={'contained'}
-          onPress={(e) => handleSubmit()}
+          onPress={handleSubmit}
           style={styles.buttonNext}
         >
           {page === 0 ? 'Próximo' : 'Cadastrar'}

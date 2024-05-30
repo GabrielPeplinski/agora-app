@@ -1,38 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import ContainerBaseStyle from '@/app/style';
 import { Picker } from '@react-native-picker/picker';
 import SmallLoader from '@/src/components/Shared/SmallLoader';
 import { getSolicitationCategories } from '@/src/services/api/SolicitationCategoryService';
-import SolicitationCategoryInterface from '@/src/interfaces/SolicitationCategoryInterface';
 import { useLocationCoordinates } from '@/src/context/LocationCoordenatesContextProvider';
 import { router } from 'expo-router';
+import SolicitationCategoryInterface from '@/src/interfaces/SolicitationCategoryInterface';
 
-interface FormFirstPageInterface {
+interface FormData {
   title: string;
   description: string;
   solicitationCategoryId: number;
   latitudeCoordinates: string;
   longitudeCoordinates: string;
+  coverImage: string | null;
+  images: string[];
 }
 
-const FirstPageCreateSolicitationForm = () => {
+interface Props {
+  values: FormData;
+  setValues: React.Dispatch<React.SetStateAction<FormData>>;
+}
+
+const FirstPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }) => {
   const [isLoadingCategories, setLoadingCategories] = React.useState(true);
-  const [categories, setCategories] = useState<SolicitationCategoryInterface[]>([]);
+  const [categories, setCategories] = React.useState<SolicitationCategoryInterface[]>([]);
   const { latitude, longitude } = useLocationCoordinates();
 
-  const handleChange = (field: keyof FormFirstPageInterface) => (text: string) => {
+  const handleChange = (field: keyof FormData) => (text: string | number) => {
     setValues((prevValues) => ({ ...prevValues, [field]: text }));
   };
-
-  const [values, setValues] = useState<FormFirstPageInterface>({
-    title: '',
-    description: '',
-    solicitationCategoryId: 0,
-    latitudeCoordinates: '',
-    longitudeCoordinates: ''
-  });
 
   useEffect(() => {
     if (latitude == null || longitude == null) {
@@ -55,13 +54,10 @@ const FirstPageCreateSolicitationForm = () => {
 
   return (
     <View style={[ContainerBaseStyle.container, styles.container]}>
-
       <Text variant={'titleLarge'}>
         Informações Básicas
       </Text>
-
       <View style={styles.form}>
-
         <TextInput
           style={styles.space}
           label="Título"
@@ -69,7 +65,6 @@ const FirstPageCreateSolicitationForm = () => {
           value={values.title}
           onChangeText={handleChange('title')}
         />
-
         <TextInput
           style={styles.descriptionInput}
           label="Descrição"
@@ -83,24 +78,22 @@ const FirstPageCreateSolicitationForm = () => {
         {isLoadingCategories ? (
           <SmallLoader />
         ) : (
-          <>
-            <Picker
-              selectedValue={values.solicitationCategoryId}
-              style={styles.picker}
-              onValueChange={(itemValue) =>
-                setValues(prevValues => ({ ...prevValues, solicitationCategoryId: itemValue }))
-              }
-            >
-              <Picker.Item label="Selecione uma categoria" value={0} />
-              {categories.map((category) => (
-                <Picker.Item
-                  key={category.id}
-                  label={category.name}
-                  value={category.id}
-                />
-              ))}
-            </Picker>
-          </>
+          <Picker
+            selectedValue={values.solicitationCategoryId}
+            style={styles.picker}
+            onValueChange={(itemValue) =>
+              setValues((prevValues) => ({ ...prevValues, solicitationCategoryId: itemValue }))
+            }
+          >
+            <Picker.Item label="Selecione uma categoria" value={0} />
+            {categories.map((category) => (
+              <Picker.Item
+                key={category.id}
+                label={category.name}
+                value={category.id}
+              />
+            ))}
+          </Picker>
         )}
 
       </View>
