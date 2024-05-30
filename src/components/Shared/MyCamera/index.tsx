@@ -92,7 +92,7 @@ const MyCamera = (props: MyCameraProps) => {
 
 const styles = StyleSheet.create({
   cameraContainer: {
-    flex: 2,
+    flex: 1,
   },
   fabContainer: {
     flexDirection: 'row',

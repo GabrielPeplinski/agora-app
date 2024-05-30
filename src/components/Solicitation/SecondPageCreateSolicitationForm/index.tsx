@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
 import { Portal, Text } from 'react-native-paper';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import MyCamera from '@/src/components/Shared/MyCamera';
@@ -59,29 +59,42 @@ const SecondPageCreateSolicitationForm = () => {
             <Text variant={'titleLarge'}>
               Fotos Reais do Problema
             </Text>
-            {coverImage && (
-              <View>
-                <Text style={styles.centeredText} variant={'titleMedium'}>
-                  Foto Principal
-                </Text>
-                <Image
-                  source={{ uri: coverImage }}
-                  style={{ width: screenHeight * 0.5, height: screenHeight * 0.5 }}
-                />
-              </View>
-            )}
 
             <Text style={styles.centeredText} variant={'titleMedium'}>
-              Imagens Adicionais
+              Foto de Capa
             </Text>
+            {!coverImage ? (
+              <View style={styles.centeredIcon}>
+                <TouchableOpacity onPress={showModal}>
+                  <MaterialIcons name="add-photo-alternate" size={160} color="black" />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <>
+                <View>
+                  <Image
+                    source={{ uri: coverImage }}
+                    style={{ width: screenHeight * 0.5, height: screenHeight * 0.5 }}
+                  />
+                </View>
 
-            {images.map((image, index) => (
-              <Image
-                key={index}
-                source={{ uri: image }}
-                style={{ width: screenHeight * 0.5, height: screenHeight * 0.5 }}
-              />
-            ))}
+                {images.length > 0 && (
+                  <>
+                    <Text style={styles.centeredText} variant={'titleMedium'}>
+                      Imagens Adicionais
+                    </Text>
+
+                    {images.map((image, index) => (
+                      <Image
+                        key={index}
+                        source={{ uri: image }}
+                        style={{ width: screenHeight * 0.5, height: screenHeight * 0.5 }}
+                      />
+                    ))}
+                  </>
+                )}
+              </>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -104,6 +117,10 @@ const styles = StyleSheet.create({
   },
   centeredText: {
     textAlign: 'center',
+  },
+  centeredIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
