@@ -8,13 +8,18 @@ import SecondPageCreateSolicitationForm from '@/src/components/Solicitation/Seco
 
 export default function CreateSolicitationsScreen() {
   const [page, setPage] = React.useState(0);
+  const maxPageNumber: number = 2;
 
   function handleSubmit() {
-    setPage(page + 1);
+    if (page < maxPageNumber - 1) {
+      setPage(page + 1);
+    }
   }
 
   function handleBack() {
-    setPage(page - 1);
+    if (page > 0) {
+      setPage(page - 1);
+    }
   }
 
   const conditionalComponent = () => {
@@ -23,8 +28,6 @@ export default function CreateSolicitationsScreen() {
         return <FirstPageCreateSolicitationForm />;
       case 1:
         return <SecondPageCreateSolicitationForm />;
-      case 2:
-        return <FirstPageCreateSolicitationForm />;
       default:
         return <FirstPageCreateSolicitationForm />;
     }
@@ -51,7 +54,7 @@ export default function CreateSolicitationsScreen() {
           onPress={(e) => handleSubmit()}
           style={styles.buttonNext}
         >
-          {page === 0 || page === 1 ? 'Próximo' : 'Cadastrar'}
+          {page === 0 ? 'Próximo' : 'Cadastrar'}
         </Button>
       </View>
     </View>
