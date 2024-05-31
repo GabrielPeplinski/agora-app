@@ -10,6 +10,9 @@ const apiRoutes = {
   },
   solicitationCategory: {
     get: 'selects/solicitation-categories',
+  },
+  solicitation: {
+    like: 'client/solicitations/like',
   }
 }
 
