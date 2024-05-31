@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
-import { SegmentedButtons } from 'react-native-paper';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { SegmentedButtons, Text } from 'react-native-paper';
 import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
 import SolicitationCard from '@/src/components/Solicitation/SolicitationCard';
 import { getMySolicitations } from '@/src/services/api/Solicitation/MySolicitationsService';
@@ -11,10 +11,11 @@ const MySolicitationsTable = () => {
   const [statusFilter, setStatusFilter] = React.useState('open');
   const [mySolicitations, setSolicitations] = React.useState<PaginatedSolicitationInterface[] | null | undefined>([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [page, setPage] = React.useState(1);
 
   useEffect(() => {
     const fetchMySolicitations = async () => {
-      const response = await getMySolicitations(1, statusFilter);
+      const response = await getMySolicitations(page, statusFilter);
       setSolicitations(response?.data);
       setIsLoading(false);
     };
@@ -53,12 +54,18 @@ const MySolicitationsTable = () => {
         <ScrollView>
           {isLoading
             ? <SmallLoader />
-            : mySolicitations?.map((solicitation) => (
-              <SolicitationCard
-                key={solicitation.id}
-                solicitationData={solicitation}
-              />
-            ))
+            : (mySolicitations && mySolicitations.length > 0)
+              ? mySolicitations.map((solicitation) => (
+                <SolicitationCard
+                  key={solicitation.id}
+                  solicitationData={solicitation}
+                />
+              ))
+              : <View style={styles.noSolicitationsText}>
+                <Text variant={'titleLarge'}>
+                  Você não possui solicitações cadastradas nessa categoria!
+                </Text>
+              </View>
           }
         </ScrollView>
       </SafeAreaView>
@@ -69,6 +76,10 @@ const MySolicitationsTable = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noSolicitationsText: {
     justifyContent: 'center',
     alignItems: 'center',
   },
