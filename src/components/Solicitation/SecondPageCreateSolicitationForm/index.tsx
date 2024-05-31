@@ -4,7 +4,7 @@ import { Portal, Text } from 'react-native-paper';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
-import MyCamera from '@/src/components/Shared/MyCamera';
+import MyCamera from '../MyCamera';
 
 interface FormData {
   title: string;

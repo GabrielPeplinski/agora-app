@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from '@/src/components/Themed';
-import MyCamera from '@/src/components/Shared/MyCamera';
+import MyCamera from '../../src/components/Solicitation/MyCamera';
 import ContainerBaseStyle from '@/app/style';
 
 export default function DashboardScreen() {
