@@ -14,7 +14,7 @@ const SolicitationCard = ({ solicitationData }: { solicitationData: PaginatedSol
           solicitationData.coverImage
             ? <Card.Cover source={{ uri: solicitationData.coverImage }}></Card.Cover>
             : <View style={styles.centralizedContent}>
-              <MaterialCommunityIcons name="image-marker-outline" size={100} color="black" />
+              <MaterialCommunityIcons name="image-marker-outline" size={150} color="black" />
             </View>
         }
 

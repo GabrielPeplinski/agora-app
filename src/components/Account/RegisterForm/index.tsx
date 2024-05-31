@@ -1,35 +1,32 @@
-import UserPropsInterface from '@/src/interfaces/UserPropsInterface';
+import UserPropsInterface from '@/src/interfaces/Auth/UserPropsInterface';
 import RegisterValidation from '@/src/validations/RegisterValidation';
 import { Formik } from 'formik';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { Button, TextInput, Text } from 'react-native-paper';
-import { Alert } from 'react-native';
 import { register } from '@/src/services/api/AuthService';
 import { View } from '@/src/components/Themed';
-import HttpStatusEnum from '@/src/enums/HttpStatusEnum';
 import PasswordInput from '@/src/components/Account/PasswordInput';
 import { useRouter } from 'expo-router';
-import { successToast } from '@/utils/use-toast';
+import { errorToast, successToast } from '@/utils/use-toast';
 
 const RegisterForm = () => {
   const router = useRouter();
+  const [formErrors, setFormErrors] = React.useState<string[]>([]);
 
-	const handleRegister = async (values: UserPropsInterface) => {
+  const handleRegister = async (values: UserPropsInterface) => {
     try {
       const response = await register(values);
-
-      // @ts-ignore
-      if (response.status === HttpStatusEnum.CREATED) {
-        router.push('/auth');
-        successToast({ title: 'Registrado com sucesso!' })
-      }
+      console.log(response);
+      router.push('/auth');
+      successToast({ title: 'Seu usuário foi registrado com sucesso!' });
 
     } catch (error: any) {
-      Alert.alert('Ocorreu um erro ao realizar seu cadastro!');
+      console.log(error);
+      errorToast({ title: 'Ocorreu um erro ao tentar registrar seu usuário!' });
     }
-	};
+  };
 
   return (
     <View style={styles.container}>
@@ -44,7 +41,7 @@ const RegisterForm = () => {
           validationSchema={RegisterValidation}
           onSubmit={(values) => handleRegister(values)}
         >
-          {({ handleChange, handleSubmit, values, errors}) => (
+          {({ handleChange, handleSubmit, values, errors }) => (
             <View style={styles.form}>
               <TextInput
                 style={styles.space}
@@ -65,9 +62,9 @@ const RegisterForm = () => {
               {errors.email && <Text>{errors.email}</Text>}
 
               <PasswordInput
-                label={"Senha"}
+                label={'Senha'}
                 value={values.password}
-                placeholder={"Sua senha"}
+                placeholder={'Sua senha'}
                 onChangeText={handleChange('password')}
               />
               {errors.password && <Text>{errors.password}</Text>}
@@ -81,9 +78,9 @@ const RegisterForm = () => {
               />
               {errors.password_confirmation && <Text>{errors.password_confirmation}</Text>}
 
-              <Button  style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'}>
-								Criar
-							</Button>
+              <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'}>
+                Criar
+              </Button>
             </View>
           )}
         </Formik>
@@ -94,7 +91,7 @@ const RegisterForm = () => {
 
 const styles = StyleSheet.create({
   space: {
-    marginTop: 10
+    marginTop: 10,
   },
   container: {
     flexDirection: 'column',
@@ -102,7 +99,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   form: {
     width: '80%',
