@@ -1,7 +1,7 @@
 import UserPropsInterface from '@/src/interfaces/Auth/UserPropsInterface';
 import RegisterValidation from '@/src/validations/RegisterValidation';
 import { Formik } from 'formik';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { Button, TextInput, Text } from 'react-native-paper';
@@ -15,17 +15,28 @@ const RegisterForm = () => {
   const router = useRouter();
   const [formErrors, setFormErrors] = React.useState<string[]>([]);
 
-  const handleRegister = async (values: UserPropsInterface) => {
-    try {
-      const response = await register(values);
-      console.log(response);
-      router.push('/auth');
-      successToast({ title: 'Seu usuário foi registrado com sucesso!' });
+  useEffect(() => {
+    console.log(formErrors);
+  }, [formErrors]);
 
-    } catch (error: any) {
-      console.log(error);
-      errorToast({ title: 'Ocorreu um erro ao tentar registrar seu usuário!' });
-    }
+  const cleanErrors = () => {
+    setFormErrors([]);
+  }
+
+  const handleRegister = async (values: UserPropsInterface) => {
+    await register(values)
+      .then(() => {
+        router.push('/auth');
+        successToast({ title: 'Seu usuário foi registrado com sucesso!' });
+      })
+      .catch((error) => {
+        if (error?.response?.status === 422) {
+          setFormErrors(error?.response?.data?.errors || []);
+          errorToast({ title: 'Ocorreu um erro ao tentar registrar seu usuário!' });
+        } else {
+          errorToast({ title: 'Ocorreu um erro ao tentar registrar seu usuário!' });
+        }
+      });
   };
 
   return (

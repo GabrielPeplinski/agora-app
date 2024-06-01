@@ -6,11 +6,7 @@ export const register = async (data: UserPropsInterface) => {
   try {
     return await axiosInstance().post(apiRoutes.auth.register, data);
   } catch (error: any) {
-    if (error.response && error.response.status === 422) {
-      throw new Error(JSON.stringify(error.response.data));
-    } else {
-      console.log(error);
-    }
+    throw error;
   }
 };
 
