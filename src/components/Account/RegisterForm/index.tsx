@@ -1,32 +1,36 @@
-import UserPropsInterface from '@/src/interfaces/Auth/UserPropsInterface';
-import RegisterValidation from '@/src/validations/RegisterValidation';
-import { Formik } from 'formik';
-import React, { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
-import { register } from '@/src/services/api/AuthService';
-import { View } from '@/src/components/Themed';
-import PasswordInput from '@/src/components/Account/PasswordInput';
+import { Formik } from 'formik';
 import { useRouter } from 'expo-router';
 import { errorToast, successToast } from '@/utils/use-toast';
+import UserPropsInterface from '@/src/interfaces/Auth/UserPropsInterface';
 import FormErrorsInterface from '@/src/interfaces/Forms/FormErrorsInterface';
+import RegisterValidation from '@/src/validations/RegisterValidation';
+import { register } from '@/src/services/api/AuthService';
+import PasswordInput from '@/src/components/Account/PasswordInput';
 import FormError from '@/src/components/Shared/FormError';
 
-const RegisterForm = () => {
+const RegisterForm: React.FC = () => {
   const router = useRouter();
-  const [formErrors, setFormErrors] = React.useState<FormErrorsInterface>({});
-
-  useEffect(() => {
-    console.log(formErrors);
-  }, [formErrors]);
+  const [formErrors, setFormErrors] = useState<FormErrorsInterface>({});
 
   const cleanErrors = () => {
     setFormErrors({});
   }
 
+  const cleanFieldError = (field: keyof FormErrorsInterface) => {
+    setFormErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors[field];
+      return newErrors;
+    });
+  };
+
   const handleRegister = async (values: UserPropsInterface) => {
     await register(values)
       .then(() => {
+        cleanErrors();
         router.push('/auth');
         successToast({ title: 'Seu usuário foi registrado com sucesso!' });
       })
@@ -59,7 +63,10 @@ const RegisterForm = () => {
               label="Nome"
               placeholder="Seu nome"
               value={values.name}
-              onChangeText={handleChange('name')}
+              onChangeText={(text) => {
+                handleChange('name')(text);
+                cleanFieldError('name');
+              }}
             />
             {(errors.name && touched.name) && <FormError errorMessage={errors.name} />}
             {formErrors.name && formErrors.name.length > 0 && <FormError errorMessage={formErrors.name[0]} />}
@@ -69,7 +76,10 @@ const RegisterForm = () => {
               label="Email"
               placeholder="Seu email"
               value={values.email}
-              onChangeText={handleChange('email')}
+              onChangeText={(text) => {
+                handleChange('email')(text);
+                cleanFieldError('email');
+              }}
             />
             {(errors.email && touched.email) && <FormError errorMessage={errors.email} />}
             {formErrors.email && formErrors.email.length > 0 && <FormError errorMessage={formErrors.email[0]} />}
@@ -78,7 +88,10 @@ const RegisterForm = () => {
               label={'Senha'}
               value={values.password}
               placeholder={'Sua senha'}
-              onChangeText={handleChange('password')}
+              onChangeText={(text) => {
+                handleChange('password')(text);
+                cleanFieldError('password');
+              }}
             />
             {(errors.password && touched.password) && <FormError errorMessage={errors.password} />}
             {formErrors.password && formErrors.password.length > 0 && <FormError errorMessage={formErrors.password[0]} />}
@@ -87,7 +100,10 @@ const RegisterForm = () => {
               label="Confirmação de Senha"
               value={values.password_confirmation}
               placeholder="Digite a confirmação da senha"
-              onChangeText={handleChange('password_confirmation')}
+              onChangeText={(text) => {
+                handleChange('password_confirmation')(text);
+                cleanFieldError('password_confirmation');
+              }}
             />
             {(errors.password_confirmation && touched.password_confirmation) && <FormError errorMessage={errors.password_confirmation} />}
             {formErrors.password_confirmation && formErrors.password_confirmation.length > 0 && <FormError errorMessage={formErrors.password_confirmation[0]} />}
