@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, Text, TextInput } from 'react-native-paper';
 import { Formik } from 'formik';
 import { useRouter } from 'expo-router';
 import { errorToast, successToast } from '@/utils/use-toast';
@@ -10,6 +10,7 @@ import RegisterValidation from '@/src/validations/RegisterValidation';
 import { register } from '@/src/services/api/AuthService';
 import PasswordInput from '@/src/components/Account/PasswordInput';
 import FormError from '@/src/components/Shared/FormError';
+import { FontAwesome } from '@expo/vector-icons';
 
 const RegisterForm: React.FC = () => {
   const router = useRouter();
@@ -46,6 +47,14 @@ const RegisterForm: React.FC = () => {
 
   return (
     <View style={styles.container}>
+
+      <View style={styles.pageHeader}>
+        <FontAwesome name="user-circle-o" size={100} color="black" />
+        <Text variant={'titleLarge'}>
+          Crie sua conta
+        </Text>
+      </View>
+
       <Formik
         initialValues={{
           name: '',
@@ -133,10 +142,11 @@ const styles = StyleSheet.create({
   form: {
     width: '80%',
   },
-  errorText: {
-    color: 'red',
-    marginTop: 5,
-  },
+  pageHeader: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  }
 });
 
 export default RegisterForm;
