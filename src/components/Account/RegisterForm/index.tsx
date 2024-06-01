@@ -69,7 +69,7 @@ const RegisterForm: React.FC = () => {
           <View style={styles.form}>
             <TextInput
               style={styles.space}
-              label="Nome"
+              label="Nome*"
               placeholder="Seu nome"
               value={values.name}
               onChangeText={(text) => {
@@ -82,7 +82,7 @@ const RegisterForm: React.FC = () => {
 
             <TextInput
               style={styles.space}
-              label="Email"
+              label="Email*"
               placeholder="Seu email"
               value={values.email}
               onChangeText={(text) => {
@@ -94,7 +94,7 @@ const RegisterForm: React.FC = () => {
             {formErrors.email && formErrors.email.length > 0 && <FormError errorMessage={formErrors.email[0]} />}
 
             <PasswordInput
-              label={'Senha'}
+              label={'Senha*'}
               value={values.password}
               placeholder={'Sua senha'}
               onChangeText={(text) => {
@@ -106,7 +106,7 @@ const RegisterForm: React.FC = () => {
             {formErrors.password && formErrors.password.length > 0 && <FormError errorMessage={formErrors.password[0]} />}
 
             <PasswordInput
-              label="Confirmação de Senha"
+              label="Confirmação de Senha*"
               value={values.password_confirmation}
               placeholder="Digite a confirmação da senha"
               onChangeText={(text) => {

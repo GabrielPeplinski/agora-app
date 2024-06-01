@@ -18,7 +18,7 @@ const FormError = ({errorMessage}: FormErrorProp) => {
 
 const styles = StyleSheet.create({
   text: {
-    color: 'red'
+    color: '#e3492d'
   }
 });
 
