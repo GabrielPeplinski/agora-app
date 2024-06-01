@@ -10,6 +10,7 @@ import PasswordInput from '@/src/components/Account/PasswordInput';
 import { useRouter } from 'expo-router';
 import { errorToast, successToast } from '@/utils/use-toast';
 import FormErrorsInterface from '@/src/interfaces/Forms/FormErrorsInterface';
+import FormError from '@/src/components/Shared/FormError';
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -60,8 +61,8 @@ const RegisterForm = () => {
               value={values.name}
               onChangeText={handleChange('name')}
             />
-            {(errors.name && touched.name) && <Text id="error-name">{errors.name}</Text>}
-            {formErrors.name && formErrors.name.length > 0 && <Text id="form-error-name">{formErrors.name[0]}</Text>}
+            {(errors.name && touched.name) && <FormError errorMessage={errors.name} />}
+            {formErrors.name && formErrors.name.length > 0 && <FormError errorMessage={formErrors.name[0]} />}
 
             <TextInput
               style={styles.space}
@@ -70,8 +71,8 @@ const RegisterForm = () => {
               value={values.email}
               onChangeText={handleChange('email')}
             />
-            {(errors.email && touched.email) && <Text id="error-email">{errors.email}</Text>}
-            {formErrors.email && formErrors.email.length > 0 && <Text id="form-error-email">{formErrors.email[0]}</Text>}
+            {(errors.email && touched.email) && <FormError errorMessage={errors.email} />}
+            {formErrors.email && formErrors.email.length > 0 && <FormError errorMessage={formErrors.email[0]} />}
 
             <PasswordInput
               label={'Senha'}
@@ -79,8 +80,8 @@ const RegisterForm = () => {
               placeholder={'Sua senha'}
               onChangeText={handleChange('password')}
             />
-            {(errors.password && touched.password) && <Text id="error-password">{errors.password}</Text>}
-            {formErrors.password && formErrors.password.length > 0 && <Text id="form-error-password">{formErrors.password[0]}</Text>}
+            {(errors.password && touched.password) && <FormError errorMessage={errors.password} />}
+            {formErrors.password && formErrors.password.length > 0 && <FormError errorMessage={formErrors.password[0]} />}
 
             <PasswordInput
               label="Confirmação de Senha"
@@ -88,8 +89,8 @@ const RegisterForm = () => {
               placeholder="Digite a confirmação da senha"
               onChangeText={handleChange('password_confirmation')}
             />
-            {(errors.password_confirmation && touched.password_confirmation) && <Text id="error-password_confirmation">{errors.password_confirmation}</Text>}
-            {formErrors.password_confirmation && formErrors.password_confirmation.length > 0 && <Text id="form-error-password_confirmation">{formErrors.password_confirmation[0]}</Text>}
+            {(errors.password_confirmation && touched.password_confirmation) && <FormError errorMessage={errors.password_confirmation} />}
+            {formErrors.password_confirmation && formErrors.password_confirmation.length > 0 && <FormError errorMessage={formErrors.password_confirmation[0]} />}
 
             <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'}>
               Criar
