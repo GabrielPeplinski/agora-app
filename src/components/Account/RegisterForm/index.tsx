@@ -3,7 +3,7 @@ import RegisterValidation from '@/src/validations/RegisterValidation';
 import { Formik } from 'formik';
 import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import { Button, TextInput, Text } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 import { register } from '@/src/services/api/AuthService';
 import { View } from '@/src/components/Themed';
 import PasswordInput from '@/src/components/Account/PasswordInput';
