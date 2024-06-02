@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { SegmentedButtons, Text } from 'react-native-paper';
 import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
@@ -6,22 +6,27 @@ import SolicitationCard from '@/src/components/Solicitation/SolicitationCard';
 import { getMySolicitations } from '@/src/services/api/Solicitation/MySolicitationsService';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 import SmallLoader from '@/src/components/Shared/SmallLoader';
+import { errorToast } from '@/utils/use-toast';
 
 const MySolicitationsTable = () => {
-  const [statusFilter, setStatusFilter] = React.useState('open');
-  const [mySolicitations, setSolicitations] = React.useState<PaginatedSolicitationInterface[] | null | undefined>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [page, setPage] = React.useState(1);
+  const [statusFilter, setStatusFilter] = useState('open');
+  const [mySolicitations, setSolicitations] = useState<PaginatedSolicitationInterface[] | null | undefined>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const fetchMySolicitations = async () => {
-      const response = await getMySolicitations(page, statusFilter);
-      setSolicitations(response?.data);
-      setIsLoading(false);
+      await getMySolicitations(page, statusFilter)
+        .then((response) => {
+          setSolicitations(response?.data);
+          setIsLoading(false);
+        }).catch((error: any) => {
+          errorToast({ title: 'Ocorreu um erro ao buscar suas solicitações!' });
+        });
     };
 
     fetchMySolicitations();
-  }, [statusFilter]);
+  }, [statusFilter, page]);
 
   return (
     <>

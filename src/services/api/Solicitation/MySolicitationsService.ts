@@ -23,20 +23,10 @@ export const createSolicitation = async (data: any) => {
 export const getMySolicitations = async (page: number = 1, statusFilter: string | null): Promise<SolicitationListResponseInterface | null> => {
   try {
     const response = await axiosInstance()
-      .get(`${apiRoutes.mySolicitations.index}?filter[status]=${statusFilter}`, {
-        params: {
-          '?[page]': page,
-        },
-      });
+      .get(`${apiRoutes.mySolicitations.index}?filter[status]=${statusFilter}?page=${page}`);
 
     return response.data as SolicitationListResponseInterface;
   } catch (error: any) {
-    if (error.response) {
-      console.log('Erro do servidor:', error.response.data);
-    } else {
-      console.log('Erro:', error.message);
-    }
-
-    return null;
+    throw error;
   }
 };
