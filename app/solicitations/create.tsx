@@ -5,6 +5,8 @@ import ContainerBaseStyle from '@/app/style';
 import { StyleSheet } from 'react-native';
 import FirstPageCreateSolicitationForm from '@/src/components/Solicitation/FirstPageCreateSolicitationForm';
 import SecondPageCreateSolicitationForm from '@/src/components/Solicitation/SecondPageCreateSolicitationForm';
+import * as FileSystem from 'expo-file-system';
+import { addSolicitationImage } from '@/src/services/api/Solicitation/AddSolicitationImageService';
 
 interface FormData {
   title: string;
@@ -26,14 +28,21 @@ export default function CreateSolicitationsScreen() {
     solicitationCategoryId: 0,
     latitudeCoordinates: '',
     longitudeCoordinates: '',
-    coverImage: null,
+    coverImage: '',
     images: []
   });
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (page < maxPageNumber - 1) {
       setPage(page + 1);
     } else {
+      if (formData.coverImage != null) {
+        try {
+          await addSolicitationImage(formData.coverImage, 'coverImage');
+        } catch (error) {
+          console.log('Erro ao enviar a imagem:', error);
+        }
+      }
       console.log('Dados do formulário:', formData);
     }
   }
