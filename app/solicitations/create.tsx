@@ -5,8 +5,11 @@ import ContainerBaseStyle from '@/app/style';
 import { StyleSheet } from 'react-native';
 import FirstPageCreateSolicitationForm from '@/src/components/Solicitation/FirstPageCreateSolicitationForm';
 import SecondPageCreateSolicitationForm from '@/src/components/Solicitation/SecondPageCreateSolicitationForm';
-import * as FileSystem from 'expo-file-system';
 import { addSolicitationImage } from '@/src/services/api/Solicitation/AddSolicitationImageService';
+import { createSolicitation } from '@/src/services/api/Solicitation/MySolicitationsService';
+import { errorToast, successToast } from '@/utils/use-toast';
+import LoadingScreen from '@/src/components/Shared/LoadingScreen';
+import { useRouter } from 'expo-router';
 
 interface FormData {
   title: string;
@@ -21,6 +24,8 @@ interface FormData {
 export default function CreateSolicitationsScreen() {
   const [page, setPage] = React.useState(0);
   const maxPageNumber = 2;
+  const [loadingSubmit, setLoadingSubmit] = React.useState(false);
+  const router = useRouter();
 
   const [formData, setFormData] = React.useState<FormData>({
     title: '',
@@ -29,21 +34,57 @@ export default function CreateSolicitationsScreen() {
     latitudeCoordinates: '',
     longitudeCoordinates: '',
     coverImage: '',
-    images: []
+    images: [],
   });
 
-  async function handleSubmit() {
+  function handleSubmit() {
     if (page < maxPageNumber - 1) {
       setPage(page + 1);
     } else {
-      if (formData.coverImage != null) {
-        try {
-          await addSolicitationImage(formData.coverImage, 'coverImage');
-        } catch (error) {
-          console.log('Erro ao enviar a imagem:', error);
-        }
-      }
+      setLoadingSubmit(true);
+      handleCreateSolicitation()
+        .finally(() => setLoadingSubmit(false));
+
+      router.back();
+    }
+  }
+
+  async function handleCreateSolicitation() {
+    if (page < maxPageNumber - 1) {
+      setPage(page + 1);
+    } else {
+      await createSolicitation(formData)
+        .then(() => {
+          successToast({title: 'Solicitação criada com sucesso!'})
+          return addSolicitationImages();
+        })
+        .then(() => {
+          successToast({title: 'As imagens foram enviadas com sucesso!'})
+        })
+        .catch((error: any) => {
+          console.error(error);
+          errorToast({ title: 'Ocorreu algum erro durante a criação da solicitação!' });
+        });
+
       console.log('Dados do formulário:', formData);
+    }
+  }
+
+  async function addSolicitationImages() {
+    if (formData.coverImage != null) {
+      await addSolicitationImage(formData.coverImage, 'coverImage')
+        .catch((error: any) => {
+          throw error;
+        });
+    }
+
+    if (formData.images.length > 0) {
+      for (const image of formData.images) {
+        await addSolicitationImage(image, 'images')
+          .catch((error: any) => {
+            throw error;
+          });
+      }
     }
   }
 
@@ -82,26 +123,31 @@ export default function CreateSolicitationsScreen() {
   return (
     <View style={ContainerBaseStyle.container}>
 
-      {conditionalComponent()}
+      {loadingSubmit ? <LoadingScreen /> : (
+        <>
+          {conditionalComponent()}
 
-      <View style={styles.buttonContainer}>
-        {page > 0 && (
-          <Button
-            mode={'contained'}
-            onPress={handleBack}
-            style={styles.buttonBack}
-          >
-            Voltar
-          </Button>
-        )}
-        <Button
-          mode={'contained'}
-          onPress={handleSubmit}
-          style={styles.buttonNext}
-        >
-          {page === 0 ? 'Próximo' : 'Cadastrar'}
-        </Button>
-      </View>
+          <View style={styles.buttonContainer}>
+            {page > 0 && (
+              <Button
+                mode={'contained'}
+                onPress={handleBack}
+                style={styles.buttonBack}
+              >
+                Voltar
+              </Button>
+            )}
+            <Button
+              mode={'contained'}
+              onPress={handleSubmit}
+              style={styles.buttonNext}
+            >
+              {page === 0 ? 'Próximo' : 'Cadastrar'}
+            </Button>
+          </View>
+        </>
+      )}
+
     </View>
   );
 }
