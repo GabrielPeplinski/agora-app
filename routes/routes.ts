@@ -13,7 +13,7 @@ const apiRoutes = {
   },
   mySolicitations: {
     index: 'client/my-solicitations',
-    addImage: 'my-solicitations/add-image'
+    addImage: 'my-solicitations/:id/add-image'
   },
   solicitation: {
     like: 'client/solicitations/like',

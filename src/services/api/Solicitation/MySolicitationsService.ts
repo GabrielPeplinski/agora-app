@@ -2,7 +2,8 @@ import axiosInstance from '@/utils/axios-instance';
 import apiRoutes from '@/routes/routes';
 import SolicitationListResponseInterface
   from '@/src/interfaces/Solicitation/Responses/SolicitationListResponseInterface';
-import SolicitationInterface from '@/src/interfaces/Solicitation/SolicitationInterface';
+import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/SolicitationResponseInterface';
+import SolicitationDataInterface from '@/src/interfaces/Solicitation/Data/SolicitationDataInterface';
 
 export const getMySolicitations = async (page: number = 1, statusFilter: string | null): Promise<SolicitationListResponseInterface | null> => {
   try {
@@ -15,10 +16,12 @@ export const getMySolicitations = async (page: number = 1, statusFilter: string 
   }
 };
 
-export const createSolicitation = async (data: SolicitationInterface): Promise<SolicitationInterface> => {
+export const createSolicitation = async (data: SolicitationDataInterface): Promise<SolicitationResponseInterface> => {
   try {
-    return await axiosInstance()
+    const response = await axiosInstance()
       .post(apiRoutes.mySolicitations.index, data);
+
+    return response.data.data;
 
   } catch (error: any) {
     throw error;

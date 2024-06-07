@@ -1,13 +1,13 @@
-interface SolicitationInterface {
-  id?: number | null;
+interface SolicitationResponseInterface {
+  id: number,
   title: string;
   description: string;
   latitudeCoordinates: string;
   longitudeCoordinates: string;
   solicitationCategoryId: number;
-  likesCount?: number | null;
+  likesCount: number;
   coverImage?: string | null;
   images?: string[] | null;
 }
 
-export default SolicitationInterface;
+export default SolicitationResponseInterface;

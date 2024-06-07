@@ -50,29 +50,26 @@ export default function CreateSolicitationsScreen() {
   }
 
   async function handleCreateSolicitation() {
-    if (page < maxPageNumber - 1) {
-      setPage(page + 1);
-    } else {
-      await createSolicitation(formData)
-        .then(() => {
-          successToast({title: 'Solicitação criada com sucesso!'})
-          return addSolicitationImages();
-        })
-        .then(() => {
-          successToast({title: 'As imagens foram enviadas com sucesso!'})
-        })
-        .catch((error: any) => {
-          console.error(error);
-          errorToast({ title: 'Ocorreu algum erro durante a criação da solicitação!' });
-        });
+    await createSolicitation(formData)
+      .then((response) => {
+        successToast({ title: 'Solicitação criada com sucesso!' });
 
-      console.log('Dados do formulário:', formData);
-    }
+        return addSolicitationImages(response.id.toString());
+      })
+      .then(() => {
+        successToast({ title: 'As imagens foram enviadas com sucesso!' });
+      })
+      .catch((error: any) => {
+        console.error(error);
+        errorToast({ title: 'Ocorreu algum erro durante a criação da solicitação!' });
+      });
+
+    console.log('Dados do formulário:', formData);
   }
 
-  async function addSolicitationImages() {
+  async function addSolicitationImages(mySolicitationId: string) {
     if (formData.coverImage != null) {
-      await addSolicitationImage(formData.coverImage, 'coverImage')
+      await addSolicitationImage(formData.coverImage, 'coverImage', mySolicitationId)
         .catch((error: any) => {
           throw error;
         });
@@ -80,7 +77,7 @@ export default function CreateSolicitationsScreen() {
 
     if (formData.images.length > 0) {
       for (const image of formData.images) {
-        await addSolicitationImage(image, 'images')
+        await addSolicitationImage(image, 'images', mySolicitationId)
           .catch((error: any) => {
             throw error;
           });

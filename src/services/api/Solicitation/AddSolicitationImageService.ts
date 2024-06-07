@@ -5,11 +5,12 @@ import apiRoutes from '@/routes/routes';
 const baseUrl = environments.apiUrl;
 const route: string = apiRoutes.mySolicitations.addImage;
 
-export const addSolicitationImage = async (imageUri: string, fileName: string) => {
-  console.log(`${baseUrl}/${route}`);
+export const addSolicitationImage = async (imageUri: string, fileName: string, mySolicitationId: string) => {
+  const url = `${baseUrl}${route}`.replace(':id', mySolicitationId);
+
   try {
     await FileSystem
-      .uploadAsync(`${baseUrl}${route}`, imageUri, {
+      .uploadAsync(url, imageUri, {
         fieldName: fileName,
         httpMethod: 'POST',
         uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
