@@ -7,12 +7,12 @@ import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/Pagina
 const SolicitationCard = ({ solicitationData }: { solicitationData: PaginatedSolicitationInterface }) => {
   return (
     <View style={styles.cardSpace}>
-      <Card>
-        <Card.Title titleVariant={'titleLarge'} title={solicitationData.title} style={styles.centralizedContent}/>
+      <Card style={styles.cardLayout}>
+        <Card.Title titleVariant={'titleLarge'} title={solicitationData.title} style={styles.centralizedContent} />
 
         {
           solicitationData.coverImage
-            ? <Card.Cover source={{ uri: solicitationData.coverImage }}></Card.Cover>
+            ? <Card.Cover source={{ uri: solicitationData.coverImage }} />
             : <View style={styles.centralizedContent}>
               <MaterialCommunityIcons name="image-marker-outline" size={150} color="black" />
             </View>
@@ -20,10 +20,10 @@ const SolicitationCard = ({ solicitationData }: { solicitationData: PaginatedSol
 
         <Card.Content>
           <Text variant="titleLarge">
-            {solicitationData.title}
+            {solicitationData.likesCount}
           </Text>
         </Card.Content>
-        <Card.Actions>
+        <Card.Actions style={styles.actions}>
           <Button mode={'contained'} style={styles.circularButton}>
             <Feather name="edit" size={20} color="black" />
           </Button>
@@ -38,11 +38,12 @@ const SolicitationCard = ({ solicitationData }: { solicitationData: PaginatedSol
 
 const styles = StyleSheet.create({
   cardSpace: {
-    marginTop: 10,
-    marginBottom: 10,
+    marginVertical: 10,
+    alignItems: 'center',
+    width: '100%',
   },
   cardLayout: {
-    width: '80%'
+    width: '80%',
   },
   circularButton: {
     marginTop: 10,
@@ -53,6 +54,9 @@ const styles = StyleSheet.create({
   centralizedContent: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  actions: {
+    justifyContent: 'space-around',
   },
 });
 

@@ -29,60 +29,61 @@ const MySolicitationsTable = () => {
   }, [statusFilter, page]);
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        <SegmentedButtons
-          value={statusFilter}
-          onValueChange={setStatusFilter}
-          buttons={[
-            {
-              value: SolicitationStatusEnum.OPEN,
-              label: 'Em aberto',
-              checkedColor: 'rgb(33, 90, 189)',
-              uncheckedColor: 'black',
-            },
-            {
-              value: SolicitationStatusEnum.IN_PROGRESS,
-              label: 'Em andamento',
-              checkedColor: 'rgb(33, 90, 189)',
-              uncheckedColor: 'black',
-            },
-            {
-              value: SolicitationStatusEnum.RESOLVED,
-              label: 'Resolvidas',
-              checkedColor: 'rgb(33, 90, 189)',
-              uncheckedColor: 'black',
-            },
-          ]}
-        />
+    <SafeAreaView style={styles.container}>
+      <SegmentedButtons
+        value={statusFilter}
+        onValueChange={setStatusFilter}
+        buttons={[
+          {
+            value: SolicitationStatusEnum.OPEN,
+            label: 'Em aberto',
+            checkedColor: 'rgb(33, 90, 189)',
+            uncheckedColor: 'black',
+          },
+          {
+            value: SolicitationStatusEnum.IN_PROGRESS,
+            label: 'Em andamento',
+            checkedColor: 'rgb(33, 90, 189)',
+            uncheckedColor: 'black',
+          },
+          {
+            value: SolicitationStatusEnum.RESOLVED,
+            label: 'Resolvidas',
+            checkedColor: 'rgb(33, 90, 189)',
+            uncheckedColor: 'black',
+          },
+        ]}
+      />
 
-        <ScrollView>
-          {isLoading
-            ? <SmallLoader />
-            : (mySolicitations && mySolicitations.length > 0)
-              ? mySolicitations.map((solicitation) => (
-                <SolicitationCard
-                  key={solicitation.id}
-                  solicitationData={solicitation}
-                />
-              ))
-              : <View style={styles.noSolicitationsText}>
-                <Text variant={'titleLarge'}>
-                  Você não possui solicitações cadastradas nessa categoria!
-                </Text>
-              </View>
-          }
-        </ScrollView>
-      </SafeAreaView>
-    </>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {isLoading
+          ? <SmallLoader />
+          : (mySolicitations && mySolicitations.length > 0)
+            ? mySolicitations.map((solicitation) => (
+              <SolicitationCard
+                key={solicitation.id}
+                solicitationData={solicitation}
+              />
+            ))
+            : <View style={styles.noSolicitationsText}>
+              <Text variant={'titleLarge'}>
+                Você não possui solicitações cadastradas nessa categoria!
+              </Text>
+            </View>
+        }
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    width: '100%',
+  },
+  scrollViewContent: {
     alignItems: 'center',
+    paddingVertical: 20,
   },
   noSolicitationsText: {
     justifyContent: 'center',

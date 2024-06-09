@@ -52,7 +52,7 @@ export default function AuthScreen() {
               />
             </Menu>
           </Appbar.Header>
-          <View style={ContainerBaseStyle.container}>
+          <View style={styles.contentContainer}>
             <MySolicitationsTable />
           </View>
         </>
@@ -77,6 +77,11 @@ export default function AuthScreen() {
 }
 
 const styles = StyleSheet.create({
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
+    width: '100%',
+  },
   registerContainer: {
     marginBottom: 10,
   },
