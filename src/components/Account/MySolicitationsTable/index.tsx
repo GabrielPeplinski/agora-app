@@ -7,19 +7,26 @@ import { getMySolicitations } from '@/src/services/api/Solicitation/MySolicitati
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 import SmallLoader from '@/src/components/Shared/SmallLoader';
 import { errorToast } from '@/utils/use-toast';
+import Pagination from '@/src/components/Shared/Pagination';
+import PaginationMetaInterface from '@/src/interfaces/Pagination/PaginationMetaInterface';
 
 const MySolicitationsTable = () => {
   const [statusFilter, setStatusFilter] = useState('open');
   const [mySolicitations, setSolicitations] = useState<PaginatedSolicitationInterface[] | null | undefined>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState<PaginationMetaInterface | null>(null);
 
   useEffect(() => {
     const fetchMySolicitations = async () => {
       await getMySolicitations(page, statusFilter)
         .then((response) => {
-          setSolicitations(response?.data);
-          setIsLoading(false);
+
+          if (response) {
+            setSolicitations(response.data);
+            setMeta(response.meta);
+            setIsLoading(false);
+          }
         }).catch((error: any) => {
           errorToast({ title: 'Ocorreu um erro ao buscar suas solicitações!' });
         });
@@ -71,6 +78,7 @@ const MySolicitationsTable = () => {
               </Text>
             </View>
         }
+        <Pagination meta={meta} setPage={setPage} />
       </ScrollView>
     </SafeAreaView>
   );

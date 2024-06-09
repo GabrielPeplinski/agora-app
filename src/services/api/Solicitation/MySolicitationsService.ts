@@ -8,7 +8,7 @@ import SolicitationDataInterface from '@/src/interfaces/Solicitation/Data/Solici
 export const getMySolicitations = async (page: number = 1, statusFilter: string | null): Promise<SolicitationListResponseInterface | null> => {
   try {
     const response = await axiosInstance()
-      .get(`${apiRoutes.mySolicitations.index}?filter[status]=${statusFilter}?page=${page}`);
+      .get(`${apiRoutes.mySolicitations.index}?filter[status]=${statusFilter}&page=${page}`);
 
     return response.data as SolicitationListResponseInterface;
   } catch (error: any) {
