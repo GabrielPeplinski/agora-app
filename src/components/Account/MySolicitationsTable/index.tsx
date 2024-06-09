@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { SegmentedButtons, Text } from 'react-native-paper';
 import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
@@ -16,24 +16,32 @@ const MySolicitationsTable = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState<PaginationMetaInterface | null>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  const fetchMySolicitations = async () => {
+    setIsLoading(true);
+    await getMySolicitations(page, statusFilter)
+      .then((response) => {
+        if (response) {
+          setSolicitations(response.data);
+          setMeta(response.meta);
+        }
+      }).catch((error: any) => {
+        errorToast({ title: 'Ocorreu um erro ao buscar suas solicitações!' });
+      }).finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   useEffect(() => {
-    const fetchMySolicitations = async () => {
-      await getMySolicitations(page, statusFilter)
-        .then((response) => {
-
-          if (response) {
-            setSolicitations(response.data);
-            setMeta(response.meta);
-            setIsLoading(false);
-          }
-        }).catch((error: any) => {
-          errorToast({ title: 'Ocorreu um erro ao buscar suas solicitações!' });
-        });
-    };
-
     fetchMySolicitations();
   }, [statusFilter, page]);
+
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ y: 0, animated: true });
+    }
+  }, [page]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -62,7 +70,10 @@ const MySolicitationsTable = () => {
         ]}
       />
 
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={styles.scrollViewContent}
+      >
         {isLoading
           ? <SmallLoader />
           : (mySolicitations && mySolicitations.length > 0)
@@ -78,7 +89,7 @@ const MySolicitationsTable = () => {
               </Text>
             </View>
         }
-        <Pagination meta={meta} setPage={setPage} />
+        {!isLoading && mySolicitations && mySolicitations.length > 0 && <Pagination meta={meta} setPage={setPage} />}
       </ScrollView>
     </SafeAreaView>
   );

@@ -21,16 +21,9 @@ const Pagination: React.FC<PaginationProps> = ({ meta, setPage }) => {
     }
   };
 
-  let pages = [1];
-  for (let i = -1; i <= 1; i++) {
-    const page = current_page + i;
-    if (page > 1 && page < last_page) {
-      pages.push(page);
-    }
-  }
+  let pages = [];
+  pages.push(1);
   pages.push(last_page);
-
-  pages = Array.from(new Set(pages)).sort((a, b) => a - b);
 
   return (
     <View style={styles.container}>
