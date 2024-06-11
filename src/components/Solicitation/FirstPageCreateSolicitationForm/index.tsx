@@ -60,14 +60,14 @@ const FirstPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues })
       <View style={styles.form}>
         <TextInput
           style={styles.space}
-          label="Título"
+          label="Título*"
           placeholder="Seu título"
           value={values.title}
           onChangeText={handleChange('title')}
         />
         <TextInput
           style={styles.descriptionInput}
-          label="Descrição"
+          label="Descrição*"
           placeholder="Sua descrição"
           value={values.description}
           onChangeText={handleChange('description')}
@@ -85,7 +85,7 @@ const FirstPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues })
               setValues((prevValues) => ({ ...prevValues, solicitationCategoryId: itemValue }))
             }
           >
-            <Picker.Item label="Selecione uma categoria" value={0} />
+            <Picker.Item label="Selecione uma categoria*" value={0} />
             {categories.map((category) => (
               <Picker.Item
                 key={category.id}
