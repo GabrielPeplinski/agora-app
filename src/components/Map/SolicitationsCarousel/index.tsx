@@ -1,52 +1,25 @@
 import * as React from 'react';
-import { Dimensions, Text, View, StyleSheet, Image, TouchableOpacity, Linking, ScrollView } from 'react-native';
+import { Dimensions, Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { IconButton } from 'react-native-paper';
+import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
+import { useAuthStore } from '@/src/stores/authStore';
+import { errorToast } from '@/utils/use-toast';
 
-interface CarouselItem {
-  title: string;
-  image: string;
-  link: string;
-}
-
-const data: CarouselItem[] = [
-  {
-    title: 'Primeiro Item',
-    image: 'https://pareto.io/wp-content/uploads/2023/07/header-tess-ai-urso-1.jpg',
-    link: 'https://example.com/primeiro-item',
-  },
-  {
-    title: 'Segundo Item',
-    image: 'https://pareto.io/wp-content/uploads/2023/07/header-tess-ai-urso-1.jpg',
-    link: 'https://example.com/segundo-item',
-  },
-  {
-    title: 'Terceiro Item',
-    image: 'https://pareto.io/wp-content/uploads/2023/07/header-tess-ai-urso-1.jpg',
-    link: 'https://example.com/terceiro-item',
-  },
-  {
-    title: 'Quarto Item',
-    image: 'https://pareto.io/wp-content/uploads/2023/07/header-tess-ai-urso-1.jpg',
-    link: 'https://example.com/quarto-item',
-  },
-  {
-    title: 'Quinto Item',
-    image: 'https://pareto.io/wp-content/uploads/2023/07/header-tess-ai-urso-1.jpg',
-    link: 'https://example.com/quinto-item',
-  },
-  {
-    title: 'Sexto Item',
-    image: 'https://pareto.io/wp-content/uploads/2023/07/header-tess-ai-urso-1.jpg',
-    link: 'https://example.com/sexto-item',
-  },
-];
-
-const SolicitationCarousel: React.FC = () => {
+const SolicitationCarousel = ({ data }: { data: PaginatedSolicitationInterface[] }) => {
+  const token = useAuthStore(state => state.token);
   const width = Dimensions.get('window').width;
 
-  const handlePress = (link: string) => {
-    Linking.openURL(link);
-  };
+  const handleLike = (id: number) => {
+    if (!token) {
+      errorToast({ title: 'Você precisa estar logado para reforçar uma solicitação!' });
+    }
+
+    console.log(`Curtiu a solicitação ${id}`);
+  }
+
+  const handleGoToSolicitation = (id: number) => {
+    console.log(`Acessou a solicitação ${id}`);
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -58,21 +31,29 @@ const SolicitationCarousel: React.FC = () => {
       >
         {data.map((item, index) => (
           <View key={index} style={[styles.carouselItem, { width }]}>
-            <TouchableOpacity onPress={() => handlePress(item.link)}>
-              <Image
-                style={styles.image}
-                source={{ uri: item.image }}
-                resizeMode="cover"
-              />
+            <TouchableOpacity onPress={() => handleGoToSolicitation(item.id)}>
+              {item.coverImage ? (
+                <Image
+                  style={styles.image}
+                  source={{ uri: item.coverImage }}
+                  resizeMode="cover"
+                />
+              ) : (
+                <Image
+                  style={styles.image}
+                  source={require('../../../../assets/images/no-image.png')}
+                  resizeMode="cover"
+                />
+              )}
               <View style={styles.overlay}>
                 <Text style={styles.text}>
-                  {item.title}
+                  {item.title.length > 25 ? item.title.substring(0, 25) + '...' : item.title}
                 </Text>
                 <IconButton
                   icon="thumb-up-outline"
                   size={24}
                   style={styles.iconButton}
-                  onPress={() => console.log('Curtiu')}
+                  onPress={() => handleLike(item.id)}
                 />
               </View>
             </TouchableOpacity>
