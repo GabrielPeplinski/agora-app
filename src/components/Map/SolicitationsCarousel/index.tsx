@@ -47,7 +47,7 @@ const SolicitationCarousel = ({ data }: { data: PaginatedSolicitationInterface[]
               )}
               <View style={styles.overlay}>
                 <Text style={styles.text}>
-                  {item.title.length > 25 ? item.title.substring(0, 25) + '...' : item.title}
+                  {item.title.length > 30 ? item.title.substring(0, 30) + '...' : item.title}
                 </Text>
                 <IconButton
                   icon="thumb-up-outline"

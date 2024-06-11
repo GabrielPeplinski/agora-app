@@ -5,7 +5,6 @@ import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 
 const SolicitationCard = ({ solicitationData }: { solicitationData: PaginatedSolicitationInterface }) => {
-  console.log(solicitationData.coverImage);
   return (
     <View style={styles.cardSpace}>
       <Card style={styles.cardLayout}>
