@@ -39,7 +39,9 @@ export default function TabOneScreen() {
   return (
     <>
       <View style={ContainerBaseStyle.container}>
-        <SolicitationCarousel data={data}/>
+        <SolicitationCarousel
+          data={data}
+        />
         <AgoraMap />
         <CreateSolicitationButton />
       </View>

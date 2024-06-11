@@ -3,18 +3,22 @@ import { Dimensions, Text, View, StyleSheet, Image, TouchableOpacity, ScrollView
 import { IconButton } from 'react-native-paper';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 import { useAuthStore } from '@/src/stores/authStore';
-import { errorToast } from '@/utils/use-toast';
+import { errorToast, successToast } from '@/utils/use-toast';
+import { likeSolicitation } from '@/src/services/api/Solicitation/LikeSolicitationService';
 
 const SolicitationCarousel = ({ data }: { data: PaginatedSolicitationInterface[] }) => {
   const token = useAuthStore(state => state.token);
   const width = Dimensions.get('window').width;
 
-  const handleLike = (id: number) => {
+  const handleLike = async (id: number) => {
     if (!token) {
       errorToast({ title: 'Você precisa estar logado para reforçar uma solicitação!' });
     }
 
-    console.log(`Curtiu a solicitação ${id}`);
+    await likeSolicitation({ solicitationId: id })
+      .then(() => {
+        successToast({ title: 'Você reforçou esta solicitação!' })
+      })
   }
 
   const handleGoToSolicitation = (id: number) => {
