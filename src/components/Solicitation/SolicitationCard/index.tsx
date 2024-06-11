@@ -5,12 +5,14 @@ import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 
 const SolicitationCard = ({ solicitationData }: { solicitationData: PaginatedSolicitationInterface }) => {
+  console.log(solicitationData.coverImage);
   return (
     <View style={styles.cardSpace}>
       <Card style={styles.cardLayout}>
         <Card.Title titleVariant="titleLarge" title={solicitationData.title} style={styles.title} />
 
         <View style={styles.imageContainer}>
+
           {solicitationData.coverImage ? (
             <Card.Cover source={{ uri: solicitationData.coverImage }} style={styles.cardCover} />
           ) : (
@@ -18,6 +20,7 @@ const SolicitationCard = ({ solicitationData }: { solicitationData: PaginatedSol
               <MaterialCommunityIcons name="image-marker-outline" size={150} color="black" />
             </View>
           )}
+
           <View style={styles.likesContainer}>
             <View style={styles.likeIcon}>
               <MaterialIcons name="thumb-up" size={24} color="white" />
@@ -30,7 +33,8 @@ const SolicitationCard = ({ solicitationData }: { solicitationData: PaginatedSol
           <TouchableOpacity style={styles.circularButton} onPress={() => console.log('Edit button pressed')}>
             <Feather name="edit" size={25} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.circularButton} onPress={() => console.log('Published with changes button pressed')}>
+          <TouchableOpacity style={styles.circularButton}
+                            onPress={() => console.log('Published with changes button pressed')}>
             <MaterialIcons name="published-with-changes" size={25} color="white" />
           </TouchableOpacity>
         </View>

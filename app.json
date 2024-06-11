@@ -20,9 +20,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/images/agora-logo.png",
+        "backgroundColor": "#004aad"
+      },
+      "package": "com.gabriel20023.agoraapp"
     },
     "web": {
       "bundler": "metro",
@@ -35,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "51918004-8c6c-4331-a5d6-4407e2492c29"
+      }
+    },
+    "owner": "gabriel20023"
   }
 }
