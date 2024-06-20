@@ -3,6 +3,7 @@ interface PaginatedSolicitationInterface {
   title: string;
   likesCount: number;
   coverImage: string | null;
+  hasCurrentUserLike: boolean;
   createdAt: string;
   updatedAt: string;
 }

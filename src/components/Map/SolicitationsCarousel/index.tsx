@@ -2,28 +2,18 @@ import * as React from 'react';
 import { Dimensions, Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
-import { useAuthStore } from '@/src/stores/authStore';
-import { errorToast, successToast } from '@/utils/use-toast';
-import { likeSolicitation } from '@/src/services/api/Solicitation/LikeSolicitationService';
 
-const SolicitationCarousel = ({ data }: { data: PaginatedSolicitationInterface[] }) => {
-  const token = useAuthStore(state => state.token);
+interface SolicitationCarouselProps {
+  data: PaginatedSolicitationInterface[];
+  onLike: ({ solicitationId, hasCurrentUserLike }: { solicitationId: number, hasCurrentUserLike: boolean }) => void;
+}
+
+const SolicitationCarousel = ({ data, onLike }: SolicitationCarouselProps) => {
   const width = Dimensions.get('window').width;
-
-  const handleLike = async (id: number) => {
-    if (!token) {
-      errorToast({ title: 'Você precisa estar logado para reforçar uma solicitação!' });
-    }
-
-    await likeSolicitation({ solicitationId: id })
-      .then(() => {
-        successToast({ title: 'Você reforçou esta solicitação!' })
-      })
-  }
 
   const handleGoToSolicitation = (id: number) => {
     console.log(`Acessou a solicitação ${id}`);
-  }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -54,10 +44,12 @@ const SolicitationCarousel = ({ data }: { data: PaginatedSolicitationInterface[]
                   {item.title.length > 30 ? item.title.substring(0, 30) + '...' : item.title}
                 </Text>
                 <IconButton
-                  icon="thumb-up-outline"
+                  icon={item.hasCurrentUserLike ? 'thumb-up' : 'thumb-up-outline'}
                   size={24}
                   style={styles.iconButton}
-                  onPress={() => handleLike(item.id)}
+                  onPress={
+                    () => onLike({ solicitationId: item.id, hasCurrentUserLike: item.hasCurrentUserLike })
+                  }
                 />
               </View>
             </TouchableOpacity>
