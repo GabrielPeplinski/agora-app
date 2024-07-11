@@ -20,7 +20,6 @@ export const createOrUpdateAddress = async (data: AddressInterface): Promise<Add
 
     return response.data as AddressInterface;
   } catch (error: any) {
-    console.log(error);
-    return null;
+    throw error;
   }
 };

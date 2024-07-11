@@ -15,7 +15,6 @@ const mapLayer: MapLayer = {
 };
 
 const AgoraMap = () => {
-
   const { latitude, longitude } = useLocationCoordinates();
 
   // const { data, refreshData } = useCollection<Troubles>('troubles');

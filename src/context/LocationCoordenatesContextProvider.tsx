@@ -6,6 +6,7 @@ import {
   useState,
 } from 'react';
 import * as Location from 'expo-location';
+import { errorToast } from '@/utils/use-toast';
 
 interface LocationCoordinateProps {
   latitude: number;
@@ -31,6 +32,10 @@ export function LocationCoordinatesContextProvider({ children }: PropsWithChildr
 
           setLatitude(location.coords.latitude);
           setLongitude(location.coords.longitude);
+        } else {
+          errorToast({
+            title: 'Permissão de acesso de localização em tempo real negada! Esta ação é necessária, para criar novas solicitações!'
+          });
         }
       } catch (error) {
         throw Error;
@@ -54,7 +59,7 @@ export function useLocationCoordinates() {
 
   if (!context)
     throw new Error(
-      'useLocationCoordenates must be used inside LocationCoordenatesContext'
+      'useLocationCoordenates must be used inside LocationCoordenatesContext',
     );
 
   return context;
