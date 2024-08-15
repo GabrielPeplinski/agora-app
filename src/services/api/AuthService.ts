@@ -1,6 +1,7 @@
 import axiosInstance from '@/utils/axios-instance';
 import apiRoutes from '@/routes/routes';
 import UserPropsInterface from '@/src/interfaces/Auth/UserPropsInterface';
+import MeInterfaceResponse from '@/src/interfaces/Auth/MeInterfaceResponse';
 
 export const register = async (data: UserPropsInterface) => {
   try {
@@ -10,10 +11,24 @@ export const register = async (data: UserPropsInterface) => {
   }
 };
 
-export const me = async () => {
+export const me = async (): Promise <MeInterfaceResponse | null> => {
   try {
-    return await axiosInstance().get(apiRoutes.auth.me);
+    const response = await axiosInstance()
+      .get(apiRoutes.auth.me);
+
+    return response.data as MeInterfaceResponse;
   } catch (error: any) {
-    console.log(error);
+    throw error;
+  }
+};
+
+export const updatePersonalData = async (): Promise <MeInterfaceResponse | null> => {
+  try {
+    const response = await axiosInstance()
+      .put(apiRoutes.auth.personalData);
+
+    return response.data as MeInterfaceResponse;
+  } catch (error: any) {
+    throw error;
   }
 };

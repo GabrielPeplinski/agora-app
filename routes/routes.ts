@@ -3,7 +3,8 @@ const apiRoutes = {
     register: 'auth/register',
     login: 'auth/login',
     logout: 'auth/logout',
-    me: 'auth/me'
+    me: 'auth/me',
+    personalData: 'auth/personal-data'
   },
   address: {
     get: 'client/address',
