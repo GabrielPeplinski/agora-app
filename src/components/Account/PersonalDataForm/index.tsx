@@ -1,16 +1,15 @@
 import { Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, TextInput, Text } from 'react-native-paper';
-import AddressValidation from '@/src/validations/AddressValidation';
-import { createOrUpdateAddress } from '@/src/services/api/AddressService';
+import { Button, TextInput, Text, Checkbox } from 'react-native-paper';
 import { errorToast, successToast } from '@/utils/use-toast';
-import { TextInputMask } from 'react-native-masked-text';
 import FormErrorsInterface from '@/src/interfaces/Forms/FormErrorsInterface';
-import { Entypo } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import FormError from '@/src/components/Shared/FormError';
 import { useRouter } from 'expo-router';
-import { me } from '@/src/services/api/AuthService';
+import { me, updatePersonalData } from '@/src/services/api/AuthService';
+import PersonalDataValidation from '@/src/validations/PersonalDataValidation';
+import PersonalDataInterface from '@/src/interfaces/Auth/PersonalDataInterface';
 
 const PersonalDataForm = () => {
   const [initialValues, setInitialValues] = useState({
@@ -22,32 +21,37 @@ const PersonalDataForm = () => {
   });
   const [formErrors, setFormErrors] = useState<FormErrorsInterface>({});
   const router = useRouter();
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
   const cleanErrors = () => {
     setFormErrors({});
   };
 
   useEffect(() => {
-    const fetchAddress = async () => {
+    const getPersonalData = async () => {
       const meData = await me();
 
       if (meData) {
         setInitialValues({
           name: meData.name,
-          email: meData.email
+          email: meData.email,
+          password: '',
+          new_password: '',
+          new_password_confirmation: '',
         });
       }
     };
-    fetchAddress();
+    getPersonalData();
   }, []);
 
-  const handleUpdatePersonalData = async (values: AddressInterface) => {
-    const formattedValues = {
+  const handleUpdatePersonalData = async (values: PersonalDataInterface) => {
+    const data = {
       ...values,
-      zipCode: values.zipCode.replace('-', ''),
-    };
+      new_password: values.new_password || '',
+      new_password_confirmation: values.new_password_confirmation || '',
+    }
 
-    await createOrUpdateAddress(formattedValues)
+    await updatePersonalData(data)
       .then(() => {
         cleanErrors();
         router.push('/auth');
@@ -67,59 +71,73 @@ const PersonalDataForm = () => {
     <View style={styles.container}>
 
       <View style={styles.pageHeader}>
-        <Entypo name="home" size={100} color="black" />
+        <FontAwesome5 name="user-alt" size={100} color="black" />
         <Text variant={'titleLarge'}>
-          Atualize seu Dados Pessoais
+          Dados Pessoais
         </Text>
       </View>
 
       <Formik
         enableReinitialize
         initialValues={initialValues}
-        validationSchema={AddressValidation}
-        onSubmit={(values: AddressInterface) => handleUpdatePersonalData(values)}
+        validationSchema={PersonalDataValidation}
+        onSubmit={(values: PersonalDataInterface) => handleUpdatePersonalData(values)}
       >
         {({ handleChange, handleSubmit, setFieldValue, values, errors, touched }) => (
           <View style={styles.form}>
-            <TextInputMask
-              type={'custom'}
-              options={{
-                mask: '99999-999',
-              }}
-              customTextInput={TextInput}
-              customTextInputProps={{
-                style: styles.space,
-                label: 'CEP*',
-                placeholder: 'Seu cep',
-              }}
-              value={values.zipCode}
-              onChangeText={handleChange('zipCode')}
-            />
-            {(errors.zipCode && touched.zipCode) && <FormError errorMessage={errors.zipCode} />}
-            {formErrors.zipCode && formErrors.zipCode.length > 0 && <FormError errorMessage={formErrors.zipCode[0]} />}
 
             <TextInput
               style={styles.space}
-              label="Cidade*"
-              placeholder="Cidade onde mora"
-              value={values.cityName}
-              onChangeText={handleChange('cityName')}
+              label="Nome*"
+              placeholder="Seu nome..."
+              value={values.name}
+              onChangeText={handleChange('name')}
             />
-            {(errors.cityName && touched.cityName) && <FormError errorMessage={errors.cityName} />}
-            {formErrors.cityName && formErrors.cityName.length > 0 && <FormError errorMessage={formErrors.cityName[0]} />}
+            {(errors.name && touched.name) && <FormError errorMessage={errors.name} />}
+            {formErrors.name && formErrors.name.length > 0 && <FormError errorMessage={formErrors.name[0]} />}
 
             <TextInput
               style={styles.space}
-              label="Bairro*"
-              placeholder="Bairro onde mora"
-              value={values.neighborhood}
-              onChangeText={handleChange('neighborhood')}
+              label="Email*"
+              placeholder="Seu email..."
+              value={values.email}
+              onChangeText={handleChange('email')}
             />
-            {(errors.neighborhood && touched.neighborhood) && <FormError errorMessage={errors.neighborhood} />}
-            {formErrors.neighborhood && formErrors.neighborhood.length > 0 && <FormError errorMessage={formErrors.neighborhood[0]} />}
+            {(errors.email && touched.email) && <FormError errorMessage={errors.email} />}
+            {formErrors.email && formErrors.email.length > 0 && <FormError errorMessage={formErrors.email[0]} />}
+
+            <Checkbox.Item
+              label="Deseja atualizar sua senha?"
+              status={isUpdatingPassword ? 'checked' : 'unchecked'}
+              onPress={() => setIsUpdatingPassword(!isUpdatingPassword)}
+            />
+
+            {isUpdatingPassword && (
+              <>
+                <TextInput
+                  style={styles.space}
+                  label="Nova senha"
+                  placeholder="Sua nova senha..."
+                  value={values.new_password || ''}
+                  onChangeText={handleChange('new_password')}
+                />
+                {(errors.new_password && touched.new_password) && <FormError errorMessage={errors.new_password} />}
+                {formErrors.new_password && formErrors.new_password.length > 0 && <FormError errorMessage={formErrors.new_password[0]} />}
+
+                <TextInput
+                  style={styles.space}
+                  label="Confirme sua nova senha"
+                  placeholder="Confirmação da sua nova senha..."
+                  value={values.new_password_confirmation || ''}
+                  onChangeText={handleChange('new_password_confirmation')}
+                />
+                {(errors.new_password_confirmation && touched.new_password_confirmation) && <FormError errorMessage={errors.new_password_confirmation} />}
+                {formErrors.new_password_confirmation && formErrors.new_password_confirmation.length > 0 && <FormError errorMessage={formErrors.new_password_confirmation[0]} />}
+              </>
+            )}
 
             <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode="contained">
-              Atualizar Endereço
+              Atualizar
             </Button>
           </View>
         )}

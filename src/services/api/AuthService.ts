@@ -2,6 +2,7 @@ import axiosInstance from '@/utils/axios-instance';
 import apiRoutes from '@/routes/routes';
 import UserPropsInterface from '@/src/interfaces/Auth/UserPropsInterface';
 import MeInterfaceResponse from '@/src/interfaces/Auth/MeInterfaceResponse';
+import PersonalDataInterface from '@/src/interfaces/Auth/PersonalDataInterface';
 
 export const register = async (data: UserPropsInterface) => {
   try {
@@ -22,7 +23,7 @@ export const me = async (): Promise <MeInterfaceResponse | null> => {
   }
 };
 
-export const updatePersonalData = async (): Promise <MeInterfaceResponse | null> => {
+export const updatePersonalData = async (data: PersonalDataInterface): Promise <MeInterfaceResponse | null> => {
   try {
     const response = await axiosInstance()
       .put(apiRoutes.auth.personalData);
