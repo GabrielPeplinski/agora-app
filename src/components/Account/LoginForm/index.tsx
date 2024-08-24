@@ -1,59 +1,56 @@
 import React from 'react';
 import { Formik } from 'formik';
-import { Button, Text, TextInput } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
+import { Button, TextInput } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
 import LoginValidation from '@/src/validations/LoginValidation';
-import { View } from '@/src/components/Themed';
 import PasswordInput from '@/src/components/Account/PasswordInput';
 import { useAuthStore } from '@/src/stores/authStore';
+import FormError from '@/src/components/Shared/FormError';
 
 const LoginForm = () => {
   const login = useAuthStore(state => state.login);
-  const handleLogin = async (values: any) => {
-    try {
-      login(values);
-    } catch (error: any) {
-      console.log(error.stack);
-    }
-  };
 
   return (
     <View style={styles.container}>
-      <>
-        <Formik
-          initialValues={{
-            email: 'example@example.com',
-            password: '123456',
-          }}
-          validationSchema={LoginValidation}
-          onSubmit={(values) => handleLogin(values)}
-        >
-          {({ handleChange, handleSubmit, values, errors, isValid }) => (
-            <View style={styles.form}>
-              <TextInput
-                style={styles.space}
-                label="Email"
-                placeholder="Seu email"
-                value={values.email}
-                onChangeText={handleChange('email')}
-              />
-              {errors.email && <Text>{errors.email}</Text>}
+      <Formik
+        enableReinitialize
+        initialValues={{
+          email: '',
+          password: '',
+        }}
+        validationSchema={LoginValidation}
+        onSubmit={(values) => login(values)}
+      >
+        {({ handleChange, handleSubmit, values, errors, touched, isValid }) => (
+          <View style={styles.form}>
+            <TextInput
+              style={styles.space}
+              label="Email"
+              placeholder="Seu email"
+              value={values.email}
+              onChangeText={handleChange('email')}
+            />
+            {(errors.email && touched.email) && <FormError errorMessage={errors.email} />}
 
-              <PasswordInput
-                label={"Senha"}
-                value={values.password}
-                placeholder={"Sua senha"}
-                onChangeText={handleChange('password')}
-              />
-              {errors.password && <Text>{errors.password}</Text>}
+            <PasswordInput
+              label="Senha"
+              value={values.password}
+              placeholder="Sua senha"
+              onChangeText={handleChange('password')}
+            />
+            {(errors.password && touched.password) && <FormError errorMessage={errors.password} />}
 
-              <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode={'contained'} disabled={!isValid}>
-                Login
-              </Button>
-            </View>
-          )}
-        </Formik>
-      </>
+            <Button
+              style={styles.space}
+              onPress={(e: any) => handleSubmit(e)}
+              mode="contained"
+              disabled={!isValid}
+            >
+              Login
+            </Button>
+          </View>
+        )}
+      </Formik>
     </View>
   );
 };
@@ -72,14 +69,6 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '80%',
-  },
-  logoImage: {
-    width: 350,
-    height: 200,
-  },
-  text: {
-    textAlign: 'center',
-    color: 'white',
   },
 });
 
