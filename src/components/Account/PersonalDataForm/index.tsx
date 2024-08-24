@@ -35,10 +35,32 @@ const PersonalDataForm = () => {
       return newErrors;
     });
   };
+
+  const validateForm = (values: PersonalDataInterface) => {
+    const newErrors: FormErrorsInterface = {};
+
+    if (isUpdatingPassword) {
+      if (!values.new_password) {
+        newErrors.new_password = ['Campo nova senha é obrigatório ao atualizar a senha atual'];
+      }
+      if (!values.new_password_confirmation) {
+        newErrors.new_password_confirmation = ['Campo confirmação de nova senha é obrigatório ao atualizar a senha atual'];
+      }
+      if (values.new_password !== values.new_password_confirmation) {
+        newErrors.new_password_confirmation = ['As senhas devem ser iguais'];
+      }
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setFormErrors(newErrors);
+      return false;
+    }
+    return true;
+  };
+
   useEffect(() => {
     const getPersonalData = async () => {
       const meData = await me();
-
       if (meData) {
         setInitialValues({
           name: meData.name,
@@ -51,23 +73,6 @@ const PersonalDataForm = () => {
     };
     getPersonalData();
   }, [isUpdatingPassword]);
-
-  useEffect(() => {
-    const getPersonalData = async () => {
-      const meData = await me();
-
-      if (meData) {
-        setInitialValues({
-          name: meData.name,
-          email: meData.email,
-          password: '',
-          new_password: '',
-          new_password_confirmation: '',
-        });
-      }
-    };
-    getPersonalData();
-  }, []);
 
   const handleUpdatePersonalData = async (values: PersonalDataInterface) => {
     const data: PersonalDataInterface = {
@@ -87,7 +92,7 @@ const PersonalDataForm = () => {
       .then(() => {
         cleanErrors();
         router.push('/auth');
-        successToast({ title: 'Dados pessoais atualizado com sucesso!' });
+        successToast({ title: 'Dados pessoais atualizados com sucesso!' });
       })
       .catch((error) => {
         if (error?.response?.status === 422) {
@@ -101,7 +106,6 @@ const PersonalDataForm = () => {
 
   return (
     <View style={styles.container}>
-
       <View style={styles.pageHeader}>
         <FontAwesome5 name="user-alt" size={100} color="black" />
         <Text variant={'titleLarge'}>
@@ -113,11 +117,14 @@ const PersonalDataForm = () => {
         enableReinitialize
         initialValues={initialValues}
         validationSchema={PersonalDataValidation}
-        onSubmit={(values: PersonalDataInterface) => handleUpdatePersonalData(values)}
+        onSubmit={(values: PersonalDataInterface) => {
+          if (validateForm(values)) {
+            handleUpdatePersonalData(values);
+          }
+        }}
       >
         {({ handleChange, handleSubmit, values, errors, touched }) => (
           <View style={styles.form}>
-
             <TextInput
               style={styles.space}
               label="Nome*"
