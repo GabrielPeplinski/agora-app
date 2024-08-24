@@ -17,19 +17,16 @@ export const me = async (): Promise <MeInterfaceResponse | null> => {
     const response = await axiosInstance()
       .get(apiRoutes.auth.me);
 
-    return response.data as MeInterfaceResponse;
+    return response.data.data as MeInterfaceResponse;
   } catch (error: any) {
     throw error;
   }
 };
 
-export const updatePersonalData = async (data: PersonalDataInterface): Promise <MeInterfaceResponse | null> => {
+export const updatePersonalData = async (data: PersonalDataInterface) => {
   try {
-    const response = await axiosInstance()
-      .put(apiRoutes.auth.personalData);
-
-    return response.data as MeInterfaceResponse;
+    return await axiosInstance().put(apiRoutes.auth.personalData, data);
   } catch (error: any) {
-    throw error;
+    throw error.message();
   }
 };

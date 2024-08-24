@@ -13,7 +13,7 @@ const PersonalDataValidation = Yup.object().shape({
     .trim(),
 
   password: Yup.string()
-    .required('Campo senha é obrigatório')
+    .required('É necessário informar a senha atual para atualizar os dados')
     .min(6, 'A senha deve ter pelo menos 6 caracteres')
     .max(20, 'A senha deve ter no máximo 20 caracteres')
     .trim(),

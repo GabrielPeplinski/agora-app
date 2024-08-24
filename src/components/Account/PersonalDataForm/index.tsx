@@ -10,6 +10,7 @@ import { useRouter } from 'expo-router';
 import { me, updatePersonalData } from '@/src/services/api/AuthService';
 import PersonalDataValidation from '@/src/validations/PersonalDataValidation';
 import PersonalDataInterface from '@/src/interfaces/Auth/PersonalDataInterface';
+import PasswordInput from '@/src/components/Account/PasswordInput';
 
 const PersonalDataForm = () => {
   const [initialValues, setInitialValues] = useState({
@@ -17,7 +18,7 @@ const PersonalDataForm = () => {
     email: '',
     password: '',
     new_password: '',
-    new_password_confirmation: ''
+    new_password_confirmation: '',
   });
   const [formErrors, setFormErrors] = useState<FormErrorsInterface>({});
   const router = useRouter();
@@ -26,6 +27,30 @@ const PersonalDataForm = () => {
   const cleanErrors = () => {
     setFormErrors({});
   };
+
+  const cleanFieldError = (field: keyof FormErrorsInterface) => {
+    setFormErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors[field];
+      return newErrors;
+    });
+  };
+  useEffect(() => {
+    const getPersonalData = async () => {
+      const meData = await me();
+
+      if (meData) {
+        setInitialValues({
+          name: meData.name,
+          email: meData.email,
+          password: '',
+          new_password: '',
+          new_password_confirmation: '',
+        });
+      }
+    };
+    getPersonalData();
+  }, [isUpdatingPassword]);
 
   useEffect(() => {
     const getPersonalData = async () => {
@@ -45,10 +70,17 @@ const PersonalDataForm = () => {
   }, []);
 
   const handleUpdatePersonalData = async (values: PersonalDataInterface) => {
-    const data = {
-      ...values,
+    const data: PersonalDataInterface = {
+      name: values.name || '',
+      email: values.email || '',
+      password: values.password || '',
       new_password: values.new_password || '',
       new_password_confirmation: values.new_password_confirmation || '',
+    };
+
+    if (!values.new_password) {
+      delete data.new_password;
+      delete data.new_password_confirmation;
     }
 
     await updatePersonalData(data)
@@ -83,7 +115,7 @@ const PersonalDataForm = () => {
         validationSchema={PersonalDataValidation}
         onSubmit={(values: PersonalDataInterface) => handleUpdatePersonalData(values)}
       >
-        {({ handleChange, handleSubmit, setFieldValue, values, errors, touched }) => (
+        {({ handleChange, handleSubmit, values, errors, touched }) => (
           <View style={styles.form}>
 
             <TextInput
@@ -91,7 +123,10 @@ const PersonalDataForm = () => {
               label="Nome*"
               placeholder="Seu nome..."
               value={values.name}
-              onChangeText={handleChange('name')}
+              onChangeText={(text) => {
+                handleChange('name')(text);
+                cleanFieldError('name');
+              }}
             />
             {(errors.name && touched.name) && <FormError errorMessage={errors.name} />}
             {formErrors.name && formErrors.name.length > 0 && <FormError errorMessage={formErrors.name[0]} />}
@@ -101,10 +136,25 @@ const PersonalDataForm = () => {
               label="Email*"
               placeholder="Seu email..."
               value={values.email}
-              onChangeText={handleChange('email')}
+              onChangeText={(text) => {
+                handleChange('email')(text);
+                cleanFieldError('email');
+              }}
             />
             {(errors.email && touched.email) && <FormError errorMessage={errors.email} />}
             {formErrors.email && formErrors.email.length > 0 && <FormError errorMessage={formErrors.email[0]} />}
+
+            <PasswordInput
+              label="Insira sua senha atual*"
+              placeholder="Sua senha..."
+              value={values.password}
+              onChangeText={(text) => {
+                handleChange('password')(text);
+                cleanFieldError('password');
+              }}
+            />
+            {(errors.password && touched.password) && <FormError errorMessage={errors.password} />}
+            {formErrors.password && formErrors.password.length > 0 && <FormError errorMessage={formErrors.password[0]} />}
 
             <Checkbox.Item
               label="Deseja atualizar sua senha?"
@@ -114,22 +164,26 @@ const PersonalDataForm = () => {
 
             {isUpdatingPassword && (
               <>
-                <TextInput
-                  style={styles.space}
-                  label="Nova senha"
+                <PasswordInput
+                  label="Insira sua nova senha*"
                   placeholder="Sua nova senha..."
-                  value={values.new_password || ''}
-                  onChangeText={handleChange('new_password')}
+                  value={values.new_password ?? ''}
+                  onChangeText={(text) => {
+                    handleChange('new_password')(text);
+                    cleanFieldError('new_password');
+                  }}
                 />
                 {(errors.new_password && touched.new_password) && <FormError errorMessage={errors.new_password} />}
                 {formErrors.new_password && formErrors.new_password.length > 0 && <FormError errorMessage={formErrors.new_password[0]} />}
 
-                <TextInput
-                  style={styles.space}
-                  label="Confirme sua nova senha"
-                  placeholder="Confirmação da sua nova senha..."
-                  value={values.new_password_confirmation || ''}
-                  onChangeText={handleChange('new_password_confirmation')}
+                <PasswordInput
+                  label="Confirme sua nova senha*"
+                  placeholder="Confirme sua nova senha..."
+                  value={values.new_password_confirmation ?? ''}
+                  onChangeText={(text) => {
+                    handleChange('new_password_confirmation')(text);
+                    cleanFieldError('new_password_confirmation');
+                  }}
                 />
                 {(errors.new_password_confirmation && touched.new_password_confirmation) && <FormError errorMessage={errors.new_password_confirmation} />}
                 {formErrors.new_password_confirmation && formErrors.new_password_confirmation.length > 0 && <FormError errorMessage={formErrors.new_password_confirmation[0]} />}
@@ -160,11 +214,6 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '80%',
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-    marginTop: 10,
   },
   pageHeader: {
     alignItems: 'center',
