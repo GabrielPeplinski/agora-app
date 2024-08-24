@@ -159,7 +159,13 @@ const PersonalDataForm = () => {
             <Checkbox.Item
               label="Deseja atualizar sua senha?"
               status={isUpdatingPassword ? 'checked' : 'unchecked'}
-              onPress={() => setIsUpdatingPassword(!isUpdatingPassword)}
+              onPress={() => {
+                if (isUpdatingPassword) {
+                  handleChange('new_password')('');
+                  handleChange('new_password_confirmation')('');
+                }
+                setIsUpdatingPassword(!isUpdatingPassword);
+              }}
             />
 
             {isUpdatingPassword && (
