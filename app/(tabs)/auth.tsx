@@ -23,6 +23,11 @@ export default function AuthScreen() {
     router.push('/address/')
   }
 
+  const goToPersonalDataPage = () => {
+    setIsMenuVisible(false)
+    router.push('/personal-data/')
+  }
+
   const openMenu = () => setIsMenuVisible(true);
   const closeMenu = () => setIsMenuVisible(false);
 
@@ -44,6 +49,11 @@ export default function AuthScreen() {
                 leadingIcon="home"
                 onPress={goToAddressPage}
                 title="Seu endereço"
+              />
+              <Menu.Item
+                leadingIcon="account"
+                onPress={goToPersonalDataPage}
+                title="Seus dados"
               />
               <Menu.Item
                 leadingIcon="logout"

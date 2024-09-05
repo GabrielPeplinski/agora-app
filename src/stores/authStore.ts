@@ -42,7 +42,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         throw new Error('Token is not valid');
       }
     } catch (error: any) {
-      console.log(error);
       errorToast({ title: 'Falha ao iniciar sessão. Tente novamente.' });
     }
   },

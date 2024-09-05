@@ -3,7 +3,8 @@ const apiRoutes = {
     register: 'auth/register',
     login: 'auth/login',
     logout: 'auth/logout',
-    me: 'auth/me'
+    me: 'auth/me',
+    personalData: 'auth/personal-data'
   },
   address: {
     get: 'client/address',
@@ -13,7 +14,7 @@ const apiRoutes = {
   },
   mySolicitations: {
     index: 'client/my-solicitations',
-    addImage: 'my-solicitations/:id/add-image'
+    addImage: 'client/my-solicitations/:id/add-image'
   },
   solicitations: {
     index: 'solicitations',

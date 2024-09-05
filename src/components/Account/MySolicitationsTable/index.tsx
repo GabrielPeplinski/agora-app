@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { SegmentedButtons, Text } from 'react-native-paper';
 import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
 import SolicitationCard from '@/src/components/Solicitation/SolicitationCard';
@@ -17,9 +17,11 @@ const MySolicitationsTable = () => {
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState<PaginationMetaInterface | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchMySolicitations = async () => {
     setIsLoading(true);
+    setRefreshing(true);
     await getMySolicitations(page, statusFilter)
       .then((response) => {
         if (response) {
@@ -30,6 +32,7 @@ const MySolicitationsTable = () => {
         errorToast({ title: 'Ocorreu um erro ao buscar suas solicitações!' });
       }).finally(() => {
         setIsLoading(false);
+        setRefreshing(false);
       });
   };
 
@@ -73,6 +76,12 @@ const MySolicitationsTable = () => {
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={styles.scrollViewContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={fetchMySolicitations}
+          />
+        }
       >
         {isLoading
           ? <SmallLoader />
