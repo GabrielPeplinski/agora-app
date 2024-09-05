@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, Text } from 'react-native-paper';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
@@ -6,10 +6,6 @@ import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/Pagina
 import MySolicitationOptionsButton from '@/src/components/Solicitation/MySolicilitationOptionsButton';
 
 const SolicitationCard = ({ solicitationData }: { solicitationData: PaginatedSolicitationInterface }) => {
-  const [isOptionsVisible, setIsOptionsVisible] = useState(false);
-
-  const openOptions = () => setIsOptionsVisible(true);
-  const closeOptions = () => setIsOptionsVisible(false);
 
   return (
     <View style={styles.cardSpace}>

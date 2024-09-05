@@ -3,12 +3,12 @@ import { View, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 
-const RADIUS = 60; // Aumenta o raio para acomodar os botões de forma mais espaçosa
-const BUTTON_SIZE = 45; // Aumenta o tamanho dos botões para melhor usabilidade
+const RADIUS = 60;
+const BUTTON_SIZE = 45;
 
 const MySolicitationOptionsButton = ({ solicitationData }: { solicitationData: PaginatedSolicitationInterface }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const animatedValue = useState(new Animated.Value(0))[0]; // Valor animado para a transição suave
+  const animatedValue = useState(new Animated.Value(0))[0];
 
   const handleButtonPress = () => {
     setIsOpen(!isOpen);
