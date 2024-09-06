@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Animated, Alert } from 'react-native';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
+import { deleteSolicitation } from '@/src/services/api/Solicitation/MySolicitationsService';
+import { errorToast, successToast } from '@/utils/use-toast';
 
 const RADIUS = 60;
 const BUTTON_SIZE = 45;
@@ -20,22 +22,65 @@ const MySolicitationOptionsButton = ({ solicitationData }: { solicitationData: P
     }).start();
   };
 
+  const closeOptionsButton = () => {
+    setIsOpen(false);
+
+    Animated.spring(animatedValue, {
+      toValue: 0,
+      friction: 6,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleDelete = async () => {
+    await deleteSolicitation(solicitationData.id)
+      .then(() => {
+        successToast({ title: 'Solicitação excluída com sucesso!' });
+      })
+      .catch((error) => {
+        if (error?.response?.status === 422) {
+          errorToast({ title: 'Não é possível excluir uma solicitação atualizada por algum usuário!' });
+        } else {
+          errorToast({ title: 'Ocorreu um erro ao tentar excluir esta solicitação!' });
+        }
+      });
+  };
+
+  const confirmDelete = () => {
+    closeOptionsButton();
+
+    Alert.alert(
+      'Excluir Solicitação',
+      `Deseja excluir a solicitação: ${solicitationData.title} ?`,
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Excluir',
+          onPress: () => handleDelete(),
+        },
+      ],
+    );
+  };
+
   const options = [
     {
       icon: <Feather name="trash" size={24} color="black" />,
-      action: () => console.log(`Excluir Solicitação: ${solicitationData.title}`)
+      action: () => confirmDelete(),
     },
     {
       icon: <MaterialIcons name="published-with-changes" size={24} color="black" />,
-      action: () => console.log(`Atualizar Status da Solicitação: ${solicitationData.title}`)
+      action: () => console.log(`Atualizar Status da Solicitação: ${solicitationData.title}`),
     },
     {
       icon: <Feather name="edit" size={24} color="black" />,
-      action: () => console.log(`Editar Solicitação: ${solicitationData.title}`)
+      action: () => console.log(`Editar Solicitação: ${solicitationData.title}`),
     },
     {
       icon: <Feather name="eye" size={24} color="black" />,
-      action: () => console.log(`Visualizar Solicitação: ${solicitationData.title}`)
+      action: () => console.log(`Visualizar Solicitação: ${solicitationData.title}`),
     },
   ];
 
@@ -54,10 +99,10 @@ const MySolicitationOptionsButton = ({ solicitationData }: { solicitationData: P
               {
                 transform: [
                   { translateX: animatedValue.interpolate({ inputRange: [0, 1], outputRange: [0, x] }) },
-                  { translateY: animatedValue.interpolate({ inputRange: [0, 1], outputRange: [0, -y] }) }
+                  { translateY: animatedValue.interpolate({ inputRange: [0, 1], outputRange: [0, -y] }) },
                 ],
                 opacity: animatedValue,
-              }
+              },
             ]}
           >
             <TouchableOpacity
