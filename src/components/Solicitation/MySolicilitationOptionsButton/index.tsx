@@ -22,27 +22,27 @@ const MySolicitationOptionsButton = ({ solicitationData }: { solicitationData: P
 
   const options = [
     {
-      icon: <Feather name="eye" size={24} color="black" />,
-      action: () => console.log(`Visualizar Solicitação: ${solicitationData.title}`)
-    },
-    {
-      icon: <Feather name="edit" size={24} color="black" />,
-      action: () => console.log(`Editar Solicitação: ${solicitationData.title}`)
+      icon: <Feather name="trash" size={24} color="black" />,
+      action: () => console.log(`Excluir Solicitação: ${solicitationData.title}`)
     },
     {
       icon: <MaterialIcons name="published-with-changes" size={24} color="black" />,
       action: () => console.log(`Atualizar Status da Solicitação: ${solicitationData.title}`)
     },
     {
-      icon: <Feather name="trash" size={24} color="black" />,
-      action: () => console.log(`Excluir Solicitação: ${solicitationData.title}`)
+      icon: <Feather name="edit" size={24} color="black" />,
+      action: () => console.log(`Editar Solicitação: ${solicitationData.title}`)
+    },
+    {
+      icon: <Feather name="eye" size={24} color="black" />,
+      action: () => console.log(`Visualizar Solicitação: ${solicitationData.title}`)
     },
   ];
 
   return (
     <View style={styles.floatContainer}>
       {options.map((option, index) => {
-        const angle = (index * (180 / (options.length - 1))) * (Math.PI / 180); // Ângulo semicircular
+        const angle = (index * (180 / (options.length - 1))) * (Math.PI / 180);
         const x = RADIUS * Math.cos(angle);
         const y = RADIUS * Math.sin(angle);
 
