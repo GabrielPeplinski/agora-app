@@ -46,6 +46,10 @@ const MySolicitationsTable = () => {
     }
   }, [page]);
 
+  const handleDeleteSolicitation = (id: number) => {
+    setSolicitations((prevSolicitations) => prevSolicitations?.filter(solicitation => solicitation.id !== id));
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <SegmentedButtons
@@ -90,6 +94,7 @@ const MySolicitationsTable = () => {
               <SolicitationCard
                 key={solicitation.id}
                 solicitationData={solicitation}
+                onDelete={() => handleDeleteSolicitation(solicitation.id)}
               />
             ))
             : <View style={styles.noSolicitationsText}>

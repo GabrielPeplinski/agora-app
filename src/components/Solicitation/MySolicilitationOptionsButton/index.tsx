@@ -8,7 +8,7 @@ import { errorToast, successToast } from '@/utils/use-toast';
 const RADIUS = 60;
 const BUTTON_SIZE = 45;
 
-const MySolicitationOptionsButton = ({ solicitationData }: { solicitationData: PaginatedSolicitationInterface }) => {
+const MySolicitationOptionsButton = ({ solicitationData, onDelete }: { solicitationData: PaginatedSolicitationInterface, onDelete: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const animatedValue = useState(new Animated.Value(0))[0];
 
@@ -36,6 +36,7 @@ const MySolicitationOptionsButton = ({ solicitationData }: { solicitationData: P
     await deleteSolicitation(solicitationData.id)
       .then(() => {
         successToast({ title: 'Solicitação excluída com sucesso!' });
+        onDelete();
       })
       .catch((error) => {
         if (error?.response?.status === 422) {

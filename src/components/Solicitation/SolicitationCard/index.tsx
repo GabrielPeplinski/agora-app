@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 import MySolicitationOptionsButton from '@/src/components/Solicitation/MySolicilitationOptionsButton';
 
-const SolicitationCard = ({ solicitationData }: { solicitationData: PaginatedSolicitationInterface }) => {
+const SolicitationCard = ({ solicitationData, onDelete }: { solicitationData: PaginatedSolicitationInterface, onDelete: () => void }) => {
 
   return (
     <View style={styles.cardSpace}>
@@ -30,7 +30,10 @@ const SolicitationCard = ({ solicitationData }: { solicitationData: PaginatedSol
         </View>
 
         <View style={styles.actions}>
-          <MySolicitationOptionsButton solicitationData={solicitationData} />
+          <MySolicitationOptionsButton
+            solicitationData={solicitationData}
+            onDelete={onDelete}
+          />
         </View>
       </Card>
     </View>
