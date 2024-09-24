@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View } from '@/src/components/Themed';
 import { Button } from 'react-native-paper';
 import ContainerBaseStyle from '@/app/style';
@@ -26,6 +26,7 @@ export default function CreateSolicitationsScreen() {
   const maxPageNumber = 2;
   const [loadingSubmit, setLoadingSubmit] = React.useState(false);
   const router = useRouter();
+  const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
 
   const [formData, setFormData] = React.useState<FormData>({
     title: '',
@@ -37,16 +38,36 @@ export default function CreateSolicitationsScreen() {
     images: [],
   });
 
-  function handleSubmit() {
-    if (page < maxPageNumber - 1) {
-      setPage(page + 1);
-    } else {
-      setLoadingSubmit(true);
-      handleCreateSolicitation()
-        .finally(() => setLoadingSubmit(false));
-
-      router.back();
+  useEffect(() => {
+    if (page === 0) {
+      setIsButtonDisabled(!validateFirstPage(formData));
     }
+
+    if (page === 1) {
+      setIsButtonDisabled(!validateSecondPage(formData));
+    }
+  }, [formData, page]);
+
+  function validateFirstPage(formData: FormData) {
+    return formData.title !== '' &&
+      formData.description !== '' &&
+      formData.solicitationCategoryId !== 0 &&
+      formData.latitudeCoordinates !== '' &&
+      formData.longitudeCoordinates !== '';
+  }
+
+  function validateSecondPage(formData: FormData) {
+    return formData.coverImage !== null && formData.coverImage !== '';
+  }
+
+  function handleSubmit() {
+      if (page < maxPageNumber - 1) {
+        setPage(page + 1);
+      } else {
+        setLoadingSubmit(true);
+        handleCreateSolicitation()
+          .finally(() => setLoadingSubmit(false));
+      }
   }
 
   async function handleCreateSolicitation() {
@@ -54,7 +75,9 @@ export default function CreateSolicitationsScreen() {
       .then((response) => {
         successToast({ title: 'Solicitação criada com sucesso!' });
 
-        return addSolicitationImages(response.id.toString());
+        router.back();
+
+        addSolicitationImages(response.id.toString());
       })
       .then(() => {
         successToast({ title: 'As imagens foram enviadas com sucesso!' });
@@ -138,6 +161,7 @@ export default function CreateSolicitationsScreen() {
               mode={'contained'}
               onPress={handleSubmit}
               style={styles.buttonNext}
+              disabled={isButtonDisabled}
             >
               {page === 0 ? 'Próximo' : 'Cadastrar'}
             </Button>
