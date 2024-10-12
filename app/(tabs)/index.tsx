@@ -81,7 +81,9 @@ export default function TabOneScreen() {
           data={data}
           onLike={handleLike}
         />
-        <AgoraMap />
+        <AgoraMap
+          data={data}
+        />
         <CreateSolicitationButton />
       </View>
     </>
