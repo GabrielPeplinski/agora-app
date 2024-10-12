@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { Dimensions, Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { Dimensions, Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 
 interface SolicitationCarouselProps {
   data: PaginatedSolicitationInterface[];
   onLike: ({ solicitationId, hasCurrentUserLike }: { solicitationId: number, hasCurrentUserLike: boolean }) => void;
+  onRefresh: () => void;
+  refreshing: boolean;
 }
 
-const SolicitationCarousel = ({ data, onLike }: SolicitationCarouselProps) => {
+const SolicitationCarousel = ({ data, onLike, onRefresh, refreshing }: SolicitationCarouselProps) => {
   const width = Dimensions.get('window').width;
 
   const handleGoToSolicitation = (id: number) => {
@@ -22,6 +24,12 @@ const SolicitationCarousel = ({ data, onLike }: SolicitationCarouselProps) => {
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         style={{ width }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
       >
         {data.map((item, index) => (
           <View key={index} style={[styles.carouselItem, { width }]}>

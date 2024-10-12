@@ -23,9 +23,11 @@ export default function TabOneScreen() {
   const [data, setData] = useState<PaginatedSolicitationInterface[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [meta, setMeta] = useState<PaginationMetaInterface | null>(null);
+  const [refreshing, setRefreshing] = useState<boolean>(false); // Estado para controle de refresh
 
   const fetchSolicitations = async () => {
     setIsLoading(true);
+    setRefreshing(true); // Inicie o refresh
     await getSolicitations(page)
       .then((response) => {
         if (response && response.data) {
@@ -37,6 +39,7 @@ export default function TabOneScreen() {
         errorToast({ title: 'Ocorreu um erro ao buscar as solicitações!' });
       }).finally(() => {
         setIsLoading(false);
+        setRefreshing(false);
       });
   };
 
@@ -52,7 +55,6 @@ export default function TabOneScreen() {
           hasCurrentUserLike: !hasCurrentUserLike,
         };
       }
-
       return item;
     });
 
@@ -64,7 +66,9 @@ export default function TabOneScreen() {
       await likeSolicitation({ solicitationId })
         .then(() => {
           updateSolicitationLikeStatus({ solicitationId, hasCurrentUserLike });
-          successToast({ title: 'Você reforçou esta solicitação!' });
+
+          if (!hasCurrentUserLike)
+            successToast({ title: 'Você reforçou esta solicitação!' });
         })
         .catch((error: any) => {
           errorToast({ title: 'Ocorreu um erro ao reforçar a solicitação!' });
@@ -80,6 +84,8 @@ export default function TabOneScreen() {
         <SolicitationCarousel
           data={data}
           onLike={handleLike}
+          onRefresh={fetchSolicitations}
+          refreshing={refreshing}
         />
         <AgoraMap
           data={data}

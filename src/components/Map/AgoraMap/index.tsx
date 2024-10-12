@@ -26,7 +26,6 @@ const statusIcons: { [key: string]: string } = {
 }
 
 const AgoraMap = ({ data }: AgoraMapProps) => {
-  console.log(data)
   const { latitude, longitude } = useLocationCoordinates();
 
   const solicitationList = data.map((item): MapMarker => {
