@@ -20,7 +20,7 @@ export const getSolicitation = async (solicitationId: number | string): Promise<
     const response = await axiosInstance()
       .get(`${apiRoutes.solicitations.index}/${solicitationId}`);
 
-    return response.data as SolicitationResponseInterface;
+    return response.data.data as SolicitationResponseInterface;
   } catch (error: any) {
     throw error;
   }

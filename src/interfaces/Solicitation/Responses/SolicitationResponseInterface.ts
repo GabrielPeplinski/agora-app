@@ -1,4 +1,5 @@
 import { array } from 'yup';
+import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
 interface UserSolicitationResponseInterface {
   id: number;
   performedBy: string;
@@ -23,7 +24,7 @@ interface SolicitationResponseInterface {
   likesCount: number;
   coverImage?: string | null;
   images?: string[] | null;
-  status: string;
+  status: SolicitationStatusEnum.OPEN | SolicitationStatusEnum.IN_PROGRESS | SolicitationStatusEnum.RESOLVED;
   solicitationCategory?: SolicitationCategoryResponseInterface | null;
   historic?: UserSolicitationResponseInterface[] | null;
   createdAt: string;

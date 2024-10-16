@@ -6,6 +6,7 @@ import LoadingScreen from '@/src/components/Shared/LoadingScreen';
 import { getSolicitation } from '@/src/services/api/Solicitation/SolicitationsService';
 import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/SolicitationResponseInterface';
 import { errorToast } from '@/utils/use-toast';
+import SolicitationDetails from '@/src/components/Solicitation/SolicitationDetails';
 
 export default function ShowSolicitationScreen() {
   const { id } = useLocalSearchParams();
@@ -14,7 +15,7 @@ export default function ShowSolicitationScreen() {
 
   useEffect(() => {
     getSolicitationDetails();
-  }, []);
+  }, [id]);
 
   const getSolicitationDetails = async () => {
     await getSolicitation(id.toString())
@@ -35,7 +36,9 @@ export default function ShowSolicitationScreen() {
         <LoadingScreen />
       ) : (
         <View style={ContainerBaseStyle.container}>
-
+          <SolicitationDetails
+            solicitationData={data}
+          />
         </View>
       )}
     </View>
