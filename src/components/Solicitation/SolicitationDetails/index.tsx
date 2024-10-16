@@ -18,7 +18,7 @@ const SolicitationDetails = ({ solicitationData }: { solicitationData: Solicitat
   const [progress, setProgress] = useState(0);
 
   const progressMapping: { [key in SolicitationStatusEnum]: number } = {
-    [SolicitationStatusEnum.OPEN]: 1,
+    [SolicitationStatusEnum.OPEN]: 0.2,
     [SolicitationStatusEnum.IN_PROGRESS]: 0.6,
     [SolicitationStatusEnum.RESOLVED]: 1,
   };
