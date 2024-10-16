@@ -2,6 +2,7 @@ import axiosInstance from '@/utils/axios-instance';
 import apiRoutes from '@/routes/routes';
 import SolicitationListResponseInterface
   from '@/src/interfaces/Solicitation/Responses/SolicitationListResponseInterface';
+import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/SolicitationResponseInterface';
 
 export const getSolicitations = async (page: number = 1): Promise<SolicitationListResponseInterface | null> => {
   try {
@@ -13,4 +14,15 @@ export const getSolicitations = async (page: number = 1): Promise<SolicitationLi
     throw error;
   }
 };
+
+export const getSolicitation = async (solicitationId: number | string): Promise<SolicitationResponseInterface | null> => {
+  try {
+    const response = await axiosInstance()
+      .get(`${apiRoutes.solicitations.index}/${solicitationId}`);
+
+    return response.data as SolicitationResponseInterface;
+  } catch (error: any) {
+    throw error;
+  }
+}
 

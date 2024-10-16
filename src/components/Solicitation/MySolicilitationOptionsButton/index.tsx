@@ -4,6 +4,7 @@ import { Feather, MaterialIcons } from '@expo/vector-icons';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 import { deleteSolicitation } from '@/src/services/api/Solicitation/MySolicitationsService';
 import { errorToast, successToast } from '@/utils/use-toast';
+import { router } from 'expo-router';
 
 const RADIUS = 60;
 const BUTTON_SIZE = 45;
@@ -66,6 +67,10 @@ const MySolicitationOptionsButton = ({ solicitationData, onDelete }: { solicitat
     );
   };
 
+  const handleShowSolicitation = (id: number): void => {
+    router.push(`/solicitations/${id}/show`);
+  };
+
   const options = [
     {
       icon: <Feather name="trash" size={24} color="black" />,
@@ -81,7 +86,7 @@ const MySolicitationOptionsButton = ({ solicitationData, onDelete }: { solicitat
     },
     {
       icon: <Feather name="eye" size={24} color="black" />,
-      action: () => console.log(`Visualizar Solicitação: ${solicitationData.title}`),
+      action: () => handleShowSolicitation(solicitationData.id),
     },
   ];
 
