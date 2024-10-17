@@ -39,6 +39,8 @@ const SolicitationDetails = ({ solicitationData }: { solicitationData: Solicitat
         Status Atual: {solicitationData && translateStatus(solicitationData.status)}
       </Text>
 
+
+
       <ProgressBar
         progress={progress}
         color={'rgb(33, 90, 189)'}

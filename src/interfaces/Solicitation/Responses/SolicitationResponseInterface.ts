@@ -1,5 +1,5 @@
-import { array } from 'yup';
 import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
+
 interface UserSolicitationResponseInterface {
   id: number;
   performedBy: string;
