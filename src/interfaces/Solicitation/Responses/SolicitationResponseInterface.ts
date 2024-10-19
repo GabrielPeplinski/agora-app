@@ -1,12 +1,5 @@
 import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
-
-interface UserSolicitationResponseInterface {
-  id: number;
-  performedBy: string;
-  status: string;
-  actionDescription: string;
-  createdAt: string;
-}
+import UserSolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/UserSolicitationInterface';
 
 interface SolicitationCategoryResponseInterface {
   id: number;

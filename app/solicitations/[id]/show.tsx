@@ -48,9 +48,11 @@ export default function ShowSolicitationScreen() {
               />
             }
           >
-            <SolicitationDetails
-              solicitationData={data}
-            />
+            {data && (
+              <SolicitationDetails
+                solicitationData={data}
+              />
+            )}
           </ScrollView>
         </>
       )}
@@ -59,5 +61,9 @@ export default function ShowSolicitationScreen() {
 }
 
 const styles = StyleSheet.create({
-
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

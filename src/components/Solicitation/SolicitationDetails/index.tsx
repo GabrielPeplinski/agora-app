@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Card, ProgressBar, Text, Divider } from 'react-native-paper';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/SolicitationResponseInterface';
 import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
+import SolicitationHistoric from '@/src/components/Solicitation/SolicitationHistoric';
 
 const translateStatus = (status: SolicitationStatusEnum): string => {
   const translations: { [key in SolicitationStatusEnum]: string } = {
@@ -15,7 +16,11 @@ const translateStatus = (status: SolicitationStatusEnum): string => {
   return translations[status] || 'Status desconhecido';
 };
 
-const SolicitationCard = ({ solicitationData }: { solicitationData: SolicitationResponseInterface }) => {
+interface SolicitationCardProps {
+  solicitationData: SolicitationResponseInterface;
+}
+
+const SolicitationCard = ({ solicitationData }: SolicitationCardProps) => {
   const [progress, setProgress] = useState(0);
 
   const progressMapping: { [key in SolicitationStatusEnum]: number } = {
@@ -31,64 +36,72 @@ const SolicitationCard = ({ solicitationData }: { solicitationData: Solicitation
   }, [solicitationData]);
 
   return (
-    <View style={styles.cardSpace}>
-      <Card style={styles.cardLayout}>
-        <Card.Title
-          title={solicitationData.title}
-          titleStyle={styles.title}
-        />
+    <ScrollView>
+      <View style={styles.cardSpace}>
+        <Card style={styles.cardLayout}>
+          <Card.Title
+            title={solicitationData.title}
+            titleStyle={styles.title}
+          />
 
-        <Text variant={'titleLarge'} style={styles.statusText}>
-          {translateStatus(solicitationData.status)}
-        </Text>
-
-        <ProgressBar
-          progress={progress}
-          color={'rgb(33, 90, 189)'}
-          style={styles.progressBar}
-        />
-
-        <View style={styles.imageContainer}>
-          {solicitationData.coverImage ? (
-            <Card.Cover source={{ uri: solicitationData.coverImage }} style={styles.cardCover} />
-          ) : (
-            <View style={styles.iconContainer}>
-              <MaterialCommunityIcons name="image-marker-outline" size={150} color="black" />
-            </View>
-          )}
-        </View>
-
-        <Card.Content>
-          <Text variant={'bodyLarge'} style={styles.space}>
-            {solicitationData.description}
+          <Text variant={'titleLarge'} style={styles.statusText}>
+            Status atual: {translateStatus(solicitationData.status)}
           </Text>
 
-          <Text variant={'bodyLarge'} style={styles.space}>
-            Localização Geográfica: {solicitationData.latitudeCoordinates}, {solicitationData.longitudeCoordinates}
-          </Text>
+          <ProgressBar
+            progress={progress}
+            color={'rgb(33, 90, 189)'}
+            style={styles.progressBar}
+          />
 
-          <Divider style={styles.divider} />
-          <Text style={styles.categoryTitle}>
-            Categoria:
-          </Text>
-
-          {solicitationData.solicitationCategory && (
-            <Text variant={'bodyLarge'}>
-              {solicitationData.solicitationCategory.name} - {solicitationData.solicitationCategory.description}
-            </Text>
-          )}
-
-          <Text variant={'bodyLarge'} style={styles.space}>
-            Criado em: {new Date(solicitationData.createdAt).toLocaleDateString()}
-          </Text>
-
-          <View style={styles.likesContainer}>
-            <MaterialCommunityIcons name="thumb-up" size={24} color="blue" />
-            <Text style={styles.likesText}>{solicitationData.likesCount}</Text>
+          <View style={styles.imageContainer}>
+            {solicitationData.coverImage ? (
+              <Card.Cover source={{ uri: solicitationData.coverImage }} style={styles.cardCover} />
+            ) : (
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons name="image-marker-outline" size={150} color="black" />
+              </View>
+            )}
           </View>
-        </Card.Content>
-      </Card>
-    </View>
+
+          <Card.Content>
+            <Text variant={'bodyLarge'} style={styles.space}>
+              {solicitationData.description}
+            </Text>
+
+            <Divider style={styles.divider} />
+
+            <Text style={styles.categoryTitle}>
+              Categoria:
+            </Text>
+
+            {solicitationData.solicitationCategory && (
+              <Text variant={'bodyLarge'}>
+                {solicitationData.solicitationCategory.name} - {solicitationData.solicitationCategory.description}
+              </Text>
+            )}
+
+            <Divider style={styles.divider} />
+
+            <Text variant={'bodyLarge'} style={styles.space}>
+              Criado em: {new Date(solicitationData.createdAt).toLocaleDateString()}
+            </Text>
+
+            <View style={styles.likesContainer}>
+              <Text style={styles.likesText}>
+                Número de reforços: {solicitationData.likesCount}
+              </Text>
+              <MaterialCommunityIcons name="thumb-up" size={24} color="black" style={styles.likesIcon}/>
+            </View>
+          </Card.Content>
+        </Card>
+      </View>
+
+      <View style={styles.historicContainer}>
+        <Text style={styles.historicTitle}>Histórico de Ações</Text>
+        <SolicitationHistoric data={solicitationData.historic} />
+      </View>
+    </ScrollView>
   );
 };
 
@@ -155,6 +168,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'black',
   },
+  historicContainer: {
+    marginVertical: 20,
+    paddingHorizontal: 16,
+  },
+  historicTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  likesIcon: {
+    marginLeft: 5,
+  }
 });
 
 export default SolicitationCard;

@@ -81,12 +81,12 @@ export default function TabOneScreen() {
   return (
     <>
       <View style={ContainerBaseStyle.container}>
-        <SolicitationCarousel
-          data={data}
-          onLike={handleLike}
-          onRefresh={fetchSolicitations}
-          refreshing={refreshing}
-        />
+        {/*<SolicitationCarousel*/}
+        {/*  data={data}*/}
+        {/*  onLike={handleLike}*/}
+        {/*  onRefresh={fetchSolicitations}*/}
+        {/*  refreshing={refreshing}*/}
+        {/*/>*/}
         <AgoraMap
           data={data}
         />
