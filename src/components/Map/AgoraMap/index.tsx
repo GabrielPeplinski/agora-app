@@ -1,18 +1,16 @@
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import React from 'react';
-import { ExpoLeaflet, MapLayer, MapMarker } from 'expo-leaflet';
+import { ExpoLeaflet, MapLayer, MapMarker, MapShape } from 'expo-leaflet';
 import { useLocationCoordinates } from '@/src/context/LocationCoordenatesContextProvider';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 
-// Map Layer is based on OpenStreetMap, https://www.openstreetmap.org/#map=17/-25.35051/-51.47748
 const mapLayer: MapLayer = {
   baseLayerName: 'OpenStreetMap',
   baseLayerIsChecked: true,
   layerType: 'TileLayer',
   baseLayer: true,
   url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  attribution:
-    '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors',
+  attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors',
 };
 
 interface AgoraMapProps {
@@ -23,10 +21,25 @@ const statusIcons: { [key: string]: string } = {
   OPEN: '📢',
   RESOLVED: '✅',
   IN_PROGRESS: '🚧',
-}
+};
 
 const AgoraMap = ({ data }: AgoraMapProps) => {
   const { latitude, longitude } = useLocationCoordinates();
+
+  const generateCirclePoints = (center: { lat: number, lng: number }, radius: number, points: number = 32) => {
+    const angleStep = (2 * Math.PI) / points;
+    const circlePoints = [];
+
+    for (let i = 0; i < points; i++) {
+      const angle = i * angleStep;
+      const latOffset = radius * Math.cos(angle) / 111320;
+      const lngOffset = radius * Math.sin(angle) / (111320 * Math.cos(center.lat * Math.PI / 180));
+
+      circlePoints.push([center.lat + latOffset, center.lng + lngOffset]);
+    }
+
+    return circlePoints;
+  };
 
   const solicitationList = data.map((item): MapMarker => {
     const icon: string = statusIcons[item.status.toUpperCase()];
@@ -46,9 +59,22 @@ const AgoraMap = ({ data }: AgoraMapProps) => {
       title: 'Você está aqui!',
       position: { lat: latitude, lng: longitude },
       icon: '<div>👤</div>',
-      size: [24, 24],
+      size: [18, 18],
     },
   ];
+
+  const userCircle: MapShape = {
+    id: 'userCircle',
+    shapeType: 'polygon',
+    positions: generateCirclePoints({ lat: latitude, lng: longitude }, 300),
+    pathOptions: {
+      color: '#004aad', // Cor da borda
+      fillColor: 'rgba(0, 74, 173, 0.2)', // Cor de preenchimento com transparência
+      weight: 2, // Espessura da borda
+      fillOpacity: 0.5, // Opacidade do preenchimento
+    },
+  };
+
 
   const solicitationMarkers = solicitationList.concat(userLocation);
 
@@ -57,12 +83,13 @@ const AgoraMap = ({ data }: AgoraMapProps) => {
       <ExpoLeaflet
         mapLayers={[mapLayer]}
         mapMarkers={solicitationMarkers}
+        mapShapes={[userCircle]}
         mapCenterPosition={{
           lat: latitude,
           lng: longitude,
         }}
         maxZoom={20}
-        zoom={15}
+        zoom={16}
         loadingIndicator={() => <ActivityIndicator />}
         onMessage={(message: any) => {
           if (message.tag === 'onMapClicked') {
