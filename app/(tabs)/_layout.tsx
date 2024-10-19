@@ -1,7 +1,6 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
-import { Foundation } from '@expo/vector-icons';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -34,15 +33,6 @@ export default function TabLayout() {
           title: 'Mapa',
           tabBarIcon: ({ color, focused }) => (
             <FontAwesome name="map" size={28} color={focused ? '#004aad' : 'black'} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="dashboard"
-        options={{
-          title: 'Gráficos',
-          tabBarIcon: ({ color, focused }) => (
-            <Foundation name="graph-pie" size={28} color={focused ? '#004aad' : 'black'} />
           ),
         }}
       />
