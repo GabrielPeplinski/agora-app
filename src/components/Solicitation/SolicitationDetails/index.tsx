@@ -5,16 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/SolicitationResponseInterface';
 import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
 import SolicitationHistoric from '@/src/components/Solicitation/SolicitationHistoric';
-
-const translateStatus = (status: SolicitationStatusEnum): string => {
-  const translations: { [key in SolicitationStatusEnum]: string } = {
-    [SolicitationStatusEnum.OPEN]: 'Em aberto',
-    [SolicitationStatusEnum.IN_PROGRESS]: 'Em andamento',
-    [SolicitationStatusEnum.RESOLVED]: 'Resolvido',
-  };
-
-  return translations[status] || 'Status desconhecido';
-};
+import { getTranslatedSolicitationStatus } from '@/utils/helpers';
 
 interface SolicitationCardProps {
   solicitationData: SolicitationResponseInterface;
@@ -45,7 +36,7 @@ const SolicitationCard = ({ solicitationData }: SolicitationCardProps) => {
           />
 
           <Text variant={'titleLarge'} style={styles.statusText}>
-            Status atual: {translateStatus(solicitationData.status)}
+            Status atual: {getTranslatedSolicitationStatus(solicitationData.status)}
           </Text>
 
           <ProgressBar

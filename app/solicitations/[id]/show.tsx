@@ -25,7 +25,6 @@ export default function ShowSolicitationScreen() {
         if (response) {
           setData(response);
           setIsLoading(false);
-          console.log(response);
         }
         setIsRefreshing(false);
       }).catch((error: any) => {

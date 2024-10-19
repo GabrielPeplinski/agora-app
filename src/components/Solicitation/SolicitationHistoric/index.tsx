@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import UserSolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/UserSolicitationInterface';
@@ -20,11 +20,9 @@ const SolicitationHistoric = ({ data }: SolicitationHistoricProps) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => <SolicitationHistoricItem item={item} />}
-        keyExtractor={(item) => item.id.toString()}
-      />
+      {data.map(item => (
+        <SolicitationHistoricItem key={item.id} item={item} />
+      ))}
     </View>
   );
 };
