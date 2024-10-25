@@ -8,7 +8,6 @@ import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/Pagina
 import PaginationMetaInterface from '@/src/interfaces/Pagination/PaginationMetaInterface';
 import { getSolicitations } from '@/src/services/api/Solicitation/SolicitationsService';
 import { errorToast, successToast } from '@/utils/use-toast';
-import SolicitationCarousel from '@/src/components/Map/SolicitationsCarousel';
 import { likeSolicitation } from '@/src/services/api/Solicitation/LikeSolicitationService';
 import { useAuthStore } from '@/src/stores/authStore';
 
@@ -81,12 +80,6 @@ export default function TabOneScreen() {
   return (
     <>
       <View style={ContainerBaseStyle.container}>
-        {/*<SolicitationCarousel*/}
-        {/*  data={data}*/}
-        {/*  onLike={handleLike}*/}
-        {/*  onRefresh={fetchSolicitations}*/}
-        {/*  refreshing={refreshing}*/}
-        {/*/>*/}
         <AgoraMap
           data={data}
         />
