@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
+import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions, Alert } from 'react-native';
 import { Formik } from 'formik';
 import { Button, Text } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import * as Yup from 'yup';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
 import { getTranslatedSolicitationStatus } from '@/utils/helpers';
 import MyCamera from '../MyCamera';
 import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/SolicitationResponseInterface';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
+import FormError from '@/src/components/Shared/FormError';
+import UpdateSolicitationStatusValidation from '@/src/validations/Solicitation/UpdateSolicitationStatusValidation';
 
 interface FormData {
   status: SolicitationStatusEnum | null;
@@ -40,15 +41,24 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
     hideModal();
   };
 
-  const validationSchema = Yup.object().shape({
-    status: Yup.string().nullable().required('Status é obrigatório'),
-    image: Yup.string().nullable().required('Imagem é obrigatória'),
-  });
+  const confirmRemoveImage = (setFieldValue: (field: string, value: any) => void) => {
+    Alert.alert(
+      'Remover Imagem',
+      'Deseja remover esta imagem?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Remover',
+          onPress: () => setFieldValue('image', null),
+        },
+      ],
+    );
+  };
 
   return (
     <Formik
       initialValues={{ status: null, image: null }}
-      validationSchema={validationSchema}
+      validationSchema={UpdateSolicitationStatusValidation}
       onSubmit={(values) => {
         setSubmitting(true);
         console.log(values);
@@ -76,7 +86,7 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
                 />
               ))}
             </Picker>
-            {touched.status && errors.status && <Text style={styles.error}>{errors.status}</Text>}
+            {(errors.status && touched.status) && <FormError errorMessage={errors.status} />}
 
             <View style={styles.imageContainer}>
               <Text variant="titleMedium" style={styles.centeredText}>
@@ -95,13 +105,13 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
                   <Image source={{ uri: values.image }} style={styles.image} resizeMode="contain" />
                   <TouchableOpacity
                     style={styles.deleteButton}
-                    onPress={() => setFieldValue('image', null)}
+                    onPress={() => confirmRemoveImage(setFieldValue)}
                   >
                     <MaterialCommunityIcons name="image-remove" size={24} color="red" />
                   </TouchableOpacity>
                 </View>
               )}
-              {touched.image && errors.image && <Text style={styles.error}>{errors.image}</Text>}
+              {(errors.image && touched.image) && <FormError errorMessage={errors.image} />}
             </View>
 
             <Button
@@ -122,8 +132,7 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
                 <MyCamera onTakePicture={(uri: string) => handleTakePicture(uri, setFieldValue)} />
               </View>
             </Modal>
-            <CameraButton onPress={showModal}/>
-
+            <CameraButton onPress={showModal} />
           </View>
         </ScrollView>
       )}
@@ -166,11 +175,6 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 20,
-  },
-  error: {
-    color: 'red',
-    textAlign: 'center',
-    marginTop: 5,
   },
   closeButton: {
     position: 'absolute',
