@@ -19,6 +19,9 @@ const apiRoutes = {
   solicitations: {
     index: 'solicitations',
     like: 'client/solicitations/like',
+  },
+  userSolicitations: {
+    addImage: 'client/user-solicitations/:id/add-image',
   }
 }
 

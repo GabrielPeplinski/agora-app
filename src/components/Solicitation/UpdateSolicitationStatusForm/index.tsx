@@ -11,11 +11,10 @@ import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Respons
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import FormError from '@/src/components/Shared/FormError';
 import UpdateSolicitationStatusValidation from '@/src/validations/Solicitation/UpdateSolicitationStatusValidation';
-
-interface FormData {
-  status: SolicitationStatusEnum | null;
-  image: string | null;
-}
+import UpdateSolicitationStatusDataInterface from '@/src/interfaces/Solicitation/Data/UpdateSolicitationStatusDataInterface';
+import { updateSolicitationStatus } from '@/src/services/api/Solicitation/UpdateSolicitationStatusService';
+import { errorToast, successToast } from '@/utils/use-toast';
+import { addUserSolicitationImage } from '@/src/services/api/UserSolicitation/AddUserSolicitationImageService';
 
 const statusOptions = [
   { label: 'Em aberto', value: SolicitationStatusEnum.OPEN },
@@ -55,13 +54,49 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
     );
   };
 
+  const handleUpdateStatus = async (id: number, data: UpdateSolicitationStatusDataInterface) => {
+    await updateSolicitationStatus(id, data)
+      .then(async (response) => {
+        if (response) {
+          successToast({ title: 'Status atualizado com sucesso!' });
+          const userSolicitationId = response.id;
+
+          await handleUserSolicitationImage(userSolicitationId.toString(), data);
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+        if (error?.response?.status === 422) {
+          errorToast({ title: 'Não é possível atualizar solicitações que já estão resolvidas!' });
+        } else {
+          errorToast({ title: 'Ocorreu um erro ao atualizar o status!' });
+        }
+      });
+  };
+
+  const handleUserSolicitationImage = async (userSolicitationId: string, data: UpdateSolicitationStatusDataInterface) => {
+    await addUserSolicitationImage(
+      data.image ?? '',
+      'Update solicitation status:' + userSolicitationId,
+      userSolicitationId,
+    ).then(() => {
+      successToast({ title: 'Imagem de atualização de status enviada com sucesso!' });
+    }).catch((error: any) => {
+      errorToast({ title: 'Ocorreu um erro ao enviar a imagem de atualização de status!' });
+      throw error;
+    });
+  };
+
   return (
     <Formik
-      initialValues={{ status: null, image: null }}
+      initialValues={{
+        status: null,
+        image: null,
+      }}
       validationSchema={UpdateSolicitationStatusValidation}
-      onSubmit={(values) => {
+      onSubmit={(values: UpdateSolicitationStatusDataInterface) => {
         setSubmitting(true);
-        console.log(values);
+        handleUpdateStatus(solicitationData.id, values);
         setSubmitting(false);
       }}
     >
