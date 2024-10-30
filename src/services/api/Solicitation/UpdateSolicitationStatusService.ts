@@ -10,7 +10,7 @@ export const updateSolicitationStatus = async (
 ): Promise<UserSolicitationResponseInterface | null> => {
   try {
     const response = await axiosInstance()
-      .put(`${apiRoutes.mySolicitations}/${solicitationId}/status`, data);
+      .put(`${apiRoutes.mySolicitations.index}/${solicitationId}/status`, data);
 
     return response.data.data as UserSolicitationResponseInterface;
   } catch (error: any) {

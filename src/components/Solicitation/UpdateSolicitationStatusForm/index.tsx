@@ -15,6 +15,7 @@ import UpdateSolicitationStatusDataInterface from '@/src/interfaces/Solicitation
 import { updateSolicitationStatus } from '@/src/services/api/Solicitation/UpdateSolicitationStatusService';
 import { errorToast, successToast } from '@/utils/use-toast';
 import { addUserSolicitationImage } from '@/src/services/api/UserSolicitation/AddUserSolicitationImageService';
+import { useRouter } from 'expo-router';
 
 const statusOptions = [
   { label: 'Em aberto', value: SolicitationStatusEnum.OPEN },
@@ -29,6 +30,7 @@ interface SolicitationCardProps {
 }
 
 const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProps) => {
+  const router = useRouter();
   const [isCameraModalVisible, setIsCameraModalVisible] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
 
@@ -62,6 +64,8 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
           const userSolicitationId = response.id;
 
           await handleUserSolicitationImage(userSolicitationId.toString(), data);
+
+          router.push('/auth');
         }
       })
       .catch((error) => {
