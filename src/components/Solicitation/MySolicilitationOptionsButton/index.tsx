@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, TouchableOpacity, StyleSheet, Animated, Alert } from 'react-native';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 import { deleteSolicitation } from '@/src/services/api/Solicitation/MySolicitationsService';
 import { errorToast, successToast } from '@/utils/use-toast';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 
 const RADIUS = 60;
 const BUTTON_SIZE = 45;
@@ -13,21 +13,17 @@ const MySolicitationOptionsButton = ({ solicitationData, onDelete }: { solicitat
   const [isOpen, setIsOpen] = useState(false);
   const animatedValue = useState(new Animated.Value(0))[0];
 
+  useFocusEffect(
+    useCallback(() => {
+      setIsOpen(false);
+      animatedValue.setValue(0);
+    }, [])
+  );
+
   const handleButtonPress = () => {
     setIsOpen(!isOpen);
-
     Animated.spring(animatedValue, {
       toValue: isOpen ? 0 : 1,
-      friction: 6,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const closeOptionsButton = () => {
-    setIsOpen(false);
-
-    Animated.spring(animatedValue, {
-      toValue: 0,
       friction: 6,
       useNativeDriver: true,
     }).start();
@@ -49,20 +45,15 @@ const MySolicitationOptionsButton = ({ solicitationData, onDelete }: { solicitat
   };
 
   const confirmDelete = () => {
-    closeOptionsButton();
+    setIsOpen(false);
+    animatedValue.setValue(0);
 
     Alert.alert(
       'Excluir Solicitação',
       `Deseja excluir a solicitação: ${solicitationData.title} ?`,
       [
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
-        {
-          text: 'Excluir',
-          onPress: () => handleDelete(),
-        },
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Excluir', onPress: handleDelete },
       ],
     );
   };
@@ -73,24 +64,24 @@ const MySolicitationOptionsButton = ({ solicitationData, onDelete }: { solicitat
 
   const handleUpdateStatus = (id: number): void => {
     router.push(`/solicitations/${id}/update-status`);
-  }
+  };
 
   const options = [
     {
       icon: <Feather name="trash" size={24} color="black" />,
-      action: () => confirmDelete(),
+      action: confirmDelete
     },
     {
       icon: <MaterialIcons name="published-with-changes" size={24} color="black" />,
-      action: () => handleUpdateStatus(solicitationData.id),
+      action: () => handleUpdateStatus(solicitationData.id)
     },
     {
       icon: <Feather name="edit" size={24} color="black" />,
-      action: () => console.log(`Editar Solicitação: ${solicitationData.title}`),
+      action: () => console.log(`Editar Solicitação: ${solicitationData.title}`)
     },
     {
       icon: <Feather name="eye" size={24} color="black" />,
-      action: () => handleShowSolicitation(solicitationData.id),
+      action: () => handleShowSolicitation(solicitationData.id)
     },
   ];
 
@@ -115,21 +106,14 @@ const MySolicitationOptionsButton = ({ solicitationData, onDelete }: { solicitat
               },
             ]}
           >
-            <TouchableOpacity
-              style={styles.subButton}
-              onPress={option.action}
-            >
+            <TouchableOpacity style={styles.subButton} onPress={option.action}>
               {option.icon}
             </TouchableOpacity>
           </Animated.View>
         );
       })}
 
-      <TouchableOpacity
-        onPress={handleButtonPress}
-        activeOpacity={0.7}
-        style={styles.button}
-      >
+      <TouchableOpacity onPress={handleButtonPress} activeOpacity={0.7} style={styles.button}>
         <Feather name={isOpen ? 'x' : 'menu'} size={28} color="white" />
       </TouchableOpacity>
     </View>
