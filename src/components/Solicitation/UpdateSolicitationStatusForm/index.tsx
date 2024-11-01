@@ -141,8 +141,9 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
                     </TouchableOpacity>
                   </View>
                 ) : (
-                  <Image style={styles.image} source={require('../../../../assets/images/no-image.png')}
-                         resizeMode="cover" />
+                  <View style={styles.centeredIcon}>
+                    <MaterialCommunityIcons name="image-off" size={200} color="black" />
+                  </View>
                 )}
                 {(errors.image && touched.image) && <FormError errorMessage={errors.image} />}
               </View>
@@ -222,6 +223,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
+  },
+  centeredIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
   },
 });
 

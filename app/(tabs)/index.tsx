@@ -10,6 +10,7 @@ import { getSolicitations } from '@/src/services/api/Solicitation/SolicitationsS
 import { errorToast, successToast } from '@/utils/use-toast';
 import { likeSolicitation } from '@/src/services/api/Solicitation/LikeSolicitationService';
 import { useAuthStore } from '@/src/stores/authStore';
+import { useLocationCoordinates } from '@/src/context/LocationCoordenatesContextProvider';
 
 interface HandleSolicitationLikeInterface {
   solicitationId: number;
@@ -18,16 +19,20 @@ interface HandleSolicitationLikeInterface {
 
 export default function TabOneScreen() {
   const token = useAuthStore(state => state.token);
-  const [page, setPage] = useState(0);
   const [data, setData] = useState<PaginatedSolicitationInterface[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [meta, setMeta] = useState<PaginationMetaInterface | null>(null);
-  const [refreshing, setRefreshing] = useState<boolean>(false); // Estado para controle de refresh
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const { latitude, longitude } = useLocationCoordinates();
 
   const fetchSolicitations = async () => {
+    const locationLatitude = latitude ? latitude : null;
+    const locationLongitude = longitude ? longitude : null;
+
     setIsLoading(true);
-    setRefreshing(true); // Inicie o refresh
-    await getSolicitations(page)
+    setRefreshing(true);
+
+    await getSolicitations(locationLatitude, locationLongitude)
       .then((response) => {
         if (response && response.data) {
           setData(response.data);
@@ -35,6 +40,7 @@ export default function TabOneScreen() {
         }
       })
       .catch((error: any) => {
+        console.log(error)
         errorToast({ title: 'Ocorreu um erro ao buscar as solicitações!' });
       }).finally(() => {
         setIsLoading(false);
@@ -44,7 +50,7 @@ export default function TabOneScreen() {
 
   useEffect(() => {
     fetchSolicitations();
-  }, [page]);
+  }, [latitude, longitude]);
 
   const updateSolicitationLikeStatus = ({ solicitationId, hasCurrentUserLike }: HandleSolicitationLikeInterface) => {
     const updatedData = data.map(item => {

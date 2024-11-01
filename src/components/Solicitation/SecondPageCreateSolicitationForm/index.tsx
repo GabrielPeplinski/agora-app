@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions, Alert } from 'react-native';
 import { Portal, Text } from 'react-native-paper';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import MyCamera from '../MyCamera';
@@ -106,15 +106,13 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
 
             {!values.coverImage ? (
               <View style={styles.centeredIcon}>
-                <TouchableOpacity onPress={showModal}>
-                  <MaterialIcons name="add-photo-alternate" size={160} color="black" />
-                </TouchableOpacity>
+                <MaterialCommunityIcons name="image-off" size={200} color="black" />
               </View>
             ) : (
               <View style={styles.imageContainer}>
                 <Image
                   source={{ uri: values.coverImage }}
-                  style={{ width: screenWidth, height: screenWidth }}
+                  style={{ width: screenWidth, height: screenWidth * 0.90}}
                   resizeMode="contain"
                 />
                 <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteImage(values.coverImage!)}>
@@ -133,7 +131,7 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
                   <View key={index} style={styles.imageContainer}>
                     <Image
                       source={{ uri: image }}
-                      style={{ width: screenWidth, height: screenWidth }}
+                      style={{ width: screenWidth, height: screenWidth * 0.90 }}
                       resizeMode="contain"
                     />
                     <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteImage(image)}>
