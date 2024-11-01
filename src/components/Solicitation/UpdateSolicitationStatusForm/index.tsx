@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions, Alert } from 'react-native';
+import { View, StyleSheet, Modal, TouchableOpacity, Image, Dimensions, Alert } from 'react-native';
 import { Formik } from 'formik';
 import { Button, Text } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
 import { getTranslatedSolicitationStatus } from '@/utils/helpers';
 import MyCamera from '../MyCamera';
@@ -11,7 +11,8 @@ import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Respons
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import FormError from '@/src/components/Shared/FormError';
 import UpdateSolicitationStatusValidation from '@/src/validations/Solicitation/UpdateSolicitationStatusValidation';
-import UpdateSolicitationStatusDataInterface from '@/src/interfaces/Solicitation/Data/UpdateSolicitationStatusDataInterface';
+import UpdateSolicitationStatusDataInterface
+  from '@/src/interfaces/Solicitation/Data/UpdateSolicitationStatusDataInterface';
 import { updateSolicitationStatus } from '@/src/services/api/Solicitation/UpdateSolicitationStatusService';
 import { errorToast, successToast } from '@/utils/use-toast';
 import { addUserSolicitationImage } from '@/src/services/api/UserSolicitation/AddUserSolicitationImageService';
@@ -62,16 +63,14 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
         if (response) {
           successToast({ title: 'Status atualizado com sucesso!' });
           const userSolicitationId = response.id;
-
           await handleUserSolicitationImage(userSolicitationId.toString(), data);
-
           router.push('/auth');
         }
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         if (error?.response?.status === 422) {
-          errorToast({ title: 'Não é possível atualizar solicitações que já estão resolvidas!' });
+          errorToast({ title: 'Não é possível atualizar solicitações resolvidas!' });
         } else {
           errorToast({ title: 'Ocorreu um erro ao atualizar o status!' });
         }
@@ -92,113 +91,117 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
   };
 
   return (
-    <Formik
-      initialValues={{
-        status: null,
-        image: null,
-      }}
-      validationSchema={UpdateSolicitationStatusValidation}
-      onSubmit={(values: UpdateSolicitationStatusDataInterface) => {
-        setSubmitting(true);
-        handleUpdateStatus(solicitationData.id, values);
-        setSubmitting(false);
-      }}
-    >
-      {({ handleChange, handleSubmit, values, setFieldValue, errors, touched }) => (
-        <ScrollView>
-          <View style={styles.container}>
-            <Text variant="titleLarge" style={styles.title}>
-              Atualização de Status
-            </Text>
+    <>
+      <View style={styles.container}>
+        <View style={styles.pageHeader}>
+          <Entypo name="cycle" size={100} color="black" />
+          <Text variant={'titleLarge'}>Atualização de Status</Text>
+        </View>
 
-            <Picker
-              selectedValue={values.status}
-              onValueChange={(itemValue) => setFieldValue('status', itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Selecione o status atual" value={null} />
-              {statusOptions.map((status) => (
-                <Picker.Item
-                  key={status.value}
-                  label={getTranslatedSolicitationStatus(status.value)}
-                  value={status.value}
-                />
-              ))}
-            </Picker>
-            {(errors.status && touched.status) && <FormError errorMessage={errors.status} />}
-
-            <View style={styles.imageContainer}>
-              <Text variant="titleMedium" style={styles.centeredText}>
-                Foto
-              </Text>
-              {!values.image ? (
-                <View style={styles.centeredIcon}>
-                  <Image
-                    style={styles.image}
-                    source={require('../../../../assets/images/no-image.png')}
-                    resizeMode="cover"
+        <Formik
+          initialValues={{
+            status: null,
+            image: null,
+          }}
+          validationSchema={UpdateSolicitationStatusValidation}
+          onSubmit={(values: UpdateSolicitationStatusDataInterface) => {
+            setSubmitting(true);
+            handleUpdateStatus(solicitationData.id, values);
+            setSubmitting(false);
+          }}
+        >
+          {({ handleSubmit, values, setFieldValue, errors, touched }) => (
+            <View style={styles.form}>
+              <Picker
+                style={styles.picker}
+                selectedValue={values.status}
+                onValueChange={(itemValue) => setFieldValue('status', itemValue)}
+              >
+                <Picker.Item label="Selecione o novo status*" value={null} />
+                {statusOptions.map((status) => (
+                  <Picker.Item
+                    key={status.value}
+                    label={getTranslatedSolicitationStatus(status.value)}
+                    value={status.value}
                   />
-                </View>
-              ) : (
-                <View style={styles.imageWrapper}>
-                  <Image source={{ uri: values.image }} style={styles.image} resizeMode="contain" />
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => confirmRemoveImage(setFieldValue)}
-                  >
-                    <MaterialCommunityIcons name="image-remove" size={24} color="red" />
-                  </TouchableOpacity>
-                </View>
-              )}
-              {(errors.image && touched.image) && <FormError errorMessage={errors.image} />}
-            </View>
+                ))}
+              </Picker>
+              {(errors.status && touched.status) && <FormError errorMessage={errors.status} />}
 
-            <Button
-              mode="contained"
-              onPress={(e: any) => handleSubmit(e)}
-              loading={isSubmitting}
-              disabled={isSubmitting}
-              style={styles.submitButton}
-            >
-              Atualizar Status
-            </Button>
-
-            <Modal visible={isCameraModalVisible} onDismiss={hideModal}>
-              <View>
-                <TouchableOpacity style={styles.closeButton} onPress={hideModal}>
-                  <MaterialCommunityIcons name="close-circle" size={30} color="red" />
-                </TouchableOpacity>
-                <MyCamera onTakePicture={(uri: string) => handleTakePicture(uri, setFieldValue)} />
+              <View style={styles.imageContainer}>
+                <Text variant="titleMedium">Foto para atualização:</Text>
+                {values.image ? (
+                  <View style={styles.imageWrapper}>
+                    <Image source={{ uri: values.image }} style={styles.image} resizeMode="contain" />
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => confirmRemoveImage(setFieldValue)}
+                    >
+                      <MaterialCommunityIcons name="image-remove" size={24} color="red" />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <Image style={styles.image} source={require('../../../../assets/images/no-image.png')}
+                         resizeMode="cover" />
+                )}
+                {(errors.image && touched.image) && <FormError errorMessage={errors.image} />}
               </View>
-            </Modal>
-            <CameraButton onPress={showModal} />
-          </View>
-        </ScrollView>
-      )}
-    </Formik>
+
+              {!values.image && (
+                <CameraButton onPress={showModal} />
+              )}
+
+              <Button
+                mode="contained"
+                onPress={(e: any) => handleSubmit(e)}
+                loading={isSubmitting}
+                disabled={isSubmitting}
+                style={styles.submitButton}
+              >
+                Atualizar Status
+              </Button>
+
+              <Modal visible={isCameraModalVisible} onDismiss={hideModal}>
+                <View>
+                  <TouchableOpacity style={styles.closeButton} onPress={hideModal}>
+                    <MaterialCommunityIcons name="close-circle" size={30} color="red" />
+                  </TouchableOpacity>
+                  <MyCamera onTakePicture={(uri: string) => handleTakePicture(uri, setFieldValue)} />
+                </View>
+              </Modal>
+            </View>
+          )}
+        </Formik>
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    flexDirection: 'column',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
-  title: {
-    textAlign: 'center',
-    marginBottom: 20,
+  form: {
+    width: '80%',
   },
   picker: {
+    height: 50,
+    width: '100%',
+    marginTop: 10,
+    backgroundColor: '#ebdceb',
+  },
+  pageHeader: {
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 20,
   },
   imageContainer: {
     alignItems: 'center',
-  },
-  centeredText: {
-    textAlign: 'center',
-  },
-  centeredIcon: {
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   imageWrapper: {
     position: 'relative',
