@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { View } from '@/src/components/Themed';
+import { View, ScrollView, RefreshControl } from 'react-native';
+import { useEffect, useState } from 'react';
 import ContainerBaseStyle from '@/app/style';
 import AgoraMap from '@/src/components/Map/AgoraMap';
 import CreateSolicitationButton from '@/src/components/Map/CreateSolicitationButton';
-import { useEffect, useState } from 'react';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 import PaginationMetaInterface from '@/src/interfaces/Pagination/PaginationMetaInterface';
 import { getSolicitations } from '@/src/services/api/Solicitation/SolicitationsService';
@@ -40,9 +40,10 @@ export default function TabOneScreen() {
         }
       })
       .catch((error: any) => {
-        console.log(error)
+        console.log(error);
         errorToast({ title: 'Ocorreu um erro ao buscar as solicitações!' });
-      }).finally(() => {
+      })
+      .finally(() => {
         setIsLoading(false);
         setRefreshing(false);
       });
@@ -84,13 +85,16 @@ export default function TabOneScreen() {
   };
 
   return (
-    <>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={fetchSolicitations} />
+      }
+    >
       <View style={ContainerBaseStyle.container}>
-        <AgoraMap
-          data={data}
-        />
+        <AgoraMap data={data} />
         <CreateSolicitationButton />
       </View>
-    </>
+    </ScrollView>
   );
 }
