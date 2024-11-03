@@ -67,10 +67,12 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
     await updateSolicitationStatus(id, data)
       .then(async (response) => {
         if (response) {
+          router.push('/auth');
+
           successToast({ title: 'Status atualizado com sucesso!' });
+
           const userSolicitationId = response.id;
           await handleUserSolicitationImage(userSolicitationId.toString(), data);
-          router.push('/auth');
         }
       })
       .catch((error) => {
@@ -132,7 +134,10 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
                   />
                 ))}
               </Picker>
-              {(errors.status && touched.status) && <FormError errorMessage={errors.status} />}
+
+              <View style={styles.statusError}>
+                {(errors.status && touched.status) && <FormError errorMessage={errors.status} />}
+              </View>
 
               <View style={styles.imageContainer}>
                 {values.image ? (
@@ -200,13 +205,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    marginTop: 'auto',
-    marginBottom: 'auto',
+    marginTop: '12%',
+    marginBottom: '5%',
   },
   form: {
     width: '85%',
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end'
   },
   picker: {
     height: 50,
@@ -225,6 +230,7 @@ const styles = StyleSheet.create({
   imageTitle: {
     justifyContent: 'center',
     textAlign: 'center',
+    marginTop: 5
   },
   image: {
     width: screenWidth,
@@ -254,7 +260,11 @@ const styles = StyleSheet.create({
     top: 20,
     right: 20,
     zIndex: 1,
-  }
+  },
+  statusError: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default UpdateSolicitationStatusForm;
