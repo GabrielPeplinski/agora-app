@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
+import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions, Alert } from 'react-native';
 import { Portal, Text } from 'react-native-paper';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import MyCamera from '../MyCamera';
@@ -26,13 +26,8 @@ const screenWidth = Dimensions.get('window').width;
 const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }) => {
   const [isCameraModalVisible, setIsCameraModalVisible] = React.useState(false);
 
-  const hideModal = () => {
-    setIsCameraModalVisible(false);
-  };
-
-  const showModal = () => {
-    setIsCameraModalVisible(true);
-  };
+  const hideModal = () => setIsCameraModalVisible(false);
+  const showModal = () => setIsCameraModalVisible(true);
 
   useEffect(() => {
     console.log('coverImage', values.coverImage);
@@ -46,6 +41,20 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
       setValues((prevValues) => ({ ...prevValues, images: [...prevValues.images, uri] }));
     }
     hideModal();
+  };
+
+  const confirmDeleteImage = (uri: string) => {
+    Alert.alert(
+      'Remover Imagem',
+      'Deseja realmente remover esta imagem?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Remover',
+          onPress: () => handleDeleteImage(uri),
+        },
+      ],
+    );
   };
 
   const handleDeleteImage = (uri: string) => {
@@ -66,20 +75,31 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
     }
   };
 
+  const totalImages = (values.coverImage ? 1 : 0) + values.images.length;
+
   return (
     <>
       <ScrollView>
         <View>
           <Portal>
-            <Modal visible={isCameraModalVisible} onDismiss={hideModal}>
-              <View>
+
+            <Modal
+              visible={isCameraModalVisible}
+              onRequestClose={hideModal}
+              transparent={true}
+              animationType="slide"
+            >
+              <View style={styles.modalContainer}>
                 <TouchableOpacity style={styles.closeButton} onPress={hideModal}>
                   <MaterialCommunityIcons name="close-circle" size={30} color="red" />
                 </TouchableOpacity>
                 <MyCamera onTakePicture={handleTakePicture} />
               </View>
             </Modal>
-            <CameraButton onPress={showModal} />
+
+            {totalImages < 5 && (
+              <CameraButton onPress={showModal} />
+            )}
           </Portal>
         </View>
 
@@ -93,18 +113,16 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
 
             {!values.coverImage ? (
               <View style={styles.centeredIcon}>
-                <TouchableOpacity onPress={showModal}>
-                  <MaterialIcons name="add-photo-alternate" size={160} color="black" />
-                </TouchableOpacity>
+                <MaterialCommunityIcons name="image-off" size={200} color="black" />
               </View>
             ) : (
               <View style={styles.imageContainer}>
                 <Image
                   source={{ uri: values.coverImage }}
-                  style={{ width: screenWidth, height: screenWidth }}
+                  style={{ width: screenWidth, height: screenWidth * 0.90}}
                   resizeMode="contain"
                 />
-                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteImage(values.coverImage!)}>
+                <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteImage(values.coverImage!)}>
                   <MaterialCommunityIcons name="image-remove" size={24} color="red" />
                 </TouchableOpacity>
               </View>
@@ -120,17 +138,16 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
                   <View key={index} style={styles.imageContainer}>
                     <Image
                       source={{ uri: image }}
-                      style={{ width: screenWidth, height: screenWidth }}
+                      style={{ width: screenWidth, height: screenWidth * 0.90 }}
                       resizeMode="contain"
                     />
-                    <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteImage(image)}>
+                    <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteImage(image)}>
                       <MaterialCommunityIcons name="image-remove" size={24} color="red" />
                     </TouchableOpacity>
                   </View>
                 ))}
               </>
             )}
-
           </View>
         </View>
       </ScrollView>
@@ -139,30 +156,39 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
 };
 
 const styles = StyleSheet.create({
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 1,
-  },
-  centeredText: {
-    textAlign: 'center',
+  centeredContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   centeredIcon: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginVertical: 10,
+  },
+  centeredText: {
+    textAlign: 'center',
+  },
+  imageContainer: {
+    position: 'relative',
+    marginVertical: 10,
   },
   deleteButton: {
     position: 'absolute',
     top: 10,
     right: 10,
   },
-  imageContainer: {
-    position: 'relative',
-  },
-  centeredContent: {
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white'
   },
+  closeButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 1,
+  }
 });
 
 export default SecondPageCreateSolicitationForm;

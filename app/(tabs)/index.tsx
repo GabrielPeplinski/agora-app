@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { View } from '@/src/components/Themed';
+import { View, ScrollView, RefreshControl } from 'react-native';
+import { useEffect, useState } from 'react';
 import ContainerBaseStyle from '@/app/style';
 import AgoraMap from '@/src/components/Map/AgoraMap';
 import CreateSolicitationButton from '@/src/components/Map/CreateSolicitationButton';
-import { useEffect, useState } from 'react';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
 import PaginationMetaInterface from '@/src/interfaces/Pagination/PaginationMetaInterface';
 import { getSolicitations } from '@/src/services/api/Solicitation/SolicitationsService';
 import { errorToast, successToast } from '@/utils/use-toast';
-import SolicitationCarousel from '@/src/components/Map/SolicitationsCarousel';
 import { likeSolicitation } from '@/src/services/api/Solicitation/LikeSolicitationService';
 import { useAuthStore } from '@/src/stores/authStore';
+import { useLocationCoordinates } from '@/src/context/LocationCoordenatesContextProvider';
 
 interface HandleSolicitationLikeInterface {
   solicitationId: number;
@@ -19,14 +19,20 @@ interface HandleSolicitationLikeInterface {
 
 export default function TabOneScreen() {
   const token = useAuthStore(state => state.token);
-  const [page, setPage] = useState(0);
   const [data, setData] = useState<PaginatedSolicitationInterface[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [meta, setMeta] = useState<PaginationMetaInterface | null>(null);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const { latitude, longitude } = useLocationCoordinates();
 
   const fetchSolicitations = async () => {
+    const locationLatitude = latitude ? latitude : null;
+    const locationLongitude = longitude ? longitude : null;
+
     setIsLoading(true);
-    await getSolicitations(page)
+    setRefreshing(true);
+
+    await getSolicitations(locationLatitude, locationLongitude)
       .then((response) => {
         if (response && response.data) {
           setData(response.data);
@@ -34,15 +40,18 @@ export default function TabOneScreen() {
         }
       })
       .catch((error: any) => {
+        console.log(error);
         errorToast({ title: 'Ocorreu um erro ao buscar as solicitações!' });
-      }).finally(() => {
+      })
+      .finally(() => {
         setIsLoading(false);
+        setRefreshing(false);
       });
   };
 
   useEffect(() => {
     fetchSolicitations();
-  }, [page]);
+  }, [latitude, longitude]);
 
   const updateSolicitationLikeStatus = ({ solicitationId, hasCurrentUserLike }: HandleSolicitationLikeInterface) => {
     const updatedData = data.map(item => {
@@ -52,7 +61,6 @@ export default function TabOneScreen() {
           hasCurrentUserLike: !hasCurrentUserLike,
         };
       }
-
       return item;
     });
 
@@ -64,7 +72,9 @@ export default function TabOneScreen() {
       await likeSolicitation({ solicitationId })
         .then(() => {
           updateSolicitationLikeStatus({ solicitationId, hasCurrentUserLike });
-          successToast({ title: 'Você reforçou esta solicitação!' });
+
+          if (!hasCurrentUserLike)
+            successToast({ title: 'Você reforçou esta solicitação!' });
         })
         .catch((error: any) => {
           errorToast({ title: 'Ocorreu um erro ao reforçar a solicitação!' });
@@ -75,15 +85,16 @@ export default function TabOneScreen() {
   };
 
   return (
-    <>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={fetchSolicitations} />
+      }
+    >
       <View style={ContainerBaseStyle.container}>
-        <SolicitationCarousel
-          data={data}
-          onLike={handleLike}
-        />
-        <AgoraMap />
+        <AgoraMap data={data} />
         <CreateSolicitationButton />
       </View>
-    </>
+    </ScrollView>
   );
 }

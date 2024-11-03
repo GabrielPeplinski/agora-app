@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
     marginTop: 10,
+    backgroundColor: '#ebdceb'
   },
   pageHeader: {
     alignItems: 'center',

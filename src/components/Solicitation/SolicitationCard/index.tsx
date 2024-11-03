@@ -6,11 +6,14 @@ import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/Pagina
 import MySolicitationOptionsButton from '@/src/components/Solicitation/MySolicilitationOptionsButton';
 
 const SolicitationCard = ({ solicitationData, onDelete }: { solicitationData: PaginatedSolicitationInterface, onDelete: () => void }) => {
+  const formatTitle = (title: string) => {
+    return title.length > 27 ? `${title.substring(0, 27)}...` : title;
+  };
 
   return (
     <View style={styles.cardSpace}>
       <Card style={styles.cardLayout}>
-        <Card.Title titleVariant="titleLarge" title={solicitationData.title} style={styles.title} />
+        <Card.Title titleVariant="titleMedium" title={formatTitle(solicitationData.title)} style={styles.title} />
 
         <View style={styles.likesContainer}>
           <View style={styles.likeIcon}>
