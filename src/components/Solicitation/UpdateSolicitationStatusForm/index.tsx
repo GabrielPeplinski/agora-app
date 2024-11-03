@@ -11,8 +11,7 @@ import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Respons
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import FormError from '@/src/components/Shared/FormError';
 import UpdateSolicitationStatusValidation from '@/src/validations/Solicitation/UpdateSolicitationStatusValidation';
-import UpdateSolicitationStatusDataInterface
-  from '@/src/interfaces/Solicitation/Data/UpdateSolicitationStatusDataInterface';
+import UpdateSolicitationStatusDataInterface from '@/src/interfaces/Solicitation/Data/UpdateSolicitationStatusDataInterface';
 import { updateSolicitationStatus } from '@/src/services/api/Solicitation/UpdateSolicitationStatusService';
 import { errorToast, successToast } from '@/utils/use-toast';
 import { addUserSolicitationImage } from '@/src/services/api/UserSolicitation/AddUserSolicitationImageService';
@@ -34,12 +33,14 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
   const router = useRouter();
   const [isCameraModalVisible, setIsCameraModalVisible] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
+  const [hasImage, setHasImage] = useState(false);
 
   const showModal = () => setIsCameraModalVisible(true);
   const hideModal = () => setIsCameraModalVisible(false);
 
   const handleTakePicture = (uri: string, setFieldValue: (field: string, value: any) => void) => {
     setFieldValue('image', uri);
+    setHasImage(true)
     hideModal();
   };
 
@@ -51,11 +52,16 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
         { text: 'Cancelar', style: 'cancel' },
         {
           text: 'Remover',
-          onPress: () => setFieldValue('image', null),
+          onPress: () => handleRemoveImage(setFieldValue)
         },
       ],
     );
   };
+
+  const handleRemoveImage = (setFieldValue: (field: string, value: any) => void) => {
+    setFieldValue('image', null);
+    setHasImage(false);
+  }
 
   const handleUpdateStatus = async (id: number, data: UpdateSolicitationStatusDataInterface) => {
     await updateSolicitationStatus(id, data)
@@ -95,7 +101,7 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
       <View style={styles.container}>
         <View style={styles.pageHeader}>
           <Entypo name="cycle" size={100} color="black" />
-          <Text variant={'titleLarge'}>Atualização de Status</Text>
+          <Text variant={'titleLarge'}>              Atualização de Status              </Text>
         </View>
 
         <Formik
@@ -129,9 +135,11 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
               {(errors.status && touched.status) && <FormError errorMessage={errors.status} />}
 
               <View style={styles.imageContainer}>
-                <Text variant="titleMedium">Foto para atualização:</Text>
                 {values.image ? (
-                  <View style={styles.imageWrapper}>
+                  <View>
+                    <Text variant="titleMedium" style={styles.imageTitle}>
+                      Foto para atualização:
+                    </Text>
                     <Image source={{ uri: values.image }} style={styles.image} resizeMode="contain" />
                     <TouchableOpacity
                       style={styles.deleteButton}
@@ -148,10 +156,6 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
                 {(errors.image && touched.image) && <FormError errorMessage={errors.image} />}
               </View>
 
-              {!values.image && (
-                <CameraButton onPress={showModal} />
-              )}
-
               <Button
                 mode="contained"
                 onPress={(e: any) => handleSubmit(e)}
@@ -162,18 +166,28 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
                 Atualizar Status
               </Button>
 
-              <Modal visible={isCameraModalVisible} onDismiss={hideModal}>
-                <View>
+              <Modal
+                visible={isCameraModalVisible}
+                onRequestClose={hideModal}
+                transparent={true}
+                animationType="slide"
+              >
+                <View style={styles.modalContainer}>
                   <TouchableOpacity style={styles.closeButton} onPress={hideModal}>
                     <MaterialCommunityIcons name="close-circle" size={30} color="red" />
                   </TouchableOpacity>
                   <MyCamera onTakePicture={(uri: string) => handleTakePicture(uri, setFieldValue)} />
                 </View>
               </Modal>
+
             </View>
           )}
         </Formik>
       </View>
+
+      {! hasImage && (
+        <CameraButton onPress={showModal} />
+      )}
     </>
   );
 };
@@ -186,9 +200,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
+    marginTop: 'auto',
+    marginBottom: 'auto',
   },
   form: {
-    width: '80%',
+    width: '85%',
+    flex: 1,
+    justifyContent: 'space-between',
   },
   picker: {
     height: 50,
@@ -204,8 +222,9 @@ const styles = StyleSheet.create({
   imageContainer: {
     alignItems: 'center',
   },
-  imageWrapper: {
-    position: 'relative',
+  imageTitle: {
+    justifyContent: 'center',
+    textAlign: 'center',
   },
   image: {
     width: screenWidth,
@@ -219,16 +238,23 @@ const styles = StyleSheet.create({
   submitButton: {
     marginTop: 20,
   },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-  },
   centeredIcon: {
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 10,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white'
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 1,
+  }
 });
 
 export default UpdateSolicitationStatusForm;

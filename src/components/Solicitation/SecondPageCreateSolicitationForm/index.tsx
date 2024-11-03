@@ -82,14 +82,21 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
       <ScrollView>
         <View>
           <Portal>
-            <Modal visible={isCameraModalVisible} onDismiss={hideModal}>
-              <View>
+
+            <Modal
+              visible={isCameraModalVisible}
+              onRequestClose={hideModal}
+              transparent={true}
+              animationType="slide"
+            >
+              <View style={styles.modalContainer}>
                 <TouchableOpacity style={styles.closeButton} onPress={hideModal}>
                   <MaterialCommunityIcons name="close-circle" size={30} color="red" />
                 </TouchableOpacity>
                 <MyCamera onTakePicture={handleTakePicture} />
               </View>
             </Modal>
+
             {totalImages < 5 && (
               <CameraButton onPress={showModal} />
             )}
@@ -149,12 +156,6 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
 };
 
 const styles = StyleSheet.create({
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 1,
-  },
   centeredContent: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -176,6 +177,18 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white'
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 1,
+  }
 });
 
 export default SecondPageCreateSolicitationForm;
