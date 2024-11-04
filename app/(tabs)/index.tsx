@@ -88,11 +88,16 @@ export default function TabOneScreen() {
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={fetchSolicitations} />
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={fetchSolicitations}
+        />
       }
     >
       <View style={ContainerBaseStyle.container}>
-        <AgoraMap data={data} />
+        <AgoraMap
+          data={data}
+        />
         <CreateSolicitationButton />
       </View>
     </ScrollView>

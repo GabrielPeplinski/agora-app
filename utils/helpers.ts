@@ -69,4 +69,21 @@ export const getTranslatedActionDescription = (action: SolicitationActionDescrip
   return translations[action] || 'Ação desconhecida';
 };
 
-
+/**
+ * Formats a title string to a maximum of 27 characters.
+ *
+ * @param {string} title - The title to be formatted.
+ *
+ * @returns {string} The formatted title.
+ *
+ * @example
+ * // Returns 'This is a long title...'
+ * formatTitle('This is a long title that should be cut off');
+ *
+ * @example
+ * // Returns 'This is a short title'
+ * formatTitle('This is a short title');
+ */
+export const formatTitle = (title: string) => {
+  return title.length > 27 ? `${title.substring(0, 27)}...` : title;
+};
