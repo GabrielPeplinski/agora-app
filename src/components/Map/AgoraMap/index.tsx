@@ -17,6 +17,7 @@ const mapLayer: MapLayer = {
 
 interface AgoraMapProps {
   data: PaginatedSolicitationInterface[];
+  onLike: ({ solicitationId, hasCurrentUserLike }: { solicitationId: number, hasCurrentUserLike: boolean }) => void;
 }
 
 const statusIcons: { [key: string]: string } = {
@@ -25,7 +26,7 @@ const statusIcons: { [key: string]: string } = {
   IN_PROGRESS: '🚧',
 };
 
-const AgoraMap = ({ data }: AgoraMapProps) => {
+const AgoraMap = ({ data, onLike }: AgoraMapProps) => {
   const { latitude, longitude } = useLocationCoordinates();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [solicitationClickedId, setSolicitationClickedId] = useState<PaginatedSolicitationInterface | null>(null);
@@ -85,7 +86,7 @@ const AgoraMap = ({ data }: AgoraMapProps) => {
     const solicitation = data.find((item) => item.id.toString() === solicitationId);
 
     if (solicitation) {
-      setIsModalVisible(true);
+      showModal();
       setSolicitationClickedId(solicitation);
     }
   };
@@ -93,6 +94,10 @@ const AgoraMap = ({ data }: AgoraMapProps) => {
   const hideModal = () => {
     setIsModalVisible(false);
     setSolicitationClickedId(null);
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
   };
 
   return (
@@ -121,6 +126,7 @@ const AgoraMap = ({ data }: AgoraMapProps) => {
             isModalVisible={isModalVisible}
             hideModal={hideModal}
             solicitation={solicitationClickedId}
+            onLike={onLike}
           />
         </Portal>
       )}

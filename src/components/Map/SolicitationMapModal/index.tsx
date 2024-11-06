@@ -12,27 +12,27 @@ interface SolicitationMapModalProps {
   isModalVisible: boolean;
   hideModal: () => void;
   solicitation: PaginatedSolicitationInterface;
+  onLike: ({ solicitationId, hasCurrentUserLike }: { solicitationId: number, hasCurrentUserLike: boolean }) => void;
 }
 
-const SolicitationMapModal: React.FC<SolicitationMapModalProps> = ({ isModalVisible, hideModal, solicitation }) => {
-  const [liked, setLiked] = useState(false);
+const SolicitationMapModal: React.FC<SolicitationMapModalProps> = ({ isModalVisible, hideModal, solicitation, onLike, }) => {
   const [solicitationData, setSolicitationData] = useState<SolicitationResponseInterface | null>(null);
-  const [fadeAnim] = useState(new Animated.Value(1)); // Inicializa a animação
-
-  const handleLike = () => {
-    setLiked(!liked);
-    console.log(liked ? 'Descurtiu' : 'Curtiu');
-  };
+  const [fadeAnim] = useState(new Animated.Value(1));
 
   const getSolicitationData = async () => {
     await getSolicitation(solicitation.id)
-      .then(response => {
+      .then((response) => {
         if (response) {
           setSolicitationData(response);
         }
       }).catch((error: any) => {
         errorToast({ title: 'Ocorreu um erro ao buscar a solicitação!' });
       });
+  };
+
+  const handleLike = () => {
+    hideModal();
+    onLike({ solicitationId: solicitation.id, hasCurrentUserLike: solicitation.hasCurrentUserLike });
   };
 
   return (
@@ -64,7 +64,7 @@ const SolicitationMapModal: React.FC<SolicitationMapModalProps> = ({ isModalVisi
                 right={(props) => (
                   <IconButton
                     {...props}
-                    icon={liked ? 'thumb-up' : 'thumb-up-outline'}
+                    icon={solicitation.hasCurrentUserLike ? 'thumb-up' : 'thumb-up-outline'}
                     onPress={handleLike}
                   />
                 )}
