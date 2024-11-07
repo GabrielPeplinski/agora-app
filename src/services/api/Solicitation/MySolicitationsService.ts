@@ -28,6 +28,18 @@ export const createSolicitation = async (data: SolicitationDataInterface): Promi
   }
 };
 
+export const updateSolicitation = async (solicitationId: number| string, data: SolicitationDataInterface): Promise<SolicitationResponseInterface> => {
+  try {
+    const response = await axiosInstance()
+      .put(`${apiRoutes.mySolicitations.index}/${solicitationId}`, data);
+
+    return response.data.data;
+
+  } catch (error: any) {
+    throw error;
+  }
+};
+
 export const deleteSolicitation = async (solicitationId: number): Promise<void> => {
   try {
     await axiosInstance()
