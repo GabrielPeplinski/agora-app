@@ -10,6 +10,7 @@ import { errorToast, successToast } from '@/utils/use-toast';
 import LoadingScreen from '@/src/components/Shared/LoadingScreen';
 import { useRouter } from 'expo-router';
 import FirstPageSolicitationForm from '@/src/components/Solicitation/FirstPageSolicitationForm';
+import { useRefreshContext } from '@/src/context/RefreshContextProvider';
 
 interface FormData {
   title: string;
@@ -27,6 +28,8 @@ export default function CreateSolicitationsScreen() {
   const [loadingSubmit, setLoadingSubmit] = React.useState(false);
   const router = useRouter();
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
+  const { setNeedRefresh } = useRefreshContext();
+
   const [formData, setFormData] = React.useState<FormData>({
     title: '',
     description: '',
@@ -75,6 +78,7 @@ export default function CreateSolicitationsScreen() {
         successToast({ title: 'Solicitação criada com sucesso!' });
 
         router.back();
+        setNeedRefresh();
 
         addSolicitationImages(response.id.toString());
       })

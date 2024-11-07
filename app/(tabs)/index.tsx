@@ -10,6 +10,7 @@ import { errorToast, successToast } from '@/utils/use-toast';
 import { likeSolicitation } from '@/src/services/api/Solicitation/LikeSolicitationService';
 import { useAuthStore } from '@/src/stores/authStore';
 import { useLocationCoordinates } from '@/src/context/LocationCoordenatesContextProvider';
+import { useRefreshContext } from '@/src/context/RefreshContextProvider';
 
 interface HandleSolicitationLikeInterface {
   solicitationId: number;
@@ -23,10 +24,18 @@ export default function TabOneScreen() {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { latitude, longitude } = useLocationCoordinates();
+  const { needsRefresh, resetNeedRefresh } = useRefreshContext();
 
   useEffect(() => {
     fetchSolicitations();
   }, [latitude, longitude]);
+
+  useEffect(() => {
+    if (needsRefresh) {
+      fetchSolicitations();
+      resetNeedRefresh();
+    }
+  }, [needsRefresh]);
 
   const fetchSolicitations = async () => {
     const locationLatitude = latitude ? latitude : null;

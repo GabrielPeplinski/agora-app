@@ -9,7 +9,6 @@ import SmallLoader from '@/src/components/Shared/SmallLoader';
 import { errorToast } from '@/utils/use-toast';
 import Pagination from '@/src/components/Shared/Pagination';
 import PaginationMetaInterface from '@/src/interfaces/Pagination/PaginationMetaInterface';
-import { useFocusEffect } from '@react-navigation/native';
 import { useRefreshContext } from '@/src/context/RefreshContextProvider';
 
 const MySolicitationsTable = () => {
