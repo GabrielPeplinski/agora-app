@@ -64,7 +64,6 @@ export default function TabOneScreen() {
     });
 
     setData(updatedData);
-    setTimeout(() => setIsModalVisible(true), 100);
   };
 
   const handleLike = async ({ solicitationId, hasCurrentUserLike }: HandleSolicitationLikeInterface) => {
