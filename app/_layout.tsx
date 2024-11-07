@@ -9,6 +9,7 @@ import { PaperProvider } from 'react-native-paper';
 import { LocationCoordinatesContextProvider } from '@/src/context/LocationCoordenatesContextProvider';
 import { Toaster } from 'burnt/web';
 import { useAuthStore } from '@/src/stores/authStore';
+import { RefreshContextProvider } from '@/src/context/RefreshContextProvider';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -98,15 +99,17 @@ function RootLayoutNav() {
 
   return (
     <LocationCoordinatesContextProvider>
-      <PaperProvider theme={theme}>
-        <Stack>
-          <Stack.Screen
-            name="(tabs)"
-            options={{ headerShown: false }}
-          />
-        </Stack>
-      </PaperProvider>
-      <Toaster />
+      <RefreshContextProvider>
+        <PaperProvider theme={theme}>
+          <Stack>
+            <Stack.Screen
+              name="(tabs)"
+              options={{ headerShown: false }}
+            />
+          </Stack>
+        </PaperProvider>
+        <Toaster />
+      </RefreshContextProvider>
     </LocationCoordinatesContextProvider>
   );
 }
