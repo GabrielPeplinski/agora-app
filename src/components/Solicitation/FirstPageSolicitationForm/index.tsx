@@ -24,7 +24,7 @@ interface Props {
   setValues: React.Dispatch<React.SetStateAction<FormData>>;
 }
 
-const FirstPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }) => {
+const FirstPageSolicitationForm: React.FC<Props> = ({ values, setValues }) => {
   const [isLoadingCategories, setLoadingCategories] = React.useState(true);
   const [categories, setCategories] = React.useState<SolicitationCategoryInterface[]>([]);
   const { latitude, longitude } = useLocationCoordinates();
@@ -125,4 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FirstPageCreateSolicitationForm;
+export default FirstPageSolicitationForm;

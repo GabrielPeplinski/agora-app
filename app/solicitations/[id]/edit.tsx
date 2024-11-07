@@ -3,15 +3,16 @@ import { View } from '@/src/components/Themed';
 import { Button } from 'react-native-paper';
 import ContainerBaseStyle from '@/app/style';
 import { StyleSheet } from 'react-native';
-import FirstPageCreateSolicitationForm from '@/src/components/Solicitation/FirstPageCreateSolicitationForm';
+import FirstPageSolicitationForm from '@/src/components/Solicitation/FirstPageSolicitationForm';
 import SecondPageCreateSolicitationForm from '@/src/components/Solicitation/SecondPageCreateSolicitationForm';
 import { addSolicitationImage } from '@/src/services/api/Solicitation/AddSolicitationImageService';
-import { createSolicitation } from '@/src/services/api/Solicitation/MySolicitationsService';
+import { updateSolicitation } from '@/src/services/api/Solicitation/MySolicitationsService';
 import { errorToast, successToast } from '@/utils/use-toast';
 import LoadingScreen from '@/src/components/Shared/LoadingScreen';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/SolicitationResponseInterface';
 import { getSolicitation } from '@/src/services/api/Solicitation/SolicitationsService';
+import { useRefreshContext } from '@/src/context/RefreshContextProvider';
 
 interface FormData {
   title: string;
@@ -31,6 +32,7 @@ export default function EditSolicitationScreen() {
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
   const { id } = useLocalSearchParams();
   const [solicitationData, setSolicitationData] = useState<SolicitationResponseInterface | null>(null);
+  const { setNeedRefresh } = useRefreshContext();
 
   const [formData, setFormData] = React.useState<FormData>({
     title: '',
@@ -55,7 +57,7 @@ export default function EditSolicitationScreen() {
       setFormData({
         title: solicitationData.title || '',
         description: solicitationData.description || '',
-        solicitationCategoryId: solicitationData.solicitationCategoryId || 0,
+        solicitationCategoryId: solicitationData.solicitationCategory?.id || 0,
         latitudeCoordinates: solicitationData.latitudeCoordinates || '',
         longitudeCoordinates: solicitationData.longitudeCoordinates || '',
         coverImage: solicitationData.coverImage || null,
@@ -110,20 +112,21 @@ export default function EditSolicitationScreen() {
   }
 
   async function handleCreateSolicitation() {
-    await createSolicitation(formData)
+    await updateSolicitation(id.toString(), formData)
       .then((response) => {
-        successToast({ title: 'Solicitação criada com sucesso!' });
+        successToast({ title: 'Solicitação atualizada com sucesso!' });
 
         router.back();
+        setNeedRefresh();
 
-        addSolicitationImages(response.id.toString());
+        // addSolicitationImages(response.id.toString());
       })
       .then(() => {
         successToast({ title: 'As imagens foram enviadas com sucesso!' });
       })
       .catch((error: any) => {
         console.error(error);
-        errorToast({ title: 'Ocorreu algum erro durante a criação da solicitação!' });
+        errorToast({ title: 'Ocorreu algum erro durante a atualização da solicitação!' });
       });
 
     console.log('Dados do formulário:', formData);
@@ -157,7 +160,7 @@ export default function EditSolicitationScreen() {
     switch (page) {
       case 0:
         return (
-          <FirstPageCreateSolicitationForm
+          <FirstPageSolicitationForm
             values={formData}
             setValues={setFormData}
           />
@@ -171,7 +174,7 @@ export default function EditSolicitationScreen() {
         );
       default:
         return (
-          <FirstPageCreateSolicitationForm
+          <FirstPageSolicitationForm
             values={formData}
             setValues={setFormData}
           />
@@ -202,7 +205,7 @@ export default function EditSolicitationScreen() {
               style={styles.buttonNext}
               disabled={isButtonDisabled}
             >
-              {page === 0 ? 'Próximo' : 'Cadastrar'}
+              {page === 0 ? 'Próximo' : 'Atualizar'}
             </Button>
           </View>
         </>

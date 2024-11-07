@@ -3,13 +3,13 @@ import { View } from '@/src/components/Themed';
 import { Button } from 'react-native-paper';
 import ContainerBaseStyle from '@/app/style';
 import { StyleSheet } from 'react-native';
-import FirstPageCreateSolicitationForm from '@/src/components/Solicitation/FirstPageCreateSolicitationForm';
 import SecondPageCreateSolicitationForm from '@/src/components/Solicitation/SecondPageCreateSolicitationForm';
 import { addSolicitationImage } from '@/src/services/api/Solicitation/AddSolicitationImageService';
 import { createSolicitation } from '@/src/services/api/Solicitation/MySolicitationsService';
 import { errorToast, successToast } from '@/utils/use-toast';
 import LoadingScreen from '@/src/components/Shared/LoadingScreen';
 import { useRouter } from 'expo-router';
+import FirstPageSolicitationForm from '@/src/components/Solicitation/FirstPageSolicitationForm';
 
 interface FormData {
   title: string;
@@ -27,7 +27,6 @@ export default function CreateSolicitationsScreen() {
   const [loadingSubmit, setLoadingSubmit] = React.useState(false);
   const router = useRouter();
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
-
   const [formData, setFormData] = React.useState<FormData>({
     title: '',
     description: '',
@@ -118,7 +117,7 @@ export default function CreateSolicitationsScreen() {
     switch (page) {
       case 0:
         return (
-          <FirstPageCreateSolicitationForm
+          <FirstPageSolicitationForm
             values={formData}
             setValues={setFormData}
           />
@@ -132,7 +131,7 @@ export default function CreateSolicitationsScreen() {
         );
       default:
         return (
-          <FirstPageCreateSolicitationForm
+          <FirstPageSolicitationForm
             values={formData}
             setValues={setFormData}
           />

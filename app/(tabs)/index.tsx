@@ -24,6 +24,10 @@ export default function TabOneScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { latitude, longitude } = useLocationCoordinates();
 
+  useEffect(() => {
+    fetchSolicitations();
+  }, [latitude, longitude]);
+
   const fetchSolicitations = async () => {
     const locationLatitude = latitude ? latitude : null;
     const locationLongitude = longitude ? longitude : null;
@@ -46,10 +50,6 @@ export default function TabOneScreen() {
         setRefreshing(false);
       });
   };
-
-  useEffect(() => {
-    fetchSolicitations();
-  }, [latitude, longitude]);
 
   const updateSolicitationLikeStatus = (solicitationId: number, newLikeStatus: boolean) => {
     const updatedData = data.map(item => {
