@@ -26,7 +26,7 @@ const SolicitationCard = ({ solicitationData, onDelete }: { solicitationData: Pa
           {solicitationData.coverImage ? (
             <Card.Cover source={{ uri: solicitationData.coverImage }} style={styles.cardCover} />
           ) : (
-            <View style={styles.iconContainer}>
+            <View style={[styles.iconContainer, styles.cardCover]}>
               <MaterialCommunityIcons name="image-marker-outline" size={150} color="black" />
             </View>
           )}
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   cardCover: {
-    height: 200,
+    height: 300,
   },
   likesContainer: {
     flexDirection: 'row',

@@ -6,6 +6,7 @@ import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Respons
 import SolicitationStatusEnum from '@/src/enums/SolicitationStatusEnum';
 import SolicitationHistoric from '@/src/components/Solicitation/SolicitationHistoric';
 import { getTranslatedSolicitationStatus } from '@/utils/helpers';
+import SolicitationImagesCarousel from '@/src/components/Solicitation/SolicitationImagesCarousel';
 
 interface SolicitationCardProps {
   solicitationData: SolicitationResponseInterface;
@@ -49,7 +50,7 @@ const SolicitationCard = ({ solicitationData }: SolicitationCardProps) => {
             {solicitationData.coverImage ? (
               <Card.Cover source={{ uri: solicitationData.coverImage }} style={styles.cardCover} />
             ) : (
-              <View style={styles.iconContainer}>
+              <View style={[styles.iconContainer, styles.cardCover]}>
                 <MaterialCommunityIcons name="image-marker-outline" size={150} color="black" />
               </View>
             )}
@@ -82,7 +83,7 @@ const SolicitationCard = ({ solicitationData }: SolicitationCardProps) => {
               <Text style={styles.likesText}>
                 Número de reforços: {solicitationData.likesCount}
               </Text>
-              <MaterialCommunityIcons name="thumb-up" size={24} color="black" style={styles.likesIcon}/>
+              <MaterialCommunityIcons name="thumb-up" size={24} color="black" style={styles.likesIcon} />
             </View>
           </Card.Content>
         </Card>
@@ -92,6 +93,17 @@ const SolicitationCard = ({ solicitationData }: SolicitationCardProps) => {
         <Text style={styles.historicTitle}>Histórico de Ações</Text>
         <SolicitationHistoric data={solicitationData.historic} />
       </View>
+
+      {solicitationData.images && solicitationData.images.length === 0 && (
+        <View>
+          <Text style={styles.historicTitle}>
+            Galeria de imagens
+          </Text>
+          <SolicitationImagesCarousel
+            images={solicitationData.images} />
+        </View>
+      )}
+
     </ScrollView>
   );
 };
@@ -133,7 +145,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   cardCover: {
-    height: 200,
+    height: 300,
   },
   iconContainer: {
     alignItems: 'center',
@@ -171,7 +183,7 @@ const styles = StyleSheet.create({
   },
   likesIcon: {
     marginLeft: 5,
-  }
+  },
 });
 
 export default SolicitationCard;
