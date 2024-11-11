@@ -41,19 +41,25 @@ const SolicitationHistoricItem = ({ item }: SolicitationHistoricItemProps) => {
         </Text>
 
         {item.actionDescription === SolicitationActionDescriptionEnum.STATUS_UPDATED && (
-          item.image ? (
-            <View style={styles.imageContainer}>
-              <Image
-                style={styles.image}
-                source={{ uri: item.image }}
-                resizeMode="cover"
-              />
-            </View>
-          ) : (
-            <View style={styles.imageContainer}>
-              <MaterialCommunityIcons name="image-marker-outline" size={270} color="black" style={styles.image}/>
-            </View>
-          )
+          <View>
+            <Text variant="titleMedium" style={styles.imageTitle}>
+              Registro de Atualização de Status
+            </Text>
+
+            {item.image ? (
+              <View style={styles.imageContainer}>
+                <Image
+                  style={styles.image}
+                  source={{ uri: 'https://picsum.photos/200/300' }}
+                  resizeMode="cover"
+                />
+              </View>
+            ) : (
+              <View style={styles.imageContainer}>
+                <MaterialCommunityIcons name="image-marker-outline" size={150} color="black" />
+              </View>
+            )}
+          </View>
         )}
 
       </Card.Content>
@@ -106,6 +112,12 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageTitle: {
+    textAlign: 'center',
+    marginTop: 20
   }
 });
 
