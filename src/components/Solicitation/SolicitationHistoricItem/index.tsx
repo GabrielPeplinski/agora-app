@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { Card, Text, Divider } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import UserSolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/UserSolicitationInterface';
@@ -39,6 +39,23 @@ const SolicitationHistoricItem = ({ item }: SolicitationHistoricItemProps) => {
         <Text variant="bodyLarge">
           Ação realizada: {getTranslatedActionDescription(item.actionDescription as SolicitationActionDescriptionEnum)}
         </Text>
+
+        {item.actionDescription === SolicitationActionDescriptionEnum.STATUS_UPDATED && (
+          item.image ? (
+            <View style={styles.imageContainer}>
+              <Image
+                style={styles.image}
+                source={{ uri: item.image }}
+                resizeMode="cover"
+              />
+            </View>
+          ) : (
+            <View style={styles.imageContainer}>
+              <MaterialCommunityIcons name="image-marker-outline" size={270} color="black" style={styles.image}/>
+            </View>
+          )
+        )}
+
       </Card.Content>
 
       <Divider style={styles.divider} />
@@ -83,6 +100,13 @@ const styles = StyleSheet.create({
     marginTop: 12,
     backgroundColor: '#e0e0e0',
   },
+  image: {
+    width: '100%',
+    height: 300,
+  },
+  imageContainer: {
+    marginTop: 10,
+  }
 });
 
 export default SolicitationHistoricItem;

@@ -3,6 +3,7 @@ interface UserSolicitationResponseInterface {
   performedBy: string;
   status: string;
   actionDescription: string;
+  image: string | null;
   createdAt: string;
 }
 

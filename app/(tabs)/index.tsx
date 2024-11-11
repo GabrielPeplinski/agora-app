@@ -22,7 +22,6 @@ export default function TabOneScreen() {
   const [data, setData] = useState<PaginatedSolicitationInterface[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const { latitude, longitude } = useLocationCoordinates();
   const { needsRefresh, resetNeedRefresh } = useRefreshContext();
 

@@ -91,7 +91,9 @@ const SolicitationCard = ({ solicitationData }: SolicitationCardProps) => {
 
       <View style={styles.historicContainer}>
         <Text style={styles.historicTitle}>Histórico de Ações</Text>
-        <SolicitationHistoric data={solicitationData.historic} />
+        <SolicitationHistoric
+          data={solicitationData.historic}
+        />
       </View>
 
       {solicitationData.images && solicitationData.images.length === 0 && (
