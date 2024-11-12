@@ -25,16 +25,16 @@ interface FormData {
 }
 
 export default function EditSolicitationScreen() {
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = useState(0);
   const maxPageNumber = 2;
-  const [loadingSubmit, setLoadingSubmit] = React.useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const router = useRouter();
-  const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const { id } = useLocalSearchParams();
   const [solicitationData, setSolicitationData] = useState<SolicitationResponseInterface | null>(null);
   const { setNeedRefresh } = useRefreshContext();
 
-  const [formData, setFormData] = React.useState<FormData>({
+  const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
     solicitationCategoryId: 0,

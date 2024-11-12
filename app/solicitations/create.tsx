@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View } from '@/src/components/Themed';
 import { Button } from 'react-native-paper';
 import ContainerBaseStyle from '@/app/style';
 import { StyleSheet } from 'react-native';
+import FirstPageSolicitationForm from '@/src/components/Solicitation/FirstPageSolicitationForm';
 import SecondPageCreateSolicitationForm from '@/src/components/Solicitation/SecondPageCreateSolicitationForm';
 import { addSolicitationImage } from '@/src/services/api/Solicitation/AddSolicitationImageService';
 import { createSolicitation } from '@/src/services/api/Solicitation/MySolicitationsService';
 import { errorToast, successToast } from '@/utils/use-toast';
 import LoadingScreen from '@/src/components/Shared/LoadingScreen';
 import { useRouter } from 'expo-router';
-import FirstPageSolicitationForm from '@/src/components/Solicitation/FirstPageSolicitationForm';
 import { useRefreshContext } from '@/src/context/RefreshContextProvider';
 
 interface FormData {
@@ -23,14 +23,14 @@ interface FormData {
 }
 
 export default function CreateSolicitationsScreen() {
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = useState(0);
   const maxPageNumber = 2;
-  const [loadingSubmit, setLoadingSubmit] = React.useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const router = useRouter();
-  const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const { setNeedRefresh } = useRefreshContext();
 
-  const [formData, setFormData] = React.useState<FormData>({
+  const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
     solicitationCategoryId: 0,
@@ -63,13 +63,13 @@ export default function CreateSolicitationsScreen() {
   }
 
   function handleSubmit() {
-      if (page < maxPageNumber - 1) {
-        setPage(page + 1);
-      } else {
-        setLoadingSubmit(true);
-        handleCreateSolicitation()
-          .finally(() => setLoadingSubmit(false));
-      }
+    if (page < maxPageNumber - 1) {
+      setPage(page + 1);
+    } else {
+      setLoadingSubmit(true);
+      handleCreateSolicitation()
+        .finally(() => setLoadingSubmit(false));
+    }
   }
 
   async function handleCreateSolicitation() {
@@ -117,38 +117,17 @@ export default function CreateSolicitationsScreen() {
     }
   }
 
-  const conditionalComponent = () => {
-    switch (page) {
-      case 0:
-        return (
-          <FirstPageSolicitationForm
-            values={formData}
-            setValues={setFormData}
-          />
-        );
-      case 1:
-        return (
-          <SecondPageCreateSolicitationForm
-            values={formData}
-            setValues={setFormData}
-          />
-        );
-      default:
-        return (
-          <FirstPageSolicitationForm
-            values={formData}
-            setValues={setFormData}
-          />
-        );
-    }
-  };
+  const pages = [
+    <FirstPageSolicitationForm values={formData} setValues={setFormData} />,
+    <SecondPageCreateSolicitationForm values={formData} setValues={setFormData} />
+  ];
 
   return (
     <View style={ContainerBaseStyle.container}>
 
       {loadingSubmit ? <LoadingScreen /> : (
         <>
-          {conditionalComponent()}
+          {pages[page] || pages[0]}
 
           <View style={styles.buttonContainer}>
             {page > 0 && (
