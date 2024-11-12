@@ -4,7 +4,6 @@ import { Button } from 'react-native-paper';
 import ContainerBaseStyle from '@/app/style';
 import { StyleSheet } from 'react-native';
 import FirstPageSolicitationForm from '@/src/components/Solicitation/FirstPageSolicitationForm';
-import SecondPageCreateSolicitationForm from '@/src/components/Solicitation/SecondPageCreateSolicitationForm';
 import { addSolicitationImage } from '@/src/services/api/Solicitation/AddSolicitationImageService';
 import { updateSolicitation } from '@/src/services/api/Solicitation/MySolicitationsService';
 import { errorToast, successToast } from '@/utils/use-toast';
@@ -13,6 +12,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/SolicitationResponseInterface';
 import { getSolicitation } from '@/src/services/api/Solicitation/SolicitationsService';
 import { useRefreshContext } from '@/src/context/RefreshContextProvider';
+import SecondPageEditSolicitationForm from '@/src/components/Solicitation/SecondPageEditSolicitationForm';
 
 interface FormData {
   title: string;
@@ -106,12 +106,12 @@ export default function EditSolicitationScreen() {
       setPage(page + 1);
     } else {
       setLoadingSubmit(true);
-      handleCreateSolicitation()
+      handleUpdateSolicitation()
         .finally(() => setLoadingSubmit(false));
     }
   }
 
-  async function handleCreateSolicitation() {
+  async function handleUpdateSolicitation() {
     await updateSolicitation(id.toString(), formData)
       .then((response) => {
         successToast({ title: 'Solicitação atualizada com sucesso!' });
@@ -156,38 +156,17 @@ export default function EditSolicitationScreen() {
     }
   }
 
-  const conditionalComponent = () => {
-    switch (page) {
-      case 0:
-        return (
-          <FirstPageSolicitationForm
-            values={formData}
-            setValues={setFormData}
-          />
-        );
-      case 1:
-        return (
-          <SecondPageCreateSolicitationForm
-            values={formData}
-            setValues={setFormData}
-          />
-        );
-      default:
-        return (
-          <FirstPageSolicitationForm
-            values={formData}
-            setValues={setFormData}
-          />
-        );
-    }
-  };
+  const pages = [
+    <FirstPageSolicitationForm values={formData} setValues={setFormData} />,
+    <SecondPageEditSolicitationForm values={formData} setValues={setFormData} />
+  ];
 
   return (
     <View style={ContainerBaseStyle.container}>
 
       {loadingSubmit ? <LoadingScreen /> : (
         <>
-          {conditionalComponent()}
+          {pages[page] || pages[0]}
 
           <View style={styles.buttonContainer}>
             {page > 0 && (

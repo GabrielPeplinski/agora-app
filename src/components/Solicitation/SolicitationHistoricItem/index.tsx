@@ -50,7 +50,7 @@ const SolicitationHistoricItem = ({ item }: SolicitationHistoricItemProps) => {
               <View style={styles.imageContainer}>
                 <Image
                   style={styles.image}
-                  source={{ uri: 'https://picsum.photos/200/300' }}
+                  source={{ uri: item.image }}
                   resizeMode="cover"
                 />
               </View>
