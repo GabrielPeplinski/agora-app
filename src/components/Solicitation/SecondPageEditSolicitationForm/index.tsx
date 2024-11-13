@@ -5,8 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import MyCamera from '../MyCamera';
-import UpdateSolicitationFormDataInterface
-  from '@/src/interfaces/Solicitation/Form/UpdateSolicitationFormDataInterface';
+import UpdateSolicitationFormDataInterface from '@/src/interfaces/Solicitation/Form/UpdateSolicitationFormDataInterface';
 
 interface Props {
   values: UpdateSolicitationFormDataInterface;
@@ -26,25 +25,28 @@ const SecondPageEditSolicitationForm: React.FC<Props> = ({ values, setValues }) 
   const showModal = () => setIsCameraModalVisible(true);
 
   useEffect(() => {
-    console.log(values);
-    console.log('Images deleted', imagesToDelete);
-    console.log('New Images', newImages);
-  }, [values]);
-
-  useEffect(() => {
     setCoverImage(values.coverImage);
     setImages(values.images);
   }, [values.coverImage, values.images]);
 
+  useEffect(() => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      newImages: newImages,
+      imagesToDelete: imagesToDelete
+    }));
+  }, [newImages, imagesToDelete]);
+
   const handleTakePicture = (uri: string) => {
     if (!values.coverImage) {
       setValues((prevValues) => ({ ...prevValues, coverImage: uri }));
-      setNewImages((prevNewImages) => [...prevNewImages, uri]);
     } else {
-      setValues((prevValues) => ({ ...prevValues, images: [...prevValues.images, uri] }));
-      setNewImages((prevNewImages) => [...prevNewImages, uri]);
+      setValues((prevValues) => ({
+        ...prevValues,
+        images: [...prevValues.images, uri]
+      }));
     }
-
+    setNewImages((prevNewImages) => [...prevNewImages, uri]);
     hideModal();
   };
 
@@ -54,10 +56,7 @@ const SecondPageEditSolicitationForm: React.FC<Props> = ({ values, setValues }) 
       'Deseja realmente remover esta imagem?',
       [
         { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Remover',
-          onPress: () => handleDeleteImage(uri),
-        },
+        { text: 'Remover', onPress: () => handleDeleteImage(uri) },
       ],
     );
   };
@@ -66,28 +65,27 @@ const SecondPageEditSolicitationForm: React.FC<Props> = ({ values, setValues }) 
     if (uri === values.coverImage) {
       const newCoverImage = values.images.length > 0 ? values.images[0] : null;
       const newImagesArray = newCoverImage ? values.images.slice(1) : values.images;
-
       setValues((prevValues) => ({
         ...prevValues,
         coverImage: newCoverImage,
-        images: newImagesArray,
+        images: newImagesArray
       }));
     } else {
       setValues((prevValues) => ({
         ...prevValues,
-        images: prevValues.images.filter((image) => image !== uri),
+        images: prevValues.images.filter((image) => image !== uri)
       }));
     }
 
+    // Adiciona o URI da imagem deletada ao array imagesToDelete, se não for uma nova imagem
     setImagesToDelete((prevImagesToDelete) =>
       !newImages.includes(uri) && !prevImagesToDelete.includes(uri)
         ? [...prevImagesToDelete, uri]
         : prevImagesToDelete
     );
 
-    setNewImages((prevNewImages) =>
-      prevNewImages.filter((newImage) => newImage !== uri)
-    );
+    // Remove a imagem de newImages, caso seja uma nova imagem que o usuário deseja remover
+    setNewImages((prevNewImages) => prevNewImages.filter((newImage) => newImage !== uri));
   };
 
   const totalImages = (values.coverImage ? 1 : 0) + values.images.length;
@@ -111,9 +109,7 @@ const SecondPageEditSolicitationForm: React.FC<Props> = ({ values, setValues }) 
               </View>
             </Modal>
 
-            {totalImages < 5 && (
-              <CameraButton onPress={showModal} />
-            )}
+            {totalImages < 5 && <CameraButton onPress={showModal} />}
           </Portal>
         </View>
 

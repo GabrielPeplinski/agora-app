@@ -145,6 +145,7 @@ export default function EditSolicitationScreen() {
   ) {
     try {
       let updatedImages = false;
+      console.log('Dados na função:', solicitationId, newImages, imagesToDelete)
 
       if (imagesToDelete.length > 0) {
         console.log('REMOVENDO OS LINKS: ' + imagesToDelete);
