@@ -3,7 +3,6 @@ import { View } from '@/src/components/Themed';
 import { Button } from 'react-native-paper';
 import ContainerBaseStyle from '@/app/style';
 import { StyleSheet } from 'react-native';
-import FirstPageSolicitationForm from '@/src/components/Solicitation/FirstPageSolicitationForm';
 import { addSolicitationImage } from '@/src/services/api/Solicitation/AddSolicitationImageService';
 import { updateSolicitation } from '@/src/services/api/Solicitation/MySolicitationsService';
 import { errorToast, successToast } from '@/utils/use-toast';
@@ -13,16 +12,10 @@ import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Respons
 import { getSolicitation } from '@/src/services/api/Solicitation/SolicitationsService';
 import { useRefreshContext } from '@/src/context/RefreshContextProvider';
 import SecondPageEditSolicitationForm from '@/src/components/Solicitation/SecondPageEditSolicitationForm';
-
-interface FormData {
-  title: string;
-  description: string;
-  solicitationCategoryId: number;
-  latitudeCoordinates: string;
-  longitudeCoordinates: string;
-  coverImage: string | null;
-  images: string[];
-}
+import UpdateSolicitationFormDataInterface
+  from '@/src/interfaces/Solicitation/Form/UpdateSolicitationFormDataInterface';
+import FirstPageEditSolicitationForm from '@/src/components/Solicitation/FirstPageEditSolicitationForm';
+import { removeSolicitationImages } from '@/src/services/api/Solicitation/RemoveSolicitationImageService';
 
 export default function EditSolicitationScreen() {
   const [page, setPage] = useState(0);
@@ -34,7 +27,7 @@ export default function EditSolicitationScreen() {
   const [solicitationData, setSolicitationData] = useState<SolicitationResponseInterface | null>(null);
   const { setNeedRefresh } = useRefreshContext();
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<UpdateSolicitationFormDataInterface>({
     title: '',
     description: '',
     solicitationCategoryId: 0,
@@ -42,6 +35,8 @@ export default function EditSolicitationScreen() {
     longitudeCoordinates: '',
     coverImage: '',
     images: [],
+    imagesToDelete: [],
+    newImages: [],
   });
 
   useEffect(() => {
@@ -60,8 +55,10 @@ export default function EditSolicitationScreen() {
         solicitationCategoryId: solicitationData.solicitationCategory?.id || 0,
         latitudeCoordinates: solicitationData.latitudeCoordinates || '',
         longitudeCoordinates: solicitationData.longitudeCoordinates || '',
-        coverImage: solicitationData.coverImage || null,
+        coverImage: solicitationData.coverImage || '',
         images: solicitationData.images || [],
+        imagesToDelete: [],
+        newImages: [],
       });
     }
     console.log(solicitationData);
@@ -89,7 +86,7 @@ export default function EditSolicitationScreen() {
     }
   }, [formData, page]);
 
-  function validateFirstPage(formData: FormData) {
+  function validateFirstPage(formData: UpdateSolicitationFormDataInterface) {
     return formData.title !== '' &&
       formData.description !== '' &&
       formData.solicitationCategoryId !== 0 &&
@@ -97,7 +94,7 @@ export default function EditSolicitationScreen() {
       formData.longitudeCoordinates !== '';
   }
 
-  function validateSecondPage(formData: FormData) {
+  function validateSecondPage(formData: UpdateSolicitationFormDataInterface) {
     return formData.coverImage !== null && formData.coverImage !== '';
   }
 
@@ -112,41 +109,61 @@ export default function EditSolicitationScreen() {
   }
 
   async function handleUpdateSolicitation() {
-    await updateSolicitation(id.toString(), formData)
-      .then((response) => {
-        successToast({ title: 'Solicitação atualizada com sucesso!' });
+    setLoadingSubmit(true);
 
-        router.back();
-        setNeedRefresh();
+    try {
+      await updateSolicitation(id.toString(), formData);
+      successToast({ title: 'Solicitação atualizada com sucesso!' });
 
-        // addSolicitationImages(response.id.toString());
-      })
-      .then(() => {
-        successToast({ title: 'As imagens foram enviadas com sucesso!' });
-      })
-      .catch((error: any) => {
-        console.error(error);
-        errorToast({ title: 'Ocorreu algum erro durante a atualização da solicitação!' });
-      });
+      router.back();
+      setNeedRefresh();
 
-    console.log('Dados do formulário:', formData);
+      handleUpdateSolicitationImages(id.toString(), formData.newImages, formData.imagesToDelete);
+    } catch (error) {
+      console.error(error);
+      errorToast({ title: 'Ocorreu algum erro durante a atualização da solicitação!' });
+    } finally {
+      setLoadingSubmit(false);
+    }
   }
 
-  async function addSolicitationImages(mySolicitationId: string) {
-    if (formData.coverImage != null) {
-      await addSolicitationImage(formData.coverImage, 'coverImage', mySolicitationId)
-        .catch((error: any) => {
-          throw error;
-        });
-    }
+  async function handleDeleteImages(solicitationId: string, imageUrls: string[]) {
+    return removeSolicitationImages(solicitationId, { imageUrls });
+  }
 
-    if (formData.images.length > 0) {
-      for (const image of formData.images) {
-        await addSolicitationImage(image, 'images', mySolicitationId)
-          .catch((error: any) => {
-            throw error;
-          });
+  async function handleAddNewSolicitationImages(solicitationId: string, newImages: string[]) {
+    const addImagePromises = newImages.map((image) =>
+      addSolicitationImage(image, 'images', solicitationId)
+    );
+    return Promise.all(addImagePromises);
+  }
+
+  async function handleUpdateSolicitationImages(
+    solicitationId: string,
+    newImages: string[] = [],
+    imagesToDelete: string[] = []
+  ) {
+    try {
+      let updatedImages = false;
+
+      if (imagesToDelete.length > 0) {
+        console.log('REMOVENDO OS LINKS: ' + imagesToDelete);
+        await handleDeleteImages(solicitationId, imagesToDelete);
+        updatedImages = true;
       }
+
+      if (newImages.length > 0) {
+        console.log('ADICIONANDO AS IMAGENS: ' + newImages);
+        await handleAddNewSolicitationImages(solicitationId, newImages);
+        updatedImages = true;
+      }
+
+      if (updatedImages) {
+        successToast({ title: 'As imagens foram atualizadas com sucesso!' });
+      }
+    } catch (error) {
+      console.error(error);
+      errorToast({ title: 'Ocorreu um erro ao atualizar as imagens da solicitação.' });
     }
   }
 
@@ -157,8 +174,8 @@ export default function EditSolicitationScreen() {
   }
 
   const pages = [
-    <FirstPageSolicitationForm values={formData} setValues={setFormData} />,
-    <SecondPageEditSolicitationForm values={formData} setValues={setFormData} />
+    <FirstPageEditSolicitationForm values={formData} setValues={setFormData} />,
+    <SecondPageEditSolicitationForm values={formData} setValues={setFormData} />,
   ];
 
   return (

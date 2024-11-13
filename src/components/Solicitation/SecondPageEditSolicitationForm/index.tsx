@@ -5,20 +5,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import MyCamera from '../MyCamera';
-
-interface FormData {
-  title: string;
-  description: string;
-  solicitationCategoryId: number;
-  latitudeCoordinates: string;
-  longitudeCoordinates: string;
-  coverImage: string | null;
-  images: string[];
-}
+import UpdateSolicitationFormDataInterface
+  from '@/src/interfaces/Solicitation/Form/UpdateSolicitationFormDataInterface';
 
 interface Props {
-  values: FormData;
-  setValues: React.Dispatch<React.SetStateAction<FormData>>;
+  values: UpdateSolicitationFormDataInterface;
+  setValues: React.Dispatch<React.SetStateAction<UpdateSolicitationFormDataInterface>>;
 }
 
 const screenWidth = Dimensions.get('window').width;

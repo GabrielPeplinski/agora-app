@@ -12,6 +12,7 @@ const route: string = apiRoutes.mySolicitations.removeImages;
 export const removeSolicitationImages = async (solicitationId: number|string, data: RemoveSolicitationImageInterface) => {
   try {
     const url = `${baseUrl}${route}`.replace(':id', solicitationId.toString());
+    console.log(url)
 
     return await axiosInstance()
       .post(url, data);

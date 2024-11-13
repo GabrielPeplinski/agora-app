@@ -11,16 +11,8 @@ import { errorToast, successToast } from '@/utils/use-toast';
 import LoadingScreen from '@/src/components/Shared/LoadingScreen';
 import { useRouter } from 'expo-router';
 import { useRefreshContext } from '@/src/context/RefreshContextProvider';
-
-interface FormData {
-  title: string;
-  description: string;
-  solicitationCategoryId: number;
-  latitudeCoordinates: string;
-  longitudeCoordinates: string;
-  coverImage: string | null;
-  images: string[];
-}
+import CreateSolicitationFormDataInterface
+  from '@/src/interfaces/Solicitation/Form/CreateSolicitationFormDataInterface';
 
 export default function CreateSolicitationsScreen() {
   const [page, setPage] = useState(0);
@@ -30,7 +22,7 @@ export default function CreateSolicitationsScreen() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const { setNeedRefresh } = useRefreshContext();
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<CreateSolicitationFormDataInterface>({
     title: '',
     description: '',
     solicitationCategoryId: 0,
@@ -50,7 +42,7 @@ export default function CreateSolicitationsScreen() {
     }
   }, [formData, page]);
 
-  function validateFirstPage(formData: FormData) {
+  function validateFirstPage(formData: CreateSolicitationFormDataInterface) {
     return formData.title !== '' &&
       formData.description !== '' &&
       formData.solicitationCategoryId !== 0 &&
@@ -58,7 +50,7 @@ export default function CreateSolicitationsScreen() {
       formData.longitudeCoordinates !== '';
   }
 
-  function validateSecondPage(formData: FormData) {
+  function validateSecondPage(formData: CreateSolicitationFormDataInterface) {
     return formData.coverImage !== null && formData.coverImage !== '';
   }
 
