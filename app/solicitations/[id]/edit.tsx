@@ -133,8 +133,9 @@ export default function EditSolicitationScreen() {
 
   async function handleAddNewSolicitationImages(solicitationId: string, newImages: string[]) {
     const addImagePromises = newImages.map((image) =>
-      addSolicitationImage(image, 'images', solicitationId)
+      addSolicitationImage(image, solicitationId)
     );
+
     return Promise.all(addImagePromises);
   }
 

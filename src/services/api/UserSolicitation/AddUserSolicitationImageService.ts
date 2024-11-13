@@ -5,11 +5,11 @@ import { uploadAsyncImageUri } from '@/src/services/api/Images/ExpoFileSystemSer
 const baseUrl = environments.apiUrl;
 const route: string = apiRoutes.userSolicitations.addImage;
 
-export const addUserSolicitationImage = async (imageUri: string, fileName: string, userSolicitationId: string) => {
+export const addUserSolicitationImage = async (imageUri: string, userSolicitationId: string) => {
   const url = `${baseUrl}${route}`.replace(':id', userSolicitationId);
 
   try {
-    await uploadAsyncImageUri({ url, imageUri, fileName });
+    await uploadAsyncImageUri({ url, imageUri });
   } catch (error: any) {
     throw error;
   }

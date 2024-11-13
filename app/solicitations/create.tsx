@@ -87,7 +87,7 @@ export default function CreateSolicitationsScreen() {
 
   async function addSolicitationImages(mySolicitationId: string) {
     if (formData.coverImage != null) {
-      await addSolicitationImage(formData.coverImage, 'coverImage', mySolicitationId)
+      await addSolicitationImage(formData.coverImage, mySolicitationId)
         .catch((error: any) => {
           throw error;
         });
@@ -95,7 +95,7 @@ export default function CreateSolicitationsScreen() {
 
     if (formData.images.length > 0) {
       for (const image of formData.images) {
-        await addSolicitationImage(image, 'images', mySolicitationId)
+        await addSolicitationImage(image, mySolicitationId)
           .catch((error: any) => {
             throw error;
           });
