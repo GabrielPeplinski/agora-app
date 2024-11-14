@@ -10,6 +10,7 @@ import { router } from 'expo-router';
 import SolicitationCategoryInterface from '@/src/interfaces/SolicitationCategoryInterface';
 import UpdateSolicitationFormDataInterface
   from '@/src/interfaces/Solicitation/Form/UpdateSolicitationFormDataInterface';
+import { errorToast } from '@/utils/use-toast';
 
 interface Props {
   values: UpdateSolicitationFormDataInterface;
@@ -38,10 +39,14 @@ const FirstPageEditSolicitationForm: React.FC<Props> = ({ values, setValues }) =
   }, [latitude, longitude]);
 
   useEffect(() => {
-    getSolicitationCategories().then((response) => {
-      setCategories(response ? response : []);
-      setLoadingCategories(false);
-    });
+    getSolicitationCategories()
+      .then((response) => {
+        setCategories(response ? response : []);
+        setLoadingCategories(false);
+      })
+      .catch((error: any) => {
+        errorToast({ title: 'Ocorreu um erro ao buscar as categorias!' })
+      });
   }, []);
 
   return (
@@ -113,7 +118,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
     marginTop: 10,
-    backgroundColor: '#ebdceb'
+    backgroundColor: '#ebdceb',
   },
 });
 

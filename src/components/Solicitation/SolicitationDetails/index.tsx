@@ -96,7 +96,7 @@ const SolicitationCard = ({ solicitationData }: SolicitationCardProps) => {
         />
       </View>
 
-      {solicitationData.images && solicitationData.images.length === 0 && (
+      {solicitationData.images && solicitationData.images.length > 0 && (
         <View>
           <Text style={styles.historicTitle}>
             Galeria de imagens

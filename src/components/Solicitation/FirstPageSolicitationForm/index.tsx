@@ -8,6 +8,7 @@ import { getSolicitationCategories } from '@/src/services/api/SolicitationCatego
 import { useLocationCoordinates } from '@/src/context/LocationCoordenatesContextProvider';
 import { router } from 'expo-router';
 import SolicitationCategoryInterface from '@/src/interfaces/SolicitationCategoryInterface';
+import { errorToast } from '@/utils/use-toast';
 
 interface FormData {
   title: string;
@@ -46,10 +47,14 @@ const FirstPageSolicitationForm: React.FC<Props> = ({ values, setValues }) => {
   }, [latitude, longitude]);
 
   useEffect(() => {
-    getSolicitationCategories().then((response) => {
-      setCategories(response ? response : []);
-      setLoadingCategories(false);
-    });
+    getSolicitationCategories()
+      .then((response) => {
+        setCategories(response ? response : []);
+        setLoadingCategories(false);
+      })
+      .catch((error: any) => {
+        errorToast({ title: 'Ocorreu um erro ao buscar as categorias!' })
+      });
   }, []);
 
   return (

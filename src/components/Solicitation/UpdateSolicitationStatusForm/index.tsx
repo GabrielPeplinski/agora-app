@@ -86,16 +86,17 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
   };
 
   const handleUserSolicitationImage = async (userSolicitationId: string, data: UpdateSolicitationStatusDataInterface) => {
-    await addUserSolicitationImage(
-      data.image ?? '',
-      'Update solicitation status:' + userSolicitationId,
-      userSolicitationId,
-    ).then(() => {
-      successToast({ title: 'Imagem de atualização de status enviada com sucesso!' });
-    }).catch((error: any) => {
-      errorToast({ title: 'Ocorreu um erro ao enviar a imagem de atualização de status!' });
-      throw error;
-    });
+    if (data.image != null) {
+      await addUserSolicitationImage(
+        data.image,
+        userSolicitationId,
+      ).then(() => {
+        successToast({ title: 'Imagem de atualização de status enviada com sucesso!' });
+      }).catch((error: any) => {
+        errorToast({ title: 'Ocorreu um erro ao enviar a imagem de atualização de status!' });
+        throw error;
+      });
+    }
   };
 
   return (
