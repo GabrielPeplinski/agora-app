@@ -29,11 +29,6 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
   const hideModal = () => setIsCameraModalVisible(false);
   const showModal = () => setIsCameraModalVisible(true);
 
-  useEffect(() => {
-    console.log('coverImage', values.coverImage);
-    console.log('images', values.images);
-  }, [values.coverImage, values.images]);
-
   const handleTakePicture = (uri: string) => {
     if (!values.coverImage) {
       setValues((prevValues) => ({ ...prevValues, coverImage: uri }));

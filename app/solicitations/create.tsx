@@ -81,8 +81,6 @@ export default function CreateSolicitationsScreen() {
         console.error(error);
         errorToast({ title: 'Ocorreu algum erro durante a criação da solicitação!' });
       });
-
-    console.log('Dados do formulário:', formData);
   }
 
   async function addSolicitationImages(mySolicitationId: string) {

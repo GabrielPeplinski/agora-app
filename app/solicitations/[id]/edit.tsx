@@ -61,7 +61,6 @@ export default function EditSolicitationScreen() {
         newImages: [],
       });
     }
-    console.log(solicitationData);
   }, [solicitationData]);
 
   const getSolicitationDetails = async () => {
@@ -146,16 +145,13 @@ export default function EditSolicitationScreen() {
   ) {
     try {
       let updatedImages = false;
-      console.log('Dados na função:', solicitationId, newImages, imagesToDelete)
 
       if (imagesToDelete.length > 0) {
-        console.log('REMOVENDO OS LINKS: ' + imagesToDelete);
         await handleDeleteImages(solicitationId, imagesToDelete);
         updatedImages = true;
       }
 
       if (newImages.length > 0) {
-        console.log('ADICIONANDO AS IMAGENS: ' + newImages);
         await handleAddNewSolicitationImages(solicitationId, newImages);
         updatedImages = true;
       }

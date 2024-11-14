@@ -50,7 +50,6 @@ export default function TabOneScreen() {
         }
       })
       .catch((error: any) => {
-        console.log(error);
         errorToast({ title: 'Ocorreu um erro ao buscar as solicitações!' });
       })
       .finally(() => {

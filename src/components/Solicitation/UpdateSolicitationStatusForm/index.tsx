@@ -76,7 +76,6 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
         }
       })
       .catch((error) => {
-        console.log(error);
         if (error?.response?.status === 422) {
           errorToast({ title: 'Não é possível atualizar solicitações resolvidas!' });
         } else {
@@ -101,7 +100,11 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
 
   return (
     <>
-      <View style={styles.container}>
+      {! hasImage && (
+        <CameraButton onPress={showModal} />
+      )}
+
+      <View style={[styles.container, !hasImage && styles.noImage]}>
         <View style={styles.pageHeader}>
           <Entypo name="cycle" size={100} color="black" />
           <Text variant={'titleLarge'}>              Atualização de Status              </Text>
@@ -190,10 +193,6 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
           )}
         </Formik>
       </View>
-
-      {! hasImage && (
-        <CameraButton onPress={showModal} />
-      )}
     </>
   );
 };
@@ -206,7 +205,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    marginTop: '12%',
+    marginTop: '15%',
     marginBottom: '5%',
   },
   form: {
@@ -244,6 +243,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 20,
+    justifyContent: 'flex-end'
   },
   centeredIcon: {
     alignItems: 'center',
@@ -266,6 +266,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  noImage: {
+    paddingTop: '20%',
+    paddingBottom: '25%',
+  }
 });
 
 export default UpdateSolicitationStatusForm;
