@@ -188,7 +188,6 @@ const UpdateSolicitationStatusForm = ({ solicitationData }: SolicitationCardProp
                   <MyCamera onTakePicture={(uri: string) => handleTakePicture(uri, setFieldValue)} />
                 </View>
               </Modal>
-
             </View>
           )}
         </Formik>
@@ -246,6 +245,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   centeredIcon: {
+    padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 10,

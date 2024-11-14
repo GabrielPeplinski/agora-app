@@ -11,6 +11,7 @@ import FormErrorsInterface from '@/src/interfaces/Forms/FormErrorsInterface';
 import { Entypo } from '@expo/vector-icons';
 import FormError from '@/src/components/Shared/FormError';
 import { useRouter } from 'expo-router';
+import { searchCep } from '@/src/services/api/ViaCepService';
 
 interface StatesData {
   label: string;
@@ -61,6 +62,22 @@ const AddressForm = () => {
     setFormErrors({});
   };
 
+  const handleZipCodeChange = async (cep: string, setFieldValue: any) => {
+    const cleanCep = cep.replace('-', '').trim();
+
+    if (cleanCep.length === 8) {
+      try {
+        const data = await searchCep(cleanCep);
+        setFieldValue('cityName', data.cityName);
+        setFieldValue('neighborhood', data.neighborhood);
+        setFieldValue('stateAbbreviation', data.stateAbbr);
+      } catch (error) {
+        console.log(error);
+        errorToast({ title: 'Não foi possível buscar o CEP. Tente novamente!' });
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchAddress = async () => {
       const addressData = await getAddress();
@@ -77,7 +94,7 @@ const AddressForm = () => {
     fetchAddress();
   }, []);
 
-  const handleRegister = async (values: AddressInterface) => {
+  const handleRegister = async (values: any) => {
     const formattedValues = {
       ...values,
       zipCode: values.zipCode.replace('-', ''),
@@ -113,14 +130,14 @@ const AddressForm = () => {
         enableReinitialize
         initialValues={initialValues}
         validationSchema={AddressValidation}
-        onSubmit={(values: AddressInterface) => handleRegister(values)}
+        onSubmit={(values) => handleRegister(values)}
       >
         {({ handleChange, handleSubmit, setFieldValue, values, errors, touched }) => (
           <View style={styles.form}>
             <TextInputMask
               type={'custom'}
               options={{
-                mask: '99999-999',
+                mask: '99999-999', // Mascarar o campo CEP
               }}
               customTextInput={TextInput}
               customTextInputProps={{
@@ -129,7 +146,10 @@ const AddressForm = () => {
                 placeholder: 'Seu cep',
               }}
               value={values.zipCode}
-              onChangeText={handleChange('zipCode')}
+              onChangeText={(text) => {
+                handleChange('zipCode')(text);
+                handleZipCodeChange(text, setFieldValue);
+              }}
             />
             {(errors.zipCode && touched.zipCode) && <FormError errorMessage={errors.zipCode} />}
             {formErrors.zipCode && formErrors.zipCode.length > 0 && <FormError errorMessage={formErrors.zipCode[0]} />}
@@ -205,10 +225,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#ebdceb'
   },
   pageHeader: {
+    marginBottom: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
-  }
+    marginTop: 50,
+  },
 });
 
 export default AddressForm;
