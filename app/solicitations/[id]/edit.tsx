@@ -119,7 +119,6 @@ export default function EditSolicitationScreen() {
 
       handleUpdateSolicitationImages(id.toString(), formData.newImages, formData.imagesToDelete);
     } catch (error) {
-      console.error(error);
       errorToast({ title: 'Ocorreu algum erro durante a atualização da solicitação!' });
     } finally {
       setLoadingSubmit(false);
@@ -160,7 +159,6 @@ export default function EditSolicitationScreen() {
         successToast({ title: 'As imagens foram atualizadas com sucesso!' });
       }
     } catch (error) {
-      console.error(error);
       errorToast({ title: 'Ocorreu um erro ao atualizar as imagens da solicitação.' });
     }
   }
