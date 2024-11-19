@@ -21,7 +21,10 @@ const SolicitationHistoric = ({ data }: SolicitationHistoricProps) => {
   return (
     <View style={styles.container}>
       {data.map(item => (
-        <SolicitationHistoricItem key={item.id} item={item} />
+        <SolicitationHistoricItem
+          key={item.id}
+          item={item}
+        />
       ))}
     </View>
   );

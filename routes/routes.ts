@@ -15,6 +15,7 @@ const apiRoutes = {
   mySolicitations: {
     index: 'client/my-solicitations',
     addImage: 'client/my-solicitations/:id/add-image',
+    removeImages: 'client/my-solicitations/:id/remove-images',
   },
   solicitations: {
     index: 'solicitations',

@@ -5,12 +5,12 @@ import ContainerBaseStyle from '@/app/style';
 import AgoraMap from '@/src/components/Map/AgoraMap';
 import CreateSolicitationButton from '@/src/components/Map/CreateSolicitationButton';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
-import PaginationMetaInterface from '@/src/interfaces/Pagination/PaginationMetaInterface';
 import { getSolicitations } from '@/src/services/api/Solicitation/SolicitationsService';
 import { errorToast, successToast } from '@/utils/use-toast';
 import { likeSolicitation } from '@/src/services/api/Solicitation/LikeSolicitationService';
 import { useAuthStore } from '@/src/stores/authStore';
 import { useLocationCoordinates } from '@/src/context/LocationCoordenatesContextProvider';
+import { useRefreshContext } from '@/src/context/RefreshContextProvider';
 
 interface HandleSolicitationLikeInterface {
   solicitationId: number;
@@ -21,9 +21,20 @@ export default function TabOneScreen() {
   const token = useAuthStore(state => state.token);
   const [data, setData] = useState<PaginatedSolicitationInterface[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [meta, setMeta] = useState<PaginationMetaInterface | null>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { latitude, longitude } = useLocationCoordinates();
+  const { needsRefresh, resetNeedRefresh } = useRefreshContext();
+
+  useEffect(() => {
+    fetchSolicitations();
+  }, [latitude, longitude]);
+
+  useEffect(() => {
+    if (needsRefresh) {
+      fetchSolicitations();
+      resetNeedRefresh();
+    }
+  }, [needsRefresh]);
 
   const fetchSolicitations = async () => {
     const locationLatitude = latitude ? latitude : null;
@@ -36,11 +47,9 @@ export default function TabOneScreen() {
       .then((response) => {
         if (response && response.data) {
           setData(response.data);
-          setMeta(response.meta);
         }
       })
       .catch((error: any) => {
-        console.log(error);
         errorToast({ title: 'Ocorreu um erro ao buscar as solicitações!' });
       })
       .finally(() => {
@@ -49,16 +58,13 @@ export default function TabOneScreen() {
       });
   };
 
-  useEffect(() => {
-    fetchSolicitations();
-  }, [latitude, longitude]);
-
-  const updateSolicitationLikeStatus = ({ solicitationId, hasCurrentUserLike }: HandleSolicitationLikeInterface) => {
+  const updateSolicitationLikeStatus = (solicitationId: number, newLikeStatus: boolean) => {
     const updatedData = data.map(item => {
       if (item.id === solicitationId) {
         return {
           ...item,
-          hasCurrentUserLike: !hasCurrentUserLike,
+          hasCurrentUserLike: newLikeStatus,
+          likesCount: newLikeStatus ? item.likesCount + 1 : item.likesCount - 1,
         };
       }
       return item;
@@ -71,10 +77,12 @@ export default function TabOneScreen() {
     if (token) {
       await likeSolicitation({ solicitationId })
         .then(() => {
-          updateSolicitationLikeStatus({ solicitationId, hasCurrentUserLike });
+          const newLikeStatus = !hasCurrentUserLike; // Inverte o status de like
+          updateSolicitationLikeStatus(solicitationId, newLikeStatus);
 
-          if (!hasCurrentUserLike)
+          if (!hasCurrentUserLike) {
             successToast({ title: 'Você reforçou esta solicitação!' });
+          }
         })
         .catch((error: any) => {
           errorToast({ title: 'Ocorreu um erro ao reforçar a solicitação!' });
@@ -88,11 +96,17 @@ export default function TabOneScreen() {
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={fetchSolicitations} />
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={fetchSolicitations}
+        />
       }
     >
       <View style={ContainerBaseStyle.container}>
-        <AgoraMap data={data} />
+        <AgoraMap
+          data={data}
+          onLike={handleLike}
+        />
         <CreateSolicitationButton />
       </View>
     </ScrollView>

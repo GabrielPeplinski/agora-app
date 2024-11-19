@@ -66,6 +66,10 @@ const MySolicitationOptionsButton = ({ solicitationData, onDelete }: { solicitat
     router.push(`/solicitations/${id}/update-status`);
   };
 
+  const handleEditSolicitation = (id: number): void => {
+    router.push(`/solicitations/${id}/edit`);
+  };
+
   const options = [
     {
       icon: <Feather name="trash" size={24} color="black" />,
@@ -77,7 +81,7 @@ const MySolicitationOptionsButton = ({ solicitationData, onDelete }: { solicitat
     },
     {
       icon: <Feather name="edit" size={24} color="black" />,
-      action: () => console.log(`Editar Solicitação: ${solicitationData.title}`)
+      action: () => handleEditSolicitation(solicitationData.id)
     },
     {
       icon: <Feather name="eye" size={24} color="black" />,

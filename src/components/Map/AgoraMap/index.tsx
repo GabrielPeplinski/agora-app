@@ -1,8 +1,10 @@
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { ExpoLeaflet, MapLayer, MapMarker, MapShape } from 'expo-leaflet';
 import { useLocationCoordinates } from '@/src/context/LocationCoordenatesContextProvider';
 import PaginatedSolicitationInterface from '@/src/interfaces/Solicitation/PaginatedSolicitationInterface';
+import { Portal } from 'react-native-paper';
+import SolicitationMapModal from '@/src/components/Map/SolicitationMapModal';
 
 const mapLayer: MapLayer = {
   baseLayerName: 'OpenStreetMap',
@@ -15,6 +17,7 @@ const mapLayer: MapLayer = {
 
 interface AgoraMapProps {
   data: PaginatedSolicitationInterface[];
+  onLike: ({ solicitationId, hasCurrentUserLike }: { solicitationId: number, hasCurrentUserLike: boolean }) => void;
 }
 
 const statusIcons: { [key: string]: string } = {
@@ -23,8 +26,10 @@ const statusIcons: { [key: string]: string } = {
   IN_PROGRESS: '🚧',
 };
 
-const AgoraMap = ({ data }: AgoraMapProps) => {
+const AgoraMap = ({ data, onLike }: AgoraMapProps) => {
   const { latitude, longitude } = useLocationCoordinates();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [solicitationClickedId, setSolicitationClickedId] = useState<PaginatedSolicitationInterface | null>(null);
 
   const generateCirclePoints = (center: { lat: number, lng: number }, radius: number, points: number = 32) => {
     const angleStep = (2 * Math.PI) / points;
@@ -75,8 +80,25 @@ const AgoraMap = ({ data }: AgoraMapProps) => {
     },
   };
 
-
   const solicitationMarkers = solicitationList.concat(userLocation);
+
+  const handleClickedMarkerId = (solicitationId: string) => {
+    const solicitation = data.find((item) => item.id.toString() === solicitationId);
+
+    if (solicitation) {
+      showModal();
+      setSolicitationClickedId(solicitation);
+    }
+  };
+
+  const hideModal = () => {
+    setIsModalVisible(false);
+    setSolicitationClickedId(null);
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
 
   return (
     <View style={styles.container}>
@@ -92,12 +114,22 @@ const AgoraMap = ({ data }: AgoraMapProps) => {
         zoom={16}
         loadingIndicator={() => <ActivityIndicator />}
         onMessage={(message: any) => {
-          if (message.tag === 'onMapClicked') {
-            const latitude = message.location.lat;
-            const longitude = message.location.lng;
+          if (message.tag === 'onMapMarkerClicked' && solicitationList.some(marker => marker.id === message.mapMarkerId)) {
+            handleClickedMarkerId(message.mapMarkerId);
           }
         }}
       />
+
+      {isModalVisible && solicitationClickedId && (
+        <Portal>
+          <SolicitationMapModal
+            isModalVisible={isModalVisible}
+            hideModal={hideModal}
+            solicitation={solicitationClickedId}
+            onLike={onLike}
+          />
+        </Portal>
+      )}
     </View>
   );
 };

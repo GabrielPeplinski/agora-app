@@ -1,34 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View } from '@/src/components/Themed';
 import { Button } from 'react-native-paper';
 import ContainerBaseStyle from '@/app/style';
 import { StyleSheet } from 'react-native';
-import FirstPageCreateSolicitationForm from '@/src/components/Solicitation/FirstPageCreateSolicitationForm';
+import FirstPageSolicitationForm from '@/src/components/Solicitation/FirstPageSolicitationForm';
 import SecondPageCreateSolicitationForm from '@/src/components/Solicitation/SecondPageCreateSolicitationForm';
 import { addSolicitationImage } from '@/src/services/api/Solicitation/AddSolicitationImageService';
 import { createSolicitation } from '@/src/services/api/Solicitation/MySolicitationsService';
 import { errorToast, successToast } from '@/utils/use-toast';
 import LoadingScreen from '@/src/components/Shared/LoadingScreen';
 import { useRouter } from 'expo-router';
-
-interface FormData {
-  title: string;
-  description: string;
-  solicitationCategoryId: number;
-  latitudeCoordinates: string;
-  longitudeCoordinates: string;
-  coverImage: string | null;
-  images: string[];
-}
+import { useRefreshContext } from '@/src/context/RefreshContextProvider';
+import CreateSolicitationFormDataInterface
+  from '@/src/interfaces/Solicitation/Form/CreateSolicitationFormDataInterface';
 
 export default function CreateSolicitationsScreen() {
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = useState(0);
   const maxPageNumber = 2;
-  const [loadingSubmit, setLoadingSubmit] = React.useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const router = useRouter();
-  const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const { setNeedRefresh } = useRefreshContext();
 
-  const [formData, setFormData] = React.useState<FormData>({
+  const [formData, setFormData] = useState<CreateSolicitationFormDataInterface>({
     title: '',
     description: '',
     solicitationCategoryId: 0,
@@ -48,7 +42,7 @@ export default function CreateSolicitationsScreen() {
     }
   }, [formData, page]);
 
-  function validateFirstPage(formData: FormData) {
+  function validateFirstPage(formData: CreateSolicitationFormDataInterface) {
     return formData.title !== '' &&
       formData.description !== '' &&
       formData.solicitationCategoryId !== 0 &&
@@ -56,18 +50,18 @@ export default function CreateSolicitationsScreen() {
       formData.longitudeCoordinates !== '';
   }
 
-  function validateSecondPage(formData: FormData) {
+  function validateSecondPage(formData: CreateSolicitationFormDataInterface) {
     return formData.coverImage !== null && formData.coverImage !== '';
   }
 
   function handleSubmit() {
-      if (page < maxPageNumber - 1) {
-        setPage(page + 1);
-      } else {
-        setLoadingSubmit(true);
-        handleCreateSolicitation()
-          .finally(() => setLoadingSubmit(false));
-      }
+    if (page < maxPageNumber - 1) {
+      setPage(page + 1);
+    } else {
+      setLoadingSubmit(true);
+      handleCreateSolicitation()
+        .finally(() => setLoadingSubmit(false));
+    }
   }
 
   async function handleCreateSolicitation() {
@@ -76,6 +70,7 @@ export default function CreateSolicitationsScreen() {
         successToast({ title: 'Solicitação criada com sucesso!' });
 
         router.back();
+        setNeedRefresh();
 
         addSolicitationImages(response.id.toString());
       })
@@ -86,13 +81,11 @@ export default function CreateSolicitationsScreen() {
         console.error(error);
         errorToast({ title: 'Ocorreu algum erro durante a criação da solicitação!' });
       });
-
-    console.log('Dados do formulário:', formData);
   }
 
   async function addSolicitationImages(mySolicitationId: string) {
     if (formData.coverImage != null) {
-      await addSolicitationImage(formData.coverImage, 'coverImage', mySolicitationId)
+      await addSolicitationImage(formData.coverImage, mySolicitationId)
         .catch((error: any) => {
           throw error;
         });
@@ -100,7 +93,7 @@ export default function CreateSolicitationsScreen() {
 
     if (formData.images.length > 0) {
       for (const image of formData.images) {
-        await addSolicitationImage(image, 'images', mySolicitationId)
+        await addSolicitationImage(image, mySolicitationId)
           .catch((error: any) => {
             throw error;
           });
@@ -114,38 +107,17 @@ export default function CreateSolicitationsScreen() {
     }
   }
 
-  const conditionalComponent = () => {
-    switch (page) {
-      case 0:
-        return (
-          <FirstPageCreateSolicitationForm
-            values={formData}
-            setValues={setFormData}
-          />
-        );
-      case 1:
-        return (
-          <SecondPageCreateSolicitationForm
-            values={formData}
-            setValues={setFormData}
-          />
-        );
-      default:
-        return (
-          <FirstPageCreateSolicitationForm
-            values={formData}
-            setValues={setFormData}
-          />
-        );
-    }
-  };
+  const pages = [
+    <FirstPageSolicitationForm values={formData} setValues={setFormData} />,
+    <SecondPageCreateSolicitationForm values={formData} setValues={setFormData} />
+  ];
 
   return (
     <View style={ContainerBaseStyle.container}>
 
       {loadingSubmit ? <LoadingScreen /> : (
         <>
-          {conditionalComponent()}
+          {pages[page] || pages[0]}
 
           <View style={styles.buttonContainer}>
             {page > 0 && (

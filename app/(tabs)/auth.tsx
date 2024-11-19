@@ -36,7 +36,7 @@ export default function AuthScreen() {
       {token ? (
         <>
           <Appbar.Header style={{ justifyContent: 'flex-end' }}>
-            <Appbar.Content title="Olá Usuário" />
+            <Appbar.Content title="Olá! Seja Bem-vindo!" />
             <Menu
               visible={isMenuVisible}
               onDismiss={closeMenu}

@@ -8,6 +8,7 @@ import { getSolicitationCategories } from '@/src/services/api/SolicitationCatego
 import { useLocationCoordinates } from '@/src/context/LocationCoordenatesContextProvider';
 import { router } from 'expo-router';
 import SolicitationCategoryInterface from '@/src/interfaces/SolicitationCategoryInterface';
+import { errorToast } from '@/utils/use-toast';
 
 interface FormData {
   title: string;
@@ -24,7 +25,7 @@ interface Props {
   setValues: React.Dispatch<React.SetStateAction<FormData>>;
 }
 
-const FirstPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }) => {
+const FirstPageSolicitationForm: React.FC<Props> = ({ values, setValues }) => {
   const [isLoadingCategories, setLoadingCategories] = React.useState(true);
   const [categories, setCategories] = React.useState<SolicitationCategoryInterface[]>([]);
   const { latitude, longitude } = useLocationCoordinates();
@@ -46,10 +47,14 @@ const FirstPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues })
   }, [latitude, longitude]);
 
   useEffect(() => {
-    getSolicitationCategories().then((response) => {
-      setCategories(response ? response : []);
-      setLoadingCategories(false);
-    });
+    getSolicitationCategories()
+      .then((response) => {
+        setCategories(response ? response : []);
+        setLoadingCategories(false);
+      })
+      .catch((error: any) => {
+        errorToast({ title: 'Ocorreu um erro ao buscar as categorias!' })
+      });
   }, []);
 
   return (
@@ -125,4 +130,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FirstPageCreateSolicitationForm;
+export default FirstPageSolicitationForm;

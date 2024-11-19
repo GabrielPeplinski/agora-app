@@ -9,6 +9,7 @@ import SmallLoader from '@/src/components/Shared/SmallLoader';
 import { errorToast } from '@/utils/use-toast';
 import Pagination from '@/src/components/Shared/Pagination';
 import PaginationMetaInterface from '@/src/interfaces/Pagination/PaginationMetaInterface';
+import { useRefreshContext } from '@/src/context/RefreshContextProvider';
 
 const MySolicitationsTable = () => {
   const [statusFilter, setStatusFilter] = useState('open');
@@ -18,6 +19,7 @@ const MySolicitationsTable = () => {
   const [meta, setMeta] = useState<PaginationMetaInterface | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const { resetNeedRefresh, needsRefresh } = useRefreshContext();
 
   const fetchMySolicitations = async () => {
     setIsLoading(true);
@@ -27,6 +29,7 @@ const MySolicitationsTable = () => {
         if (response) {
           setSolicitations(response.data);
           setMeta(response.meta);
+          resetNeedRefresh();
         }
       }).catch((error: any) => {
         errorToast({ title: 'Ocorreu um erro ao buscar suas solicitações!' });
@@ -38,7 +41,7 @@ const MySolicitationsTable = () => {
 
   useEffect(() => {
     fetchMySolicitations();
-  }, [statusFilter, page]);
+  }, [statusFilter, page, needsRefresh]);
 
   useEffect(() => {
     if (scrollViewRef.current) {
