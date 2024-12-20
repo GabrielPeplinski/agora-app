@@ -1,10 +1,21 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions, Alert } from 'react-native';
-import { Portal, Text } from 'react-native-paper';
+import {
+  View,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Dimensions,
+  Alert,
+  StatusBar,
+} from 'react-native';
+import { Portal, Text, Button } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import MyCamera from '../MyCamera';
+import GoBackButton from '@/src/components/Shared/GoBackButton';
 
 interface FormData {
   title: string;
@@ -19,11 +30,12 @@ interface FormData {
 interface Props {
   values: FormData;
   setValues: React.Dispatch<React.SetStateAction<FormData>>;
+  navigation: any; // Adicionando navegação para o botão "Go Back"
 }
 
 const screenWidth = Dimensions.get('window').width;
 
-const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }) => {
+const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues, navigation }) => {
   const [isCameraModalVisible, setIsCameraModalVisible] = React.useState(false);
 
   const hideModal = () => setIsCameraModalVisible(false);
@@ -75,9 +87,8 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
   return (
     <>
       <ScrollView>
-        <View>
+        <View style={styles.container}>
           <Portal>
-
             <Modal
               visible={isCameraModalVisible}
               onRequestClose={hideModal}
@@ -99,6 +110,7 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
         </View>
 
         <View style={ContainerBaseStyle.container}>
+
           <View style={styles.centeredContent}>
             <Text variant={'titleLarge'}>Fotos Reais do Problema</Text>
 
@@ -114,7 +126,7 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
               <View style={styles.imageContainer}>
                 <Image
                   source={{ uri: values.coverImage }}
-                  style={{ width: screenWidth, height: screenWidth * 0.90}}
+                  style={{ width: screenWidth, height: screenWidth * 0.90 }}
                   resizeMode="contain"
                 />
                 <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteImage(values.coverImage!)}>
@@ -151,6 +163,9 @@ const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingTop: StatusBar.currentHeight || 20,
+  },
   centeredContent: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -183,7 +198,7 @@ const styles = StyleSheet.create({
     top: 20,
     right: 20,
     zIndex: 1,
-  }
+  },
 });
 
 export default SecondPageCreateSolicitationForm;

@@ -16,6 +16,7 @@ import UpdateSolicitationFormDataInterface
   from '@/src/interfaces/Solicitation/Form/UpdateSolicitationFormDataInterface';
 import FirstPageEditSolicitationForm from '@/src/components/Solicitation/FirstPageEditSolicitationForm';
 import { removeSolicitationImages } from '@/src/services/api/Solicitation/RemoveSolicitationImageService';
+import GoBackButton from '@/src/components/Shared/GoBackButton';
 
 export default function EditSolicitationScreen() {
   const [page, setPage] = useState(0);
@@ -176,6 +177,7 @@ export default function EditSolicitationScreen() {
 
   return (
     <View style={ContainerBaseStyle.container}>
+      <GoBackButton/>
 
       {loadingSubmit ? <LoadingScreen /> : (
         <>

@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
-import { View, ScrollView, RefreshControl } from 'react-native';
+import { View, ScrollView, StyleSheet, RefreshControl, StatusBar } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import LoadingScreen from '@/src/components/Shared/LoadingScreen';
 import { getSolicitation } from '@/src/services/api/Solicitation/SolicitationsService';
 import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/SolicitationResponseInterface';
 import { errorToast } from '@/utils/use-toast';
 import ContainerBaseStyle from '@/app/style';
 import UpdateSolicitationStatusForm from '@/src/components/Solicitation/UpdateSolicitationStatusForm';
+import GoBackButton from '@/src/components/Shared/GoBackButton';
 
 export default function ShowSolicitationScreen() {
   const { id } = useLocalSearchParams();
@@ -14,23 +16,32 @@ export default function ShowSolicitationScreen() {
   const [data, setData] = useState<SolicitationResponseInterface | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  useEffect(() => {
-    getSolicitationDetails();
-  }, [id]);
+  useFocusEffect(
+    React.useCallback(() => {
+      setData(null);
+      setIsLoading(true);
+
+      getSolicitationDetails();
+
+      return () => {
+        setData(null);
+      };
+    }, []),
+  );
 
   const getSolicitationDetails = async () => {
     setIsRefreshing(true);
-    await getSolicitation(id.toString())
-      .then((response) => {
-        if (response) {
-          setData(response);
-          setIsLoading(false);
-        }
-        setIsRefreshing(false);
-      }).catch((error: any) => {
-        errorToast({ title: 'Ocorreu um erro ao buscar a solicitação!' });
-        setIsRefreshing(false);
-      });
+    try {
+      const response = await getSolicitation(id.toString());
+      if (response) {
+        setData(response); // Atualiza o estado com os dados novos
+      }
+    } catch (error) {
+      errorToast({ title: 'Ocorreu um erro ao buscar a solicitação!' });
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
   };
 
   return (
@@ -39,22 +50,31 @@ export default function ShowSolicitationScreen() {
         <LoadingScreen />
       ) : (
         <>
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={isRefreshing}
-                onRefresh={getSolicitationDetails}
-              />
-            }
-          >
-            {data && (
-              <UpdateSolicitationStatusForm
-                solicitationData={data}
-              />
-            )}
-          </ScrollView>
+          <GoBackButton />
+          <View style={styles.container}>
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefreshing}
+                  onRefresh={getSolicitationDetails}
+                />
+              }
+            >
+              {data && (
+                <UpdateSolicitationStatusForm
+                  solicitationData={data}
+                />
+              )}
+            </ScrollView>
+          </View>
         </>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: StatusBar.currentHeight || 20,
+  },
+});
