@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import { Button, TextInput, Text, Switch } from 'react-native-paper';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import LoginValidation from '@/src/validations/LoginValidation';
 import PasswordInput from '@/src/components/Account/PasswordInput';
 import { useAuthStore } from '@/src/stores/authStore';
@@ -15,6 +15,12 @@ const LoginForm = () => {
 
   return (
     <View style={styles.container}>
+      <View>
+        <Image
+          source={require('../../../../assets/images/agora-logo.png')}
+          style={styles.logoImage}
+        />
+      </View>
       <Formik
         enableReinitialize
         initialValues={{
@@ -78,7 +84,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   container: {
-    backgroundColor: 'rgb(33, 90, 189)',
+    backgroundColor: '#004aad',
     flexDirection: 'column',
     flex: 1,
     justifyContent: 'center',
@@ -92,6 +98,7 @@ const styles = StyleSheet.create({
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 10,
   },
   switchLabel: {
@@ -104,6 +111,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'black',
+  },
+  logoImage: {
+    width: 350,
+    height: 200,
   },
 });
 

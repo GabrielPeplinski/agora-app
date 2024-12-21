@@ -67,7 +67,7 @@ export default function AuthScreen() {
           </View>
         </>
       ) : (
-        <View style={ContainerBaseStyle.container}>
+        <View style={[ContainerBaseStyle.container, styles.container]}>
           <LoginForm />
           <View style={styles.registerContainer}>
             <TouchableOpacity
@@ -75,7 +75,9 @@ export default function AuthScreen() {
               onPress={() => router.push('/auth/register')}
               style={{ backgroundColor: 'transparent' }}
             >
-              <Text variant={'titleSmall'} style={styles.link}>
+              <Text
+                variant={'bodyMedium'}
+                style={styles.link}>
                 Ainda não tem uma conta? Crie a sua aqui!
               </Text>
             </TouchableOpacity>
@@ -96,6 +98,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   link: {
-    fontWeight: 'bold',
+    color: 'white',
   },
+  container: {
+    backgroundColor: '#004aad',
+  }
 });
