@@ -1,24 +1,31 @@
 import { Formik } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { Button, TextInput, Text } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
+import { TextInputMask } from 'react-native-masked-text';
+import { Entypo } from '@expo/vector-icons';
 import AddressValidation from '@/src/validations/AddressValidation';
 import { createOrUpdateAddress, getAddress } from '@/src/services/api/AddressService';
 import { errorToast, successToast } from '@/utils/use-toast';
-import { TextInputMask } from 'react-native-masked-text';
-import FormErrorsInterface from '@/src/interfaces/Forms/FormErrorsInterface';
-import { Entypo } from '@expo/vector-icons';
-import FormError from '@/src/components/Shared/FormError';
 import { useRouter } from 'expo-router';
 import { searchCep } from '@/src/services/api/ViaCepService';
+import FormError from '@/src/components/Shared/FormError';
+import FormErrorsInterface from '@/src/interfaces/Forms/FormErrorsInterface';
 
-interface StatesData {
+interface AddressInterface {
+  zipCode: string;
+  cityName: string;
+  neighborhood: string;
+  stateAbbreviation: string;
+}
+
+interface StatesInterface {
   label: string;
   value: string;
 }
 
-const states: StatesData[] = [
+const states: StatesInterface[] = [
   { label: 'Acre', value: 'AC' },
   { label: 'Alagoas', value: 'AL' },
   { label: 'Amapá', value: 'AP' },
@@ -49,52 +56,75 @@ const states: StatesData[] = [
 ];
 
 const AddressForm = () => {
-  const [initialValues, setInitialValues] = useState({
+  const [address, setAddress] = useState<AddressInterface>({
     zipCode: '',
     cityName: '',
     neighborhood: '',
     stateAbbreviation: '',
   });
   const [formErrors, setFormErrors] = useState<FormErrorsInterface>({});
+  const [loading, setLoading] = useState(false);
+  const [showFields, setShowFields] = useState(false);
   const router = useRouter();
 
-  const cleanErrors = () => {
-    setFormErrors({});
-  };
+  useEffect(() => {
+    getAddress()
+      .then((response) => {
+        if (response) {
+          setAddress({
+            zipCode: response.zipCode,
+            cityName: response.cityName,
+            neighborhood: response.neighborhood,
+            stateAbbreviation: response.stateAbbreviation,
+          });
+          setShowFields(true);
+        } else {
+          setShowFields(false);
+        }
+      })
+      .catch(() => {
+        setShowFields(false);
+      });
+  }, []);
+
+  const cleanErrors = () => setFormErrors({});
 
   const handleZipCodeChange = async (cep: string, setFieldValue: any) => {
     const cleanCep = cep.replace('-', '').trim();
+    setFieldValue('zipCode', cep);
 
     if (cleanCep.length === 8) {
-      try {
-        const data = await searchCep(cleanCep);
-        setFieldValue('cityName', data.cityName);
-        setFieldValue('neighborhood', data.neighborhood);
-        setFieldValue('stateAbbreviation', data.stateAbbr);
-      } catch (error) {
-        console.log(error);
-        errorToast({ title: 'Não foi possível buscar o CEP. Tente novamente!' });
-      }
+      setLoading(true);
+
+      await searchCep(cleanCep)
+        .then((data) => {
+          if (data) {
+            setFieldValue('cityName', data.cityName || '');
+            setFieldValue('neighborhood', data.neighborhood || '');
+            setFieldValue('stateAbbreviation', data.stateAbbr || '');
+            setAddress({
+              zipCode: cep,
+              cityName: data.cityName || '',
+              neighborhood: data.neighborhood || '',
+              stateAbbreviation: data.stateAbbr || '',
+            });
+            setShowFields(true);
+          }
+        })
+        .catch(() => {
+          errorToast({ title: 'CEP inválido ou não encontrado.' });
+          setFieldValue('cityName', '');
+          setFieldValue('neighborhood', '');
+          setFieldValue('stateAbbreviation', '');
+          setShowFields(true);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   };
 
-  useEffect(() => {
-    const fetchAddress = async () => {
-      const addressData = await getAddress();
-
-      if (addressData) {
-        setInitialValues({
-          zipCode: addressData.zipCode || '',
-          cityName: addressData.cityName || '',
-          neighborhood: addressData.neighborhood || '',
-          stateAbbreviation: addressData.stateAbbreviation || '',
-        });
-      }
-    };
-    fetchAddress();
-  }, []);
-
-  const handleRegister = async (values: any) => {
+  const handleRegister = async (values: AddressInterface) => {
     const formattedValues = {
       ...values,
       zipCode: values.zipCode.replace('-', ''),
@@ -103,99 +133,79 @@ const AddressForm = () => {
     await createOrUpdateAddress(formattedValues)
       .then(() => {
         cleanErrors();
-        router.push('/auth');
         successToast({ title: 'Endereço atualizado com sucesso!' });
+        router.push('/auth');
       })
-      .catch((error) => {
+      .catch((error: any) => {
         if (error?.response?.status === 422) {
           setFormErrors(error?.response?.data?.errors || {});
-          errorToast({ title: 'Ocorreu um erro ao atualizar seu endereço!' });
         } else {
-          errorToast({ title: 'Ocorreu um erro ao atualizar seu endereço!' });
+          errorToast({ title: 'Erro desconhecido ao atualizar endereço.' });
         }
       });
   };
 
   return (
     <View style={styles.container}>
-
       <View style={styles.pageHeader}>
         <Entypo name="home" size={100} color="black" />
-        <Text variant={'titleLarge'}>
-          Atualize seu Endereço
-        </Text>
+        <Text variant="titleLarge">Atualize seu Endereço</Text>
       </View>
 
       <Formik
-        enableReinitialize
-        initialValues={initialValues}
+        initialValues={address}
         validationSchema={AddressValidation}
+        enableReinitialize
         onSubmit={(values) => handleRegister(values)}
       >
         {({ handleChange, handleSubmit, setFieldValue, values, errors, touched }) => (
           <View style={styles.form}>
             <TextInputMask
-              type={'custom'}
-              options={{
-                mask: '99999-999', // Mascarar o campo CEP
-              }}
+              type="custom"
+              options={{ mask: '99999-999' }}
               customTextInput={TextInput}
               customTextInputProps={{
                 style: styles.space,
                 label: 'CEP*',
-                placeholder: 'Seu cep',
+                placeholder: 'Digite o CEP',
               }}
               value={values.zipCode}
-              onChangeText={(text) => {
-                handleChange('zipCode')(text);
-                handleZipCodeChange(text, setFieldValue);
-              }}
+              onChangeText={(text) => handleZipCodeChange(text, setFieldValue)}
             />
             {(errors.zipCode && touched.zipCode) && <FormError errorMessage={errors.zipCode} />}
-            {formErrors.zipCode && formErrors.zipCode.length > 0 && <FormError errorMessage={formErrors.zipCode[0]} />}
+            {formErrors.zipCode && <FormError errorMessage={formErrors.zipCode[0]} />}
 
-            <TextInput
-              style={styles.space}
-              label="Cidade*"
-              placeholder="Cidade onde mora"
-              value={values.cityName}
-              onChangeText={handleChange('cityName')}
-            />
-            {(errors.cityName && touched.cityName) && <FormError errorMessage={errors.cityName} />}
-            {formErrors.cityName && formErrors.cityName.length > 0 && <FormError errorMessage={formErrors.cityName[0]} />}
+            {loading && <ActivityIndicator style={styles.loading} size="small" color="#004aad" />}
 
-            <TextInput
-              style={styles.space}
-              label="Bairro*"
-              placeholder="Bairro onde mora"
-              value={values.neighborhood}
-              onChangeText={handleChange('neighborhood')}
-            />
-            {(errors.neighborhood && touched.neighborhood) && <FormError errorMessage={errors.neighborhood} />}
-            {formErrors.neighborhood && formErrors.neighborhood.length > 0 && <FormError errorMessage={formErrors.neighborhood[0]} />}
-
-            <Picker
-              selectedValue={values.stateAbbreviation}
-              style={styles.picker}
-              onValueChange={(itemValue) => {
-                setFieldValue('stateAbbreviation', itemValue);
-                setFormErrors((prevErrors) => {
-                  const { stateAbbreviation, ...rest } = prevErrors;
-                  return rest;
-                });
-              }}
-            >
-              <Picker.Item label="Selecione o estado*" value="" />
-              {states.map((state) => (
-                <Picker.Item key={state.value} label={state.label} value={state.value} />
-              ))}
-            </Picker>
-            {(errors.stateAbbreviation && touched.stateAbbreviation) && <FormError errorMessage={errors.stateAbbreviation} />}
-            {formErrors.stateAbbreviation && formErrors.stateAbbreviation.length > 0 && <FormError errorMessage={formErrors.stateAbbreviation[0]} />}
-
-            <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode="contained">
-              Atualizar Endereço
-            </Button>
+            {showFields && (
+              <>
+                <TextInput
+                  style={styles.space}
+                  label="Cidade*"
+                  value={values.cityName}
+                  onChangeText={handleChange('cityName')}
+                />
+                <TextInput
+                  style={styles.space}
+                  label="Bairro*"
+                  value={values.neighborhood}
+                  onChangeText={handleChange('neighborhood')}
+                />
+                <Picker
+                  selectedValue={values.stateAbbreviation}
+                  style={styles.picker}
+                  onValueChange={(value) => setFieldValue('stateAbbreviation', value)}
+                >
+                  <Picker.Item label="Selecione o estado*" value="" />
+                  {states.map((state) => (
+                    <Picker.Item key={state.value} label={state.label} value={state.value} />
+                  ))}
+                </Picker>
+                <Button style={styles.space} onPress={(e: any) => handleSubmit(e)} mode="contained">
+                  Atualizar Endereço
+                </Button>
+              </>
+            )}
           </View>
         )}
       </Formik>
@@ -222,13 +232,16 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
     marginTop: 10,
-    backgroundColor: '#ebdceb'
+    backgroundColor: '#ebdceb',
   },
   pageHeader: {
     marginBottom: 30,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 50,
+  },
+  loading: {
+    marginTop: 10,
   },
 });
 

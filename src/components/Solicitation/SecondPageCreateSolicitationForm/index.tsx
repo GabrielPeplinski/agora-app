@@ -30,7 +30,7 @@ interface FormData {
 interface Props {
   values: FormData;
   setValues: React.Dispatch<React.SetStateAction<FormData>>;
-  navigation: any; // Adicionando navegação para o botão "Go Back"
+  navigation: any;
 }
 
 const screenWidth = Dimensions.get('window').width;
