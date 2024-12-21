@@ -30,12 +30,11 @@ interface FormData {
 interface Props {
   values: FormData;
   setValues: React.Dispatch<React.SetStateAction<FormData>>;
-  navigation: any;
 }
 
 const screenWidth = Dimensions.get('window').width;
 
-const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues, navigation }) => {
+const SecondPageCreateSolicitationForm: React.FC<Props> = ({ values, setValues }) => {
   const [isCameraModalVisible, setIsCameraModalVisible] = React.useState(false);
 
   const hideModal = () => setIsCameraModalVisible(false);
