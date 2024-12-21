@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, Text, Switch } from 'react-native-paper';
 import { StyleSheet, View } from 'react-native';
 import LoginValidation from '@/src/validations/LoginValidation';
 import PasswordInput from '@/src/components/Account/PasswordInput';
@@ -8,7 +8,10 @@ import { useAuthStore } from '@/src/stores/authStore';
 import FormError from '@/src/components/Shared/FormError';
 
 const LoginForm = () => {
+  const [keepSession, setKeepSession] = useState(false);
   const login = useAuthStore(state => state.login);
+
+  const onToggleSwitch = () => setKeepSession(!keepSession);
 
   return (
     <View style={styles.container}>
@@ -17,6 +20,7 @@ const LoginForm = () => {
         initialValues={{
           email: '',
           password: '',
+          keepSession: '',
         }}
         validationSchema={LoginValidation}
         onSubmit={(values) => login(values)}
@@ -40,8 +44,22 @@ const LoginForm = () => {
             />
             {(errors.password && touched.password) && <FormError errorMessage={errors.password} />}
 
+            <View style={styles.switchContainer}>
+              <Switch
+                value={keepSession}
+                onValueChange={onToggleSwitch}
+                color={'black'}
+              />
+              <Text
+                style={styles.switchLabel}
+                variant={'bodyMedium'}>
+                {keepSession ? 'Manter sessão ativa' : 'Sessão expira após o login'}
+              </Text>
+            </View>
+
             <Button
-              style={styles.space}
+              style={styles.button}
+              labelStyle={styles.buttonText}
               onPress={(e: any) => handleSubmit(e)}
               mode="contained"
               disabled={!isValid}
@@ -57,9 +75,10 @@ const LoginForm = () => {
 
 const styles = StyleSheet.create({
   space: {
-    marginTop: 10
+    marginTop: 10,
   },
   container: {
+    backgroundColor: 'rgb(33, 90, 189)',
     flexDirection: 'column',
     flex: 1,
     justifyContent: 'center',
@@ -69,6 +88,22 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '80%',
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  switchLabel: {
+    marginLeft: 10,
+    color: 'white',
+  },
+  button: {
+    marginTop: 10,
+    backgroundColor: 'white',
+  },
+  buttonText: {
+    color: 'black',
   },
 });
 
