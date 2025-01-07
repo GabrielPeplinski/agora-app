@@ -26,12 +26,12 @@ const LoginForm = () => {
         initialValues={{
           email: '',
           password: '',
-          keepSession: '',
+          keepSession: false,
         }}
         validationSchema={LoginValidation}
         onSubmit={(values) => login(values)}
       >
-        {({ handleChange, handleSubmit, values, errors, touched, isValid }) => (
+        {({ handleChange, handleSubmit, values, errors, touched, isValid, setFieldValue }) => (
           <View style={styles.form}>
             <TextInput
               style={styles.space}
@@ -50,18 +50,21 @@ const LoginForm = () => {
             />
             {(errors.password && touched.password) && <FormError errorMessage={errors.password} />}
 
-            <View style={styles.switchContainer}>
-              <Switch
-                value={keepSession}
-                onValueChange={onToggleSwitch}
-                color={'black'}
-              />
-              <Text
-                style={styles.switchLabel}
-                variant={'bodyMedium'}>
-                {keepSession ? 'Manter sessão ativa' : 'Sessão expira após o login'}
-              </Text>
-            </View>
+            {/*<View style={styles.switchContainer}>*/}
+            {/*  <Switch*/}
+            {/*    value={values.keepSession}*/}
+            {/*    onValueChange={(value: boolean) => {*/}
+            {/*      setFieldValue('keepSession', value);*/}
+            {/*    }}*/}
+            {/*    color={'black'}*/}
+            {/*  />*/}
+
+            {/*  <Text*/}
+            {/*    style={styles.switchLabel}*/}
+            {/*    variant={'bodyMedium'}>*/}
+            {/*    {values.keepSession ? 'Manter sessão ativa' : 'Sessão expira após o login'}*/}
+            {/*  </Text>*/}
+            {/*</View>*/}
 
             <Button
               style={styles.button}
