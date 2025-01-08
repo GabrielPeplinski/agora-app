@@ -101,10 +101,12 @@ function RootLayoutNav() {
     <LocationCoordinatesContextProvider>
       <RefreshContextProvider>
         <PaperProvider theme={theme}>
-          <Stack>
+          <Stack
+          screenOptions={{
+            headerShown: false
+          }}>
             <Stack.Screen
               name="(tabs)"
-              options={{ headerShown: false }}
             />
           </Stack>
         </PaperProvider>

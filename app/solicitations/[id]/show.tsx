@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
-import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { View, StyleSheet, ScrollView, RefreshControl, StatusBar } from 'react-native';
 import LoadingScreen from '@/src/components/Shared/LoadingScreen';
 import { getSolicitation } from '@/src/services/api/Solicitation/SolicitationsService';
 import SolicitationResponseInterface from '@/src/interfaces/Solicitation/Responses/SolicitationResponseInterface';
 import { errorToast } from '@/utils/use-toast';
 import SolicitationDetails from '@/src/components/Solicitation/SolicitationDetails';
 import ContainerBaseStyle from '@/app/style';
+import GoBackButton from '@/src/components/Shared/GoBackButton';
 
 export default function ShowSolicitationScreen() {
   const { id } = useLocalSearchParams();
@@ -38,22 +39,25 @@ export default function ShowSolicitationScreen() {
       {isLoading ? (
         <LoadingScreen />
       ) : (
-        <>
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={isRefreshing}
-                onRefresh={getSolicitationDetails}
-              />
-            }
-          >
-            {data && (
-              <SolicitationDetails
-                solicitationData={data}
-              />
-            )}
-          </ScrollView>
-        </>
+        <View style={styles.container}>
+          <GoBackButton />
+          <>
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefreshing}
+                  onRefresh={getSolicitationDetails}
+                />
+              }
+            >
+              {data && (
+                <SolicitationDetails
+                  solicitationData={data}
+                />
+              )}
+            </ScrollView>
+          </>
+        </View>
       )}
     </View>
   );
@@ -61,8 +65,6 @@ export default function ShowSolicitationScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingTop: StatusBar.currentHeight || 20,
   },
 });

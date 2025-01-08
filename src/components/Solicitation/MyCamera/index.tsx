@@ -9,13 +9,14 @@ interface MyCameraProps {
   onTakePicture: (uri: string) => void;
 }
 
-const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const MyCamera = (props: MyCameraProps) => {
   const cameraRef = useRef<Camera>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<null | boolean>(null);
   const [photoUri, setPhotoUri] = useState<string>();
   const [cameraType, setCameraType] = useState(CameraType.back);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -36,6 +37,7 @@ const MyCamera = (props: MyCameraProps) => {
 
   const takePicture = async () => {
     if (cameraRef.current) {
+      setIsButtonDisabled(true);
       const options = {
         quality: 1,
         base64: true,
@@ -57,6 +59,8 @@ const MyCamera = (props: MyCameraProps) => {
           { text: 'OK', onPress: () => props.onTakePicture(newPicture.uri) },
         ],
       );
+
+      setIsButtonDisabled(false);
     }
   };
 
@@ -66,9 +70,7 @@ const MyCamera = (props: MyCameraProps) => {
 
   const toggleCamera = () => {
     setCameraType(
-      cameraType === CameraType.back
-        ? CameraType.front
-        : CameraType.back,
+      cameraType === CameraType.back ? CameraType.front : CameraType.back,
     );
   };
 
@@ -77,11 +79,7 @@ const MyCamera = (props: MyCameraProps) => {
       {photoUri ? (
         <Image source={{ uri: photoUri }} style={{ flex: 1 }} />
       ) : (
-        <Camera
-          ref={cameraRef}
-          style={{ flex: 1 }}
-          type={cameraType}
-        />
+        <Camera ref={cameraRef} style={{ flex: 1 }} type={cameraType} />
       )}
       <View style={styles.fabContainer}>
         <FAB
@@ -89,6 +87,7 @@ const MyCamera = (props: MyCameraProps) => {
           icon="camera"
           onPress={takePicture}
           color={'white'}
+          disabled={isButtonDisabled}
         />
         <FAB
           style={styles.fab}

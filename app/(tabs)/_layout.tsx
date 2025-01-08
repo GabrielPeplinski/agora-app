@@ -21,7 +21,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="auth"
         options={{
-          title: 'Usuário',
+          title: 'Área do Usuário',
           tabBarIcon: ({ color, focused }) => (
             <FontAwesome name="user-circle-o" size={28} color={focused ? '#004aad' : 'black'} />
           ),

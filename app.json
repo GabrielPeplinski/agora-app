@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "agora-app",
+    "name": "Ágora",
     "slug": "agora-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/agora-logo.png",
+        "foregroundImage": "./assets/images/agora-logo-icon.png",
         "backgroundColor": "#004aad"
       },
       "package": "com.gabriel20023.agoraapp"
@@ -28,7 +28,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/agora-logo-icon.png"
     },
     "plugins": [
       "expo-router",

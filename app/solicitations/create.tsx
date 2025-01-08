@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { useRefreshContext } from '@/src/context/RefreshContextProvider';
 import CreateSolicitationFormDataInterface
   from '@/src/interfaces/Solicitation/Form/CreateSolicitationFormDataInterface';
+import GoBackButton from '@/src/components/Shared/GoBackButton';
 
 export default function CreateSolicitationsScreen() {
   const [page, setPage] = useState(0);
@@ -114,6 +115,7 @@ export default function CreateSolicitationsScreen() {
 
   return (
     <View style={ContainerBaseStyle.container}>
+      <GoBackButton/>
 
       {loadingSubmit ? <LoadingScreen /> : (
         <>

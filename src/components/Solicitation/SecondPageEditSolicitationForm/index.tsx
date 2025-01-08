@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions, Alert } from 'react-native';
+import { View, StyleSheet, Modal, TouchableOpacity, Image, ScrollView, Dimensions, Alert, StatusBar } from 'react-native';
 import { Portal, Text } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ContainerBaseStyle from '@/app/style';
 import CameraButton from '@/src/components/Solicitation/CameraButton';
 import MyCamera from '../MyCamera';
 import UpdateSolicitationFormDataInterface from '@/src/interfaces/Solicitation/Form/UpdateSolicitationFormDataInterface';
+import GoBackButton from '@/src/components/Shared/GoBackButton';
 
 interface Props {
   values: UpdateSolicitationFormDataInterface;
@@ -77,14 +78,12 @@ const SecondPageEditSolicitationForm: React.FC<Props> = ({ values, setValues }) 
       }));
     }
 
-    // Adiciona o URI da imagem deletada ao array imagesToDelete, se não for uma nova imagem
     setImagesToDelete((prevImagesToDelete) =>
       !newImages.includes(uri) && !prevImagesToDelete.includes(uri)
         ? [...prevImagesToDelete, uri]
         : prevImagesToDelete
     );
 
-    // Remove a imagem de newImages, caso seja uma nova imagem que o usuário deseja remover
     setNewImages((prevNewImages) => prevNewImages.filter((newImage) => newImage !== uri));
   };
 
@@ -93,7 +92,8 @@ const SecondPageEditSolicitationForm: React.FC<Props> = ({ values, setValues }) 
   return (
     <>
       <ScrollView>
-        <View>
+        <View style={styles.container}>
+          <GoBackButton />
           <Portal>
             <Modal
               visible={isCameraModalVisible}
@@ -111,53 +111,53 @@ const SecondPageEditSolicitationForm: React.FC<Props> = ({ values, setValues }) 
 
             {totalImages < 5 && <CameraButton onPress={showModal} />}
           </Portal>
-        </View>
 
-        <View style={ContainerBaseStyle.container}>
-          <View style={styles.centeredContent}>
-            <Text variant={'titleLarge'}>Fotos Reais do Problema</Text>
+          <View style={ContainerBaseStyle.container}>
+            <View style={styles.centeredContent}>
+              <Text variant={'titleLarge'}>Fotos Reais do Problema</Text>
 
-            <Text style={styles.centeredText} variant={'titleMedium'}>
-              Foto de Capa
-            </Text>
+              <Text style={styles.centeredText} variant={'titleMedium'}>
+                Foto de Capa
+              </Text>
 
-            {!values.coverImage ? (
-              <View style={styles.centeredIcon}>
-                <MaterialCommunityIcons name="image-off" size={200} color="black" />
-              </View>
-            ) : (
-              <View style={styles.imageContainer}>
-                <Image
-                  source={{ uri: values.coverImage }}
-                  style={{ width: screenWidth, height: screenWidth * 0.9 }}
-                  resizeMode="contain"
-                />
-                <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteImage(values.coverImage!)}>
-                  <MaterialCommunityIcons name="image-remove" size={24} color="red" />
-                </TouchableOpacity>
-              </View>
-            )}
+              {!values.coverImage ? (
+                <View style={styles.centeredIcon}>
+                  <MaterialCommunityIcons name="image-off" size={200} color="black" />
+                </View>
+              ) : (
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={{ uri: values.coverImage }}
+                    style={{ width: screenWidth, height: screenWidth * 0.9 }}
+                    resizeMode="contain"
+                  />
+                  <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteImage(values.coverImage!)}>
+                    <MaterialCommunityIcons name="image-remove" size={24} color="red" />
+                  </TouchableOpacity>
+                </View>
+              )}
 
-            {values.images.length > 0 && (
-              <>
-                <Text style={styles.centeredText} variant={'titleMedium'}>
-                  Imagens Adicionais
-                </Text>
+              {values.images.length > 0 && (
+                <>
+                  <Text style={styles.centeredText} variant={'titleMedium'}>
+                    Imagens Adicionais
+                  </Text>
 
-                {values.images.map((image, index) => (
-                  <View key={index} style={styles.imageContainer}>
-                    <Image
-                      source={{ uri: image }}
-                      style={{ width: screenWidth, height: screenWidth * 0.9 }}
-                      resizeMode="contain"
-                    />
-                    <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteImage(image)}>
-                      <MaterialCommunityIcons name="image-remove" size={24} color="red" />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </>
-            )}
+                  {values.images.map((image, index) => (
+                    <View key={index} style={styles.imageContainer}>
+                      <Image
+                        source={{ uri: image }}
+                        style={{ width: screenWidth, height: screenWidth * 0.9 }}
+                        resizeMode="contain"
+                      />
+                      <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDeleteImage(image)}>
+                        <MaterialCommunityIcons name="image-remove" size={24} color="red" />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </>
+              )}
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -166,6 +166,9 @@ const SecondPageEditSolicitationForm: React.FC<Props> = ({ values, setValues }) 
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingTop: StatusBar.currentHeight || 20,
+  },
   centeredContent: {
     alignItems: 'center',
     justifyContent: 'center',
