@@ -48,7 +48,11 @@ export default function CreateSolicitationsScreen() {
       formData.description !== '' &&
       formData.solicitationCategoryId !== 0 &&
       formData.latitudeCoordinates !== '' &&
-      formData.longitudeCoordinates !== '';
+      formData.longitudeCoordinates !== '' &&
+      formData.title.length >= 5 &&
+      formData.title.length <= 255 &&
+      formData.description.length >= 5 &&
+      formData.description.length <= 1000;
   }
 
   function validateSecondPage(formData: CreateSolicitationFormDataInterface) {
